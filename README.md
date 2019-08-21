@@ -1,4 +1,4 @@
 # ntools_browser
-Web-based Electrode Visualization Toolbox
+Web-based Electrode Visualization
 
-Developed by Jingyun (Josh) Chen (jingyun.chen@nyulangone.org) at Department of Neruology, New York University School of Medicine.
+An add-on to [ntools_elec] (https://github.com/HughWXY/ntools_elec).
