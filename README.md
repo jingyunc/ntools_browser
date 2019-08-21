@@ -2,8 +2,10 @@
 Web-based Electrode Visualization
 
 An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XTK](https://github.com/xtk/X).
+![Demo](Docs/demo.png)
 
 ![General Design](Docs/design.png)
+
 
 ## Stage 1: Visualize brain surfaces and electrodes in browser from existing ntools_elec outputs
 - [x] Find toolbox for web-based visualization of Freesurfer files.
