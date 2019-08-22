@@ -23,7 +23,7 @@ window.onload = function() {
 
     var p = new X.mesh();
     //p.file = 'http://x.babymri.org/?pits.vtk';
-    p.file = 'files/pits.vtk';
+    p.file = 'files/NY722_041919_coor_T1_2019-04-22.vtk';
     
     // add the three objects
     r.add(lh);
