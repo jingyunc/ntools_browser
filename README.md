@@ -15,7 +15,7 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 - [x] Convert ntools_elec outputs to XTK compatible format.
 - [ ] Create web service for accessing ntools_elec outputs.
 ## Stage 2: Edit and save attributes of electrodes in browser
-- [x] Create GUI for subject selection and 3D redering options
+- [x] Create GUI for subject selection and 3D redering options.
 - [ ] Add functions and varibles for atrribute editing and saving.
 ## Stage 3: Add user control
 - [ ] Link to MCIT database of Kerbros ID/Password.
