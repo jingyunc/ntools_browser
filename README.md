@@ -20,3 +20,6 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 ## Stage 3: Add user control
 - [ ] Link to MCIT database of Kerbros ID/Password.
 - [ ] Create white list of Kerbros ID for legit users.
+## Suggested features
+- [ ] Render brain volume instead of cortical surface.
+- [ ] Interpolate surface color with electrode attributes (e.g. Garma band strength).
