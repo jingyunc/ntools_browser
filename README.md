@@ -16,7 +16,7 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 - [ ] Create web service for accessing ntools_elec outputs.
 ## Stage 2: Edit and save attributes of electrodes in browser
 - [x] Create GUI for subject selection and 3D redering options.
-- [ ] Add functions and varibles for atrribute editing and saving.
+- [ ] Assign and save different atrributes to the electrodes (e.g. functional mapping, seizure mapping, resection mapping, etc.).
 ## Stage 3: Add user control
 - [ ] Link to MCIT database of Kerbros ID/Password.
 - [ ] Create white list of Kerbros ID for legit users.
