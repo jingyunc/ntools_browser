@@ -13,7 +13,7 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 - [x] Find toolbox for web-based visualization of Freesurfer files.
 - [x] Create database of existing MRI scans and electrode coordinates for web visualization.
 - [x] Convert ntools_elec outputs to XTK compatible format.
-- [ ] Create web service for accessing ntools_elec outputs.
+- [x] Create web service for accessing ntools_elec outputs.
 ## Stage 2: Edit and save attributes of electrodes in browser
 - [x] Create GUI for subject selection and 3D redering options.
 - [ ] Assign and save different atrributes to the electrodes (e.g. functional mapping, seizure mapping, resection mapping, etc.).
