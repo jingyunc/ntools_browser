@@ -1,0 +1,265 @@
+<html>
+    <head>
+        <title>ebrowser - brain & json</title>
+        <meta charset="UTF-8">
+        <style>
+            html, body { 
+                background-color:#000;
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                overflow: hidden !important;  
+            }
+        </style>
+        <script type="text/javascript" src="https://get.goXTK.com/xtk.js"></script>
+        <script type="text/javascript" src="http://ievappwpdcpvm01.nyumc.org/dat.gui.min.js"></script>
+        <script type = "text/javascript" src = "http://ievappwpdcpvm01.nyumc.org/jquery-3.5.1.min.js"></script>
+        <script>
+            
+            
+            function seizColor(T) {
+                if (T=="Onset") {
+                    C=[1,0,0];
+                } else if (T=="Early Spread") {
+                    C=[1,1,0];
+                } else if (T=="Late Spread") {
+                    C=[0,1,0];
+                } else {
+                    C = [1,1,1];
+                }
+                return C;
+            }
+
+            function intColor(T) {
+                if (T==1) {
+                    C=[1,0,0];
+                } else if (T==2) {
+                    C=[1,0.65,0];
+                } else if (T==3) {
+                    C=[1,1,0];
+                } else {
+                    C = [1,1,1];
+                }
+                return C;
+            }
+
+
+            window.onload = function() {
+
+                var r = new X.renderer3D();
+                r.container = '3d';
+                r.init();
+
+                var lh = new X.mesh();
+                var rh = new X.mesh();
+                var p = new X.mesh();
+
+                var ptMax = 200;
+                var pt = [];
+                for ( var i = 0; i< ptMax; i++ ) {
+                    pt[i] = new X.sphere();
+                }
+
+                var v = new X.volume();
+
+                lh.file = 'http://ievappwpdcpvm01.nyumc.org/?file=NY758_lh.pial';
+                lh.color = [1, 1, 1];
+                lh.opacity = 0.3;
+                        
+                rh.file = 'http://ievappwpdcpvm01.nyumc.org/?file=NY758_rh.pial';
+                rh.color = [1, 1, 1];
+                rh.opacity = 0.3;
+
+                volume = new X.volume();
+                volume.file = 'http://ievappwpdcpvm01.nyumc.org/?file=NY758_T1.nii';
+
+                r.add(lh);
+                r.add(rh);
+                r.add(p);
+
+                sliceX = new X.renderer2D();
+                sliceX.container = 'sliceX';
+                sliceX.orientation = 'X';
+                sliceX.init();
+
+                var sliceY = new X.renderer2D();
+                sliceY.container = 'sliceY';
+                sliceY.orientation = 'Y';
+                sliceY.init();
+
+                var sliceZ = new X.renderer2D();
+                sliceZ.container = 'sliceZ';
+                sliceZ.orientation = 'Z';
+                sliceZ.init();
+
+                sliceX.add(volume);
+                sliceX.render();
+
+                gui = null; // we need to re-load the gui after we change the curvature type                
+                // we need this Loader as a container to keep track of the current curvature
+                var _loader = {
+                    
+                    // default type
+                    Type: 'C (mm&#x207b;&sup2;)'
+                
+                };
+                
+
+                // the onShowtime function gets called automatically, just before the first rendering happens
+                r.onShowtime = function() {
+
+                    p.visible = false; // hide the mesh since we just want to use the oordinates
+
+                    
+                    // $.getJSON('http://ievappwpdcpvm01.nyumc.org/?file=NY758.json', function(dat) {
+
+                    //     // for convenience, a container which holds all spheres
+                    //     spheres = new X.object();
+                        
+                    //     // create a new sphere as a template for all other ones
+                    //     // this is an expensive operation due to CSG's mesh generation
+                    //     var newSphere = new X.sphere();
+                    //     newSphere.center = [dat.coorX[0],dat.coorY[0],dat.coorZ[0]];
+                    //     newSphere.radius = 1.2;
+                    //     newSphere.color = seizColor(dat.seizType[1,0]);
+                    //     newSphere.modified(); // call the CSG creator manually
+                        
+                    //     // .. add the newSphere to our container
+                    //     spheres.children.push(newSphere);
+                        
+                    //     // loop through the points and copy the created sphere to a new X.object
+                    //     for (var i = 0; i < dat.elecID.length; i++) {
+                    //         var copySphere = new X.object(newSphere);
+                    //         copySphere.color = seizColor(dat.seizType[1,i]);
+                    //         //copySphere.center =  [dat.coorX[i],dat.coorY[i],dat.coorZ[i]];
+                    //         copySphere.transform.translateX(dat.coorX[i] - dat.coorX[0]);
+                    //         copySphere.transform.translateY(dat.coorY[i] - dat.coorY[0]);
+                    //         copySphere.transform.translateZ(dat.coorZ[i] - dat.coorZ[0]);
+                            
+                    //         // .. add the copySphere to our container
+                    //         spheres.children.push(copySphere);
+                        
+                    //     }
+                        
+                    //     // add the sphere container to the renderer
+                    //     r.add(spheres);
+
+                    // });
+                                        
+                };  
+
+                sliceX.onShowtime = function() {
+
+                    sliceY.add(volume);
+                    sliceY.render();
+                    sliceZ.add(volume);
+                    sliceZ.render();
+
+                    r.add(volume);
+
+                    r.camera.position = [-360, 0, 0];
+                    r.render();
+
+                    if (gui) {
+                    // if we already have a gui, destroy it, it will be re-created immediately
+                    gui.destroy();
+                    gui = null;
+                    }
+
+                    
+                    $.getJSON('http://ievappwpdcpvm01.nyumc.org/?file=NY758.json', function(ejson) {
+                        dispModes = ejson.SeizDisplay;
+                        //console.log(ejson.SeizDisplay);
+                    // curvatureFiles = ['lh.smoothwm.C.crv', 'lh.smoothwm.K1.crv','lh.smoothwm.H.crv'];
+
+
+                        var gui = new dat.GUI();    
+                        var volumegui = gui.addFolder('Volume');
+                        var opacityController = volumegui.add(volume, 'opacity', 0, 1);
+                        var lowerThresholdController = volumegui.add(volume, 'lowerThreshold',
+                            volume.min, volume.max);
+                        var upperThresholdController = volumegui.add(volume, 'upperThreshold',
+                            volume.min, volume.max);
+                        var lowerWindowController = volumegui.add(volume, 'windowLow', volume.min,
+                            volume.max);
+                        var upperWindowController = volumegui.add(volume, 'windowHigh', volume.min,
+                            volume.max);
+                        var sliceXController = volumegui.add(volume, 'indexX', 0,
+                            volume.dimensions[0] - 1);
+                        var sliceYController = volumegui.add(volume, 'indexY', 0,
+                            volume.dimensions[1] - 1);
+                        var sliceZController = volumegui.add(volume, 'indexZ', 0,
+                            volume.dimensions[2] - 1);
+                        var typeController = volumegui.add(_loader, 'Type', dispModes);
+                        volumegui.open();
+                        
+                        // Change the curvature type callback
+                        typeController.onChange(function(value) {
+                            var _index = dispModes.indexOf(value);
+                            //console.log(_index);
+                
+                            // for convenience, a container which holds all spheres
+                            spheres = new X.object();
+
+                            // create a new sphere as a template for all other ones
+                            var newSphere = new X.sphere();
+                            newSphere.center = [ejson.coorX[0],ejson.coorY[0],ejson.coorZ[0]];
+                            newSphere.radius = 1.2;
+                            if (_index==0) {
+                                newSphere.color = seizColor(ejson.seizType[i]);
+                            } else if (_index==1) {
+                                newSphere.color = intColor(ejson.intPopulation[i]);
+                            }
+                            newSphere.modified(); // call the CSG creator manually
+                            spheres.children.push(newSphere);
+
+                            // loop through the points and copy the created sphere to a new X.object
+                            for (var i = 0; i < ejson.elecID.length; i++) {
+                                var copySphere = new X.object(newSphere);
+                                if (_index==0) {
+                                    copySphere.color = seizColor(ejson.seizType[i]);
+                                } else if (_index==1) {
+                                    copySphere.color = intColor(ejson.intPopulation[i]);
+                                }
+
+                                copySphere.transform.translateX(ejson.coorX[i] - ejson.coorX[0]);
+                                copySphere.transform.translateY(ejson.coorY[i] - ejson.coorY[0]);
+                                copySphere.transform.translateZ(ejson.coorZ[i] - ejson.coorZ[0]);
+                                
+                                // .. add the copySphere to our container
+                                spheres.children.push(copySphere);
+
+                            }
+
+                            // add the sphere container to the renderer
+                            r.add(spheres);
+
+                        });
+                    });
+
+                    // left hemisphere
+                    //var lhgui = gui.addFolder('Left Hemisphere');
+                    //lhgui.add(lh, 'visible');
+                    //lhgui.open();
+                    
+                    // right hemisphere
+                    //var rhgui = gui.addFolder('Right Hemisphere');
+                    //rhgui.add(rh, 'visible');
+                    //rhgui.open();
+                };  
+            };
+        </script>
+    </head>
+
+    <body>
+        <!-- the container for the renderers -->
+        <div id="3d"
+        style="background-color: #000; width: 100%; height: 70%; margin-bottom: 2px;"></div>
+        <div id="sliceX"
+        style="border-top: 2px solid yellow; background-color: #000; width: 32%; height: 30%; float: left;"></div>
+        <div id="sliceY"
+        style="border-top: 2px solid red;background-color: #000; width: 32%; height: 30%; float: left;"></div>
+        <div id="sliceZ"
+        style="border-top: 2px solid green; background-color: #000; width: 32%; height: 30%; float: left;"></div>
+    </body>
+</html>
