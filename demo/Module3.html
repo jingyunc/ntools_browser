@@ -32,7 +32,7 @@
 
             function intColor(T) {
                 if (T==1) {
-                    C=[1,0,0];
+                    C=[0,0,1];
                 } else if (T==2) {
                     C=[1,0.65,0];
                 } else if (T==3) {
@@ -109,42 +109,37 @@
                 r.onShowtime = function() {
 
                     p.visible = false; // hide the mesh since we just want to use the oordinates
+                    $.getJSON('http://ievappwpdcpvm01.nyumc.org/?file=NY758.json', function(dat) {
 
-                    
-                    // $.getJSON('http://ievappwpdcpvm01.nyumc.org/?file=NY758.json', function(dat) {
-
-                    //     // for convenience, a container which holds all spheres
-                    //     spheres = new X.object();
+                        // for convenience, a container which holds all spheres
+                        spheres = new X.object();
                         
-                    //     // create a new sphere as a template for all other ones
-                    //     // this is an expensive operation due to CSG's mesh generation
-                    //     var newSphere = new X.sphere();
-                    //     newSphere.center = [dat.coorX[0],dat.coorY[0],dat.coorZ[0]];
-                    //     newSphere.radius = 1.2;
-                    //     newSphere.color = seizColor(dat.seizType[1,0]);
-                    //     newSphere.modified(); // call the CSG creator manually
+                        // create a new sphere as a template for all other ones
+                        // this is an expensive operation due to CSG's mesh generation
+                        var newSphere = new X.sphere();
+                        newSphere.center = [dat.coorX[0],dat.coorY[0],dat.coorZ[0]];
+                        newSphere.radius = 1.2;
+                        newSphere.modified(); // call the CSG creator manually
                         
-                    //     // .. add the newSphere to our container
-                    //     spheres.children.push(newSphere);
+                        // .. add the newSphere to our container
+                        spheres.children.push(newSphere);
                         
-                    //     // loop through the points and copy the created sphere to a new X.object
-                    //     for (var i = 0; i < dat.elecID.length; i++) {
-                    //         var copySphere = new X.object(newSphere);
-                    //         copySphere.color = seizColor(dat.seizType[1,i]);
-                    //         //copySphere.center =  [dat.coorX[i],dat.coorY[i],dat.coorZ[i]];
-                    //         copySphere.transform.translateX(dat.coorX[i] - dat.coorX[0]);
-                    //         copySphere.transform.translateY(dat.coorY[i] - dat.coorY[0]);
-                    //         copySphere.transform.translateZ(dat.coorZ[i] - dat.coorZ[0]);
+                        // loop through the points and copy the created sphere to a new X.object
+                        for (var i = 0; i < dat.elecID.length; i++) {
+                            var copySphere = new X.object(newSphere);
+                            copySphere.transform.translateX(dat.coorX[i] - dat.coorX[0]);
+                            copySphere.transform.translateY(dat.coorY[i] - dat.coorY[0]);
+                            copySphere.transform.translateZ(dat.coorZ[i] - dat.coorZ[0]);
                             
-                    //         // .. add the copySphere to our container
-                    //         spheres.children.push(copySphere);
+                            // .. add the copySphere to our container
+                            spheres.children.push(copySphere);
                         
-                    //     }
+                        }
                         
-                    //     // add the sphere container to the renderer
-                    //     r.add(spheres);
+                        // add the sphere container to the renderer
+                        r.add(spheres);
 
-                    // });
+                    });
                                         
                 };  
 
@@ -233,6 +228,43 @@
 
                             // add the sphere container to the renderer
                             r.add(spheres);
+
+
+                          if (_index==2) {
+
+                                var Cyl = [];                            
+                                for (var i = 0; i < ejson.fmapG1.length; i++) {
+                                    Cyl[i] = new X.cylinder();
+                                    Cyl[i].start = [ejson.coorX[ejson.fmapG1[i]],ejson.coorY[ejson.fmapG1[i]],ejson.coorZ[ejson.fmapG1[i]]];
+                                    Cyl[i].end = [ejson.coorX[ejson.fmapG2[i]],ejson.coorY[ejson.fmapG2[i]],ejson.coorZ[ejson.fmapG2[i]]];
+                                    Cyl[i].color = [0, 1, 0];
+                                    Cyl[i].radius = 0.6;
+                                    r.add(Cyl[i]);
+                                }
+
+                                // cylinders = new X.object();
+                                // //console.log(ejson.coorX[ejson.fmapG1[0]])
+                                // var newCyl = new X.cylinder();
+                                // newCyl.start = [ejson.coorX[ejson.fmapG1[0]],ejson.coorY[ejson.fmapG1[0]],ejson.coorZ[ejson.fmapG1[0]]];
+                                // newCyl.end = [ejson.coorX[ejson.fmapG2[0]],ejson.coorY[ejson.fmapG2[0]],ejson.coorZ[ejson.fmapG2[0]]];
+                                // newCyl.radius = 1;
+                                // newCyl.color = [0, 1, 0];
+                                // newCyl.caption = 'finding';
+
+                                // newCyl.modified(); // call the CSG creator manually
+                                // cylinders.children.push(newCyl);
+
+                                // // loop through the points and copy the created sphere to a new X.object
+                                // for (var i = 1; i < ejson.fmapG1.length; i++) {
+                                //     var copyCyl = new X.object(newCyl);
+                                //     copyCyl.start = [ejson.coorX[ejson.fmapG1[i]],ejson.coorY[ejson.fmapG1[i]],ejson.coorZ[ejson.fmapG1[i]]];
+                                //     copyCyl.end = [ejson.coorX[ejson.fmapG2[i]],ejson.coorY[ejson.fmapG2[i]],ejson.coorZ[ejson.fmapG2[i]]];
+                                //     cylinders.children.push(copyCyl);
+                                // }
+                                // r.add(cylinders);
+
+                          }
+
 
                         });
                     });
