@@ -187,6 +187,18 @@
                             volume.dimensions[2] - 1);
                         var typeController = volumegui.add(_loader, 'Type', dispModes);
                         volumegui.open();
+
+                        // left hemisphere
+                        var lhgui = gui.addFolder('Left Hemisphere');
+                        lhgui.add(lh, 'visible');
+                        lhgui.add(lh, 'opacity', 0, 1);
+                        lhgui.open();
+                        
+                        // right hemisphere
+                        var rhgui = gui.addFolder('Right Hemisphere');
+                        rhgui.add(rh, 'visible');
+                        rhgui.add(rh, 'opacity', 0, 1);
+                        rhgui.open();
                         
                         // Change the curvature type callback
                         typeController.onChange(function(value) {
@@ -232,13 +244,15 @@
 
                           if (_index==2) {
 
-                                var Cyl = [];                            
+                                var Cyl = [];
+                                var capt = "findings ";                            
                                 for (var i = 0; i < ejson.fmapG1.length; i++) {
                                     Cyl[i] = new X.cylinder();
                                     Cyl[i].start = [ejson.coorX[ejson.fmapG1[i]],ejson.coorY[ejson.fmapG1[i]],ejson.coorZ[ejson.fmapG1[i]]];
                                     Cyl[i].end = [ejson.coorX[ejson.fmapG2[i]],ejson.coorY[ejson.fmapG2[i]],ejson.coorZ[ejson.fmapG2[i]]];
                                     Cyl[i].color = [0, 1, 0];
                                     Cyl[i].radius = 0.6;
+                                    Cyl[i].caption = capt.concat(i.toString());
                                     r.add(Cyl[i]);
                                 }
 
@@ -269,15 +283,6 @@
                         });
                     });
 
-                    // left hemisphere
-                    //var lhgui = gui.addFolder('Left Hemisphere');
-                    //lhgui.add(lh, 'visible');
-                    //lhgui.open();
-                    
-                    // right hemisphere
-                    //var rhgui = gui.addFolder('Right Hemisphere');
-                    //rhgui.add(rh, 'visible');
-                    //rhgui.open();
                 };  
             };
         </script>
