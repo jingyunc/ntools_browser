@@ -21,5 +21,10 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 - [ ] Link to MCIT database of Kerbros ID/Password.
 - [ ] Create white list of Kerbros ID for legit users.
 ## Suggested features
-- [ ] Render brain volume instead of cortical surface.
+- [x] Render brain volume instead of cortical surface.
+- [x] Opacity control of brain surface
+- [ ] Color-code fmap bars
+- [ ] Color-code elec on 2D slices
+- [ ] Display legend for color-code
+- [ ] Additional draw-down menu items for different types of fmap findings.
 - [ ] Interpolate surface color with electrode attributes (e.g. Garma band strength).
