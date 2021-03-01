@@ -1,0 +1,288 @@
+<html>
+    <head>
+        <title>ebrowser - brain & json</title>
+        <meta charset="UTF-8">
+        <style>
+            html, body { 
+                background-color:#000;
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                overflow: hidden !important;  
+            }
+
+            #menu {
+				position: absolute;
+				bottom: 20px;
+				width: 100%;
+				text-align: center;
+				padding: 0;
+				margin: 0;
+			}
+
+			button {
+				color: rgb(255,255,255);
+				background: transparent;
+				border: 0px;
+				padding: 5px 10px;
+				cursor: pointer;
+			}
+			button:hover {
+				background-color: rgba(0,255,255,0.5);
+			}
+			button:active {
+				color: #000000;
+				background-color: rgba(0,255,255,1);
+			}
+
+			.label {
+				text-shadow: -1px 1px 1px rgb(0,0,0);
+				margin-left: 25px;
+				font-size: 20px;
+			}
+        </style>
+
+        <script type="text/javascript" src="https://get.goXTK.com/xtk.js"></script>
+        <script type="text/javascript" src="http://ievappwpdcpvm01.nyumc.org/dat.gui.min.js"></script>
+        <script type = "text/javascript" src = "http://ievappwpdcpvm01.nyumc.org/jquery-3.5.1.min.js"></script>
+        
+        <script type="module">
+
+            import * as THREE from 'http://ievappwpdcpvm01.nyumc.org/build/three.module.js';
+            import { TrackballControls } from './jsm/controls/TrackballControls.js';
+            import { CSS2DRenderer, CSS2DObject } from './jsm/renderers/CSS2DRenderer.js';
+
+            let camera, scene, renderer, labelRenderer;
+            let controls;
+
+            let root;
+
+            init();
+            //animate();
+
+
+            window.onload = function() {
+
+                var r = new X.renderer3D();
+                r.container = '3d';
+                r.init();
+
+                var lh = new X.mesh();
+                var rh = new X.mesh();
+                var p = new X.mesh();
+
+                var ptMax = 200;
+                var pt = [];
+                for ( var i = 0; i< ptMax; i++ ) {
+                    pt[i] = new X.sphere();
+                }
+
+                var v = new X.volume();
+
+
+                lh.file = 'http://ievappwpdcpvm01.nyumc.org/?file=NY758_lh.pial';
+                lh.color = [1, 1, 1];
+                lh.opacity = 0.3;
+                        
+                rh.file = 'http://ievappwpdcpvm01.nyumc.org/?file=NY758_rh.pial';
+                rh.color = [1, 1, 1];
+                rh.opacity = 0.3;
+
+                var volume = new X.volume();
+                volume.file = 'http://ievappwpdcpvm01.nyumc.org/?file=NY758_T1.nii';
+
+                r.add(lh);
+                r.add(rh);
+                r.add(p);
+
+                var sliceX = new X.renderer2D();
+                sliceX.container = 'sliceX';
+                sliceX.orientation = 'X';
+                sliceX.init();
+
+                var sliceY = new X.renderer2D();
+                sliceY.container = 'sliceY';
+                sliceY.orientation = 'Y';
+                sliceY.init();
+
+                var sliceZ = new X.renderer2D();
+                sliceZ.container = 'sliceZ';
+                sliceZ.orientation = 'Z';
+                sliceZ.init();
+
+                sliceX.add(volume);
+                sliceX.render();
+
+                // the onShowtime function gets called automatically, just before the first rendering happens
+                r.onShowtime = function() {
+
+
+                    p.visible = false; // hide the mesh since we just want to use the oordinates
+                    
+                    $.getJSON('http://ievappwpdcpvm01.nyumc.org/?file=NY758.json', function(dat) {
+                    //console.log(dat.coorX[0]);
+
+                        for ( var i = 0; i < 58; i++) {            
+                            pt[i] = new X.sphere();
+                            pt[i].center =  [dat.coorX[i],dat.coorY[i],dat.coorZ[i]];
+                            pt[i].radius = 1.2;
+                            pt[i].color = [1,0,0]; 
+
+                            pt[i].modified();
+                            r.add(pt[i]);
+
+                            const text = document.createElement( 'div' );
+                            text.className = 'label';
+                            text.style.color = 'rgb(180, 180, 180)';
+                            text.textContent = dat.elecID[i];
+
+                            const label = new CSS2DObject( text );
+                            const position = new THREE.Vector3();                            
+                            position.x = dat.coorX[i];
+                            position.y = dat.coorY[i];
+                            position.z = dat.coorZ[i];
+                            label.position.copy( position );
+                            //console.log(label.position);
+                            label.position.multiplyScalar( 5 );
+                            //label.scale.multiplyScalar( 5 );
+                            root.add( label );
+
+                        }
+
+                    });
+                    
+                };  
+
+                sliceX.onShowtime = function() {
+
+                    sliceY.add(volume);
+                    sliceY.render();
+                    sliceZ.add(volume);
+                    sliceZ.render();
+
+                    r.add(volume);
+
+                    r.camera.position = [-360, 0, 0];
+                    r.render();
+
+                    var gui = new dat.GUI();    
+                    var volumegui = gui.addFolder('Volume');
+                    var opacityController = volumegui.add(volume, 'opacity', 0, 1);
+                    var lowerThresholdController = volumegui.add(volume, 'lowerThreshold',
+                        volume.min, volume.max);
+                    var upperThresholdController = volumegui.add(volume, 'upperThreshold',
+                        volume.min, volume.max);
+                    var lowerWindowController = volumegui.add(volume, 'windowLow', volume.min,
+                        volume.max);
+                    var upperWindowController = volumegui.add(volume, 'windowHigh', volume.min,
+                        volume.max);
+                    var sliceXController = volumegui.add(volume, 'indexX', 0,
+                        volume.dimensions[0] - 1);
+                    var sliceYController = volumegui.add(volume, 'indexY', 0,
+                        volume.dimensions[1] - 1);
+                    var sliceZController = volumegui.add(volume, 'indexZ', 0,
+                        volume.dimensions[2] - 1);
+                    volumegui.open();
+
+                };  
+            };
+
+
+            function init() {
+
+                scene = new THREE.Scene();
+                scene.background = new THREE.Color( 0x050505 );
+
+                camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 5000 );
+                camera.position.z = 1000;
+                scene.add( camera );
+
+                const light1 = new THREE.DirectionalLight( 0xffffff, 0.8 );
+                light1.position.set( 1, 1, 1 );
+                scene.add( light1 );
+
+                const light2 = new THREE.DirectionalLight( 0xffffff, 0.5 );
+                light2.position.set( - 1, - 1, 1 );
+                scene.add( light2 );
+
+                root = new THREE.Group();
+                scene.add( root );
+
+                //
+
+                renderer = new THREE.WebGLRenderer( { antialias: true } );
+                renderer.setPixelRatio( window.devicePixelRatio );
+                renderer.setSize( window.innerWidth, window.innerHeight );
+                document.getElementById( 'tags' ).appendChild( renderer.domElement );
+
+                labelRenderer = new CSS2DRenderer();
+                labelRenderer.setSize( window.innerWidth, window.innerHeight );
+                labelRenderer.domElement.style.position = 'absolute';
+                labelRenderer.domElement.style.top = '0px';
+                labelRenderer.domElement.style.pointerEvents = 'none';
+                document.getElementById( '3d' ).appendChild( labelRenderer.domElement );
+
+                //
+
+                controls = new TrackballControls( camera, renderer.domElement );
+                controls.minDistance = 500;
+                controls.maxDistance = 2000;
+
+
+                window.addEventListener( 'resize', onWindowResize, false );
+
+            }
+
+
+            function onWindowResize() {
+
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+
+                renderer.setSize( window.innerWidth, window.innerHeight );
+                labelRenderer.setSize( window.innerWidth, window.innerHeight );
+
+                render();
+
+            }
+
+            function animate() {
+
+                requestAnimationFrame( animate );
+                controls.update();
+
+                const time = Date.now() * 0.0004;
+
+                root.rotation.x = time;
+                root.rotation.y = time * 0.7;
+
+                render();
+
+            }
+
+            function render() {
+
+                renderer.render( scene, camera );
+                labelRenderer.render( scene, camera );
+
+            }
+
+        </script>
+
+
+    </head>
+
+    <body>
+        <!-- the container for the renderers -->
+        <div id="3d"
+        style="background-color: #000; width: 100%; height: 70%; margin-bottom: 2px;"></div>
+        <div id="sliceX"
+        style="border-top: 2px solid yellow; background-color: #000; width: 32%; height: 30%; float: left;"></div>
+        <div id="sliceY"
+        style="border-top: 2px solid red;background-color: #000; width: 32%; height: 30%; float: left;"></div>
+        <div id="sliceZ"
+        style="border-top: 2px solid green; background-color: #000; width: 32%; height: 30%; float: left;"></div>
+        <div id="tags"></div>
+
+    </body>
+</html>
