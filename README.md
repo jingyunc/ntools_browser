@@ -23,7 +23,7 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 ## Suggested features
 - [x] Render brain volume instead of cortical surface.
 - [x] Opacity control of brain surface
-- [ ] Color-code fmap bars
+- [x] Color-code fmap bars
 - [ ] Color-code elec on 2D slices
 - [ ] Display legend for color-code
 - [ ] Additional draw-down menu items for different types of fmap findings.
