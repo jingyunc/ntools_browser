@@ -16,7 +16,6 @@
         <script type = "text/javascript" src = "http://ievappwpdcpvm01.nyumc.org/jquery-3.5.1.min.js"></script>
         <script>
             
-            
             function seizColor(T) {
                 if (T=="Onset") {
                     C=[1,0,0];
@@ -37,6 +36,21 @@
                     C=[1,0.65,0];
                 } else if (T==3) {
                     C=[1,1,0];
+                } else {
+                    C = [1,1,1];
+                }
+                return C;
+            }
+
+            function fmapColor(T) {
+                if (T=="fmapMotor") {
+                    C=[1,0,0];
+                } else if (T=="fmapSensory") {
+                    C=[1,1,0];
+                } else if (T=="fmapLanguage") {
+                    C=[0,1,0];
+                } else if (T=="fmapVisual") {
+                    C=[0,1,0];
                 } else {
                     C = [1,1,1];
                 }
@@ -245,15 +259,33 @@
                           if (_index==2) {
 
                                 var Cyl = [];
-                                var capt = "findings ";                            
+                                var mtype=["fmapMotor","fmapSensory","fmapLanguage","fmapVisual"];                            
                                 for (var i = 0; i < ejson.fmapG1.length; i++) {
-                                    Cyl[i] = new X.cylinder();
-                                    Cyl[i].start = [ejson.coorX[ejson.fmapG1[i]],ejson.coorY[ejson.fmapG1[i]],ejson.coorZ[ejson.fmapG1[i]]];
-                                    Cyl[i].end = [ejson.coorX[ejson.fmapG2[i]],ejson.coorY[ejson.fmapG2[i]],ejson.coorZ[ejson.fmapG2[i]]];
-                                    Cyl[i].color = [0, 1, 0];
-                                    Cyl[i].radius = 0.6;
-                                    Cyl[i].caption = capt.concat(i.toString());
-                                    r.add(Cyl[i]);
+                                    var ct=0;
+                                    for (var j =0; j < mtype.length; j++ ) {
+                                        var mstr = 'ejson.'+ mtype[j] + '[i]';
+                                        if (eval(mstr)) {
+                                            ct=ct+1;
+                                            Cyl[i,ct] = new X.cylinder();
+                                            Cyl[i,ct].start = [ejson.coorX[ejson.fmapG1[i]],ejson.coorY[ejson.fmapG1[i]],ejson.coorZ[ejson.fmapG1[i]]];
+                                            Cyl[i,ct].end = [ejson.coorX[ejson.fmapG2[i]],ejson.coorY[ejson.fmapG2[i]],ejson.coorZ[ejson.fmapG2[i]]];
+                                            Cyl[i,ct].color = fmapColor(mtype[j]);
+                                            Cyl[i,ct].radius = 0.6;
+                                            Cyl[i,ct].caption = eval(mstr);
+                                            r.add(Cyl[i,ct]);
+                                            // Cyl[i] = new X.cylinder();
+                                            // Cyl[i].start = [ejson.coorX[ejson.fmapG1[i]],ejson.coorY[ejson.fmapG1[i]],ejson.coorZ[ejson.fmapG1[i]]];
+                                            // Cyl[i].end = [ejson.coorX[ejson.fmapG2[i]],ejson.coorY[ejson.fmapG2[i]],ejson.coorZ[ejson.fmapG2[i]]];
+                                            // Cyl[i].color = fmapColor(mtype);
+                                            // Cyl[i].radius = 0.6;
+                                            // Cyl[i].caption = capt.concat(i.toString());
+                                            // r.add(Cyl[i]);   
+                                            //console.log(eval(mstr));
+                                        }                                                                
+                                    }
+                                    // if (ct>0) {
+                                    //         console.log(ct);
+                                    // } 
                                 }
 
                                 // cylinders = new X.object();
