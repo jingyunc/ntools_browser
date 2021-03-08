@@ -4,7 +4,7 @@
 
 An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XTK](https://github.com/xtk/X).
 
-![Demo](Docs/demo1.png)
+![Demo](Docs/demo2.png)
 
 ![General Design](Docs/design2.png)
 
