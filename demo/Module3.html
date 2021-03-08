@@ -13,7 +13,7 @@
         </style>
         <script type="text/javascript" src="https://get.goXTK.com/xtk.js"></script>
         <script type="text/javascript" src="http://ievappwpdcpvm01.nyumc.org/dat.gui.min.js"></script>
-        <script type = "text/javascript" src = "http://ievappwpdcpvm01.nyumc.org/jquery-3.5.1.min.js"></script>
+        <script type="text/javascript" src="http://ievappwpdcpvm01.nyumc.org/jquery-3.5.1.min.js"></script>
         <script>
             
             function seizColor(T) {
@@ -50,12 +50,26 @@
                 } else if (T=="fmapLanguage") {
                     C=[0,1,0];
                 } else if (T=="fmapVisual") {
-                    C=[0,1,0];
+                    C=[1,0,1];
                 } else {
                     C = [1,1,1];
                 }
                 return C;
             }
+
+            function getLegend(T) {
+                if (T=="Seizure Type") {
+                    C="<p style='color:white;'>Seizure Type:</p><p style='color:red;'>Onset</p><p style='color:yellow;'>Early Spread</p><p style='color:green;'>Late Spread</p>";
+                } else if (T=="Interictal Population") {
+                    C="<p style='color:white;'>Interictal Population:</p><p style='color:rgb(0,0,255);'>1</p><p style='color:rgb(255,165,0);'>2</p><p style='color:rgb(0,255,0);'>3</p><p style='color:rgb(0,255,255);'>4</p>";
+                } else if (T=="F.Map. All") {
+                    C="<p style='color:white;'>Functional Mapping:</p><p style='color:rgb(255,0,0);'>Motor</p><p style='color:rgb(255,255,0);'>Sensory</p><p style='color:rgb(0,255,0);'>Language</p><p style='color:rgb(255,0,255);'>Visaul</p>";
+                } else {
+                    C="";
+                }
+                return C;
+            }
+
 
 
             window.onload = function() {
@@ -174,13 +188,10 @@
                     gui.destroy();
                     gui = null;
                     }
-
                     
                     $.getJSON('http://ievappwpdcpvm01.nyumc.org/?file=NY758.json', function(ejson) {
                         dispModes = ejson.SeizDisplay;
                         //console.log(ejson.SeizDisplay);
-                    // curvatureFiles = ['lh.smoothwm.C.crv', 'lh.smoothwm.K1.crv','lh.smoothwm.H.crv'];
-
 
                         var gui = new dat.GUI();    
                         var volumegui = gui.addFolder('Volume');
@@ -255,8 +266,9 @@
                             // add the sphere container to the renderer
                             r.add(spheres);
 
+                            document.getElementById("legend").innerHTML = getLegend(ejson.SeizDisplay[_index]);
 
-                          if (_index==2) {
+                            if (_index==2) {
 
                                 var Cyl = [];
                                 var mtype=["fmapMotor","fmapSensory","fmapLanguage","fmapVisual"];                            
@@ -271,16 +283,8 @@
                                             Cyl[i,ct].end = [ejson.coorX[ejson.fmapG2[i]],ejson.coorY[ejson.fmapG2[i]],ejson.coorZ[ejson.fmapG2[i]]];
                                             Cyl[i,ct].color = fmapColor(mtype[j]);
                                             Cyl[i,ct].radius = 0.6;
-                                            Cyl[i,ct].caption = eval(mstr);
+                                            //Cyl[i,ct].caption = eval(mstr);
                                             r.add(Cyl[i,ct]);
-                                            // Cyl[i] = new X.cylinder();
-                                            // Cyl[i].start = [ejson.coorX[ejson.fmapG1[i]],ejson.coorY[ejson.fmapG1[i]],ejson.coorZ[ejson.fmapG1[i]]];
-                                            // Cyl[i].end = [ejson.coorX[ejson.fmapG2[i]],ejson.coorY[ejson.fmapG2[i]],ejson.coorZ[ejson.fmapG2[i]]];
-                                            // Cyl[i].color = fmapColor(mtype);
-                                            // Cyl[i].radius = 0.6;
-                                            // Cyl[i].caption = capt.concat(i.toString());
-                                            // r.add(Cyl[i]);   
-                                            //console.log(eval(mstr));
                                         }                                                                
                                     }
                                     // if (ct>0) {
@@ -322,13 +326,15 @@
 
     <body>
         <!-- the container for the renderers -->
+        <div id="legend"
+        style='position:absolute;top:10px;left:10px;'></div>
         <div id="3d"
         style="background-color: #000; width: 100%; height: 70%; margin-bottom: 2px;"></div>
         <div id="sliceX"
-        style="border-top: 2px solid yellow; background-color: #000; width: 32%; height: 30%; float: left;"></div>
+        style="border-top: 2px solid yellow; background-color: #000; width: 33%; height: 30%; float: left;"></div>
         <div id="sliceY"
-        style="border-top: 2px solid red;background-color: #000; width: 32%; height: 30%; float: left;"></div>
+        style="border-top: 2px solid red;background-color: #000; width: 33%; height: 30%; float: left;"></div>
         <div id="sliceZ"
-        style="border-top: 2px solid green; background-color: #000; width: 32%; height: 30%; float: left;"></div>
+        style="border-top: 2px solid green; background-color: #000; width: 33%; height: 30%; float: left;"></div>
     </body>
 </html>
