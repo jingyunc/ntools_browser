@@ -26,6 +26,8 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 - [x] Color-code fmap bars
 - [ ] Color-code elecs on 2D slices
 - [ ] Display legend for color-code
-- [ ] Additional draw-down menu items for different types of fmap findings.
-- [ ] Adopt BIDS format in json file.
+- [ ] Additional draw-down menu items for different types of fmap findings
+- [ ] Adopt BIDS format in json file
+- [ ] 3D tags
+- [ ] Show multiple fmap bars for same elec-pairs
 - [ ] Interpolate surface color with electrode attributes (e.g. Garma band strength).
