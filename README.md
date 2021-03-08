@@ -24,7 +24,7 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 - [x] Render brain volume instead of cortical surface.
 - [x] Opacity control of brain surface
 - [x] Color-code fmap bars
-- [ ] Display legend for color-code
+- [x] Display legend for color-code
 - [ ] Color-code elecs on 2D slices
 - [ ] Additional draw-down menu items for different types of fmap findings
 - [ ] Adopt BIDS format in json file
