@@ -24,7 +24,8 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 - [x] Render brain volume instead of cortical surface.
 - [x] Opacity control of brain surface
 - [x] Color-code fmap bars
-- [ ] Color-code elec on 2D slices
+- [ ] Color-code elecs on 2D slices
 - [ ] Display legend for color-code
 - [ ] Additional draw-down menu items for different types of fmap findings.
+- [ ] Adopt BIDS format in json file.
 - [ ] Interpolate surface color with electrode attributes (e.g. Garma band strength).
