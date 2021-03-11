@@ -8,6 +8,8 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 
 ![General Design](Docs/design2.png)
 
+![Stage 2 Design](Docs/Roadmap2.png)
+
 
 ## Stage 1: Visualize brain surfaces and electrodes in browser from existing ntools_elec outputs
 - [x] Find toolbox for web-based visualization of Freesurfer files.
