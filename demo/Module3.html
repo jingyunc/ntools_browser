@@ -64,6 +64,14 @@
                     C="<p style='color:white;'>Interictal Population:</p><p style='color:rgb(0,0,255);'>1</p><p style='color:rgb(255,165,0);'>2</p><p style='color:rgb(0,255,0);'>3</p><p style='color:rgb(0,255,255);'>4</p>";
                 } else if (T=="F.Map. All") {
                     C="<p style='color:white;'>Functional Mapping:</p><p style='color:rgb(255,0,0);'>Motor</p><p style='color:rgb(255,255,0);'>Sensory</p><p style='color:rgb(0,255,0);'>Language</p><p style='color:rgb(255,0,255);'>Visaul</p>";
+                } else if (T=="F.Map. Motor") {
+                    C="<p style='color:white;'>Functional Mapping:</p><p style='color:rgb(255,0,0);'>Motor</p>";
+                } else if (T=="F.Map. Sensory") {
+                    C="<p style='color:white;'>Functional Mapping:</p><p style='color:rgb(255,255,0);'>Sensory</p>";
+                } else if (T=="F.Map. Language") {
+                    C="<p style='color:white;'>Functional Mapping:</p><p style='color:rgb(0,255,0);'>Language</p>";
+                } else if (T=="F.Map. Visual") {
+                    C="<p style='color:white;'>Functional Mapping:</p><p style='color:rgb(255,0,255);'>Visaul</p>";
                 } else {
                     C="";
                 }
@@ -80,14 +88,6 @@
 
                 var lh = new X.mesh();
                 var rh = new X.mesh();
-                var p = new X.mesh();
-
-                var ptMax = 200;
-                var pt = [];
-                for ( var i = 0; i< ptMax; i++ ) {
-                    pt[i] = new X.sphere();
-                }
-
                 var v = new X.volume();
 
                 lh.file = 'http://ievappwpdcpvm01.nyumc.org/?file=NY758_lh.pial';
@@ -103,7 +103,6 @@
 
                 r.add(lh);
                 r.add(rh);
-                r.add(p);
 
                 sliceX = new X.renderer2D();
                 sliceX.container = 'sliceX';
@@ -136,7 +135,6 @@
                 // the onShowtime function gets called automatically, just before the first rendering happens
                 r.onShowtime = function() {
 
-                    p.visible = false; // hide the mesh since we just want to use the oordinates
                     $.getJSON('http://ievappwpdcpvm01.nyumc.org/?file=NY758.json', function(dat) {
 
                         // for convenience, a container which holds all spheres
@@ -283,39 +281,31 @@
                                             Cyl[i,ct].end = [ejson.coorX[ejson.fmapG2[i]],ejson.coorY[ejson.fmapG2[i]],ejson.coorZ[ejson.fmapG2[i]]];
                                             Cyl[i,ct].color = fmapColor(mtype[j]);
                                             Cyl[i,ct].radius = 0.6;
+                                            //Cyl[i,ct].visible = false;
                                             //Cyl[i,ct].caption = eval(mstr);
                                             r.add(Cyl[i,ct]);
                                         }                                                                
                                     }
-                                    // if (ct>0) {
-                                    //         console.log(ct);
-                                    // } 
+                                }
+                            } else if (_index>2) {
+                                var Cyl = [];
+                                var mtype=["fmapMotor","fmapSensory","fmapLanguage","fmapVisual"];                            
+                                for (var i = 0; i < ejson.fmapG1.length; i++) {
+                                    var ct=0;
+                                    var mstr = 'ejson.'+ mtype[_index-3] + '[i]';
+                                    if (eval(mstr)) {
+                                        ct=ct+1;
+                                        Cyl[i,ct] = new X.cylinder();
+                                        Cyl[i,ct].start = [ejson.coorX[ejson.fmapG1[i]],ejson.coorY[ejson.fmapG1[i]],ejson.coorZ[ejson.fmapG1[i]]];
+                                        Cyl[i,ct].end = [ejson.coorX[ejson.fmapG2[i]],ejson.coorY[ejson.fmapG2[i]],ejson.coorZ[ejson.fmapG2[i]]];
+                                        Cyl[i,ct].color = fmapColor(mtype[_index-3]);
+                                        Cyl[i,ct].radius = 0.6;
+                                        //Cyl[i,ct].caption = eval(mstr);
+                                        r.add(Cyl[i,ct]);
+                                    }                                                                
                                 }
 
-                                // cylinders = new X.object();
-                                // //console.log(ejson.coorX[ejson.fmapG1[0]])
-                                // var newCyl = new X.cylinder();
-                                // newCyl.start = [ejson.coorX[ejson.fmapG1[0]],ejson.coorY[ejson.fmapG1[0]],ejson.coorZ[ejson.fmapG1[0]]];
-                                // newCyl.end = [ejson.coorX[ejson.fmapG2[0]],ejson.coorY[ejson.fmapG2[0]],ejson.coorZ[ejson.fmapG2[0]]];
-                                // newCyl.radius = 1;
-                                // newCyl.color = [0, 1, 0];
-                                // newCyl.caption = 'finding';
-
-                                // newCyl.modified(); // call the CSG creator manually
-                                // cylinders.children.push(newCyl);
-
-                                // // loop through the points and copy the created sphere to a new X.object
-                                // for (var i = 1; i < ejson.fmapG1.length; i++) {
-                                //     var copyCyl = new X.object(newCyl);
-                                //     copyCyl.start = [ejson.coorX[ejson.fmapG1[i]],ejson.coorY[ejson.fmapG1[i]],ejson.coorZ[ejson.fmapG1[i]]];
-                                //     copyCyl.end = [ejson.coorX[ejson.fmapG2[i]],ejson.coorY[ejson.fmapG2[i]],ejson.coorZ[ejson.fmapG2[i]]];
-                                //     cylinders.children.push(copyCyl);
-                                // }
-                                // r.add(cylinders);
-
-                          }
-
-
+                            }
                         });
                     });
 
