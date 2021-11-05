@@ -1,0 +1,216 @@
+// This file contains functions for formatting json data and displaying graphical 
+// representations. can possibly revise if we do not want to keep it in that format,
+// and just use indices directly
+
+
+function get_color(type) {
+  var electrodeColors = {
+    "Early Spread" : [1, 1, 0],
+    "Onset"        : [1, 0, 0],
+    "Late Spread"  : [0, 1, 0],
+    ""             : [1, 1, 1] // default (no color)
+  };
+  return electrodeColors[type]
+}
+
+// package each electrode together as an object for readability and easier iteration
+function get_electrode_object(el, index) {
+  return ({
+    "elecID"   : el.elecID[index],
+    "xCoor"    : el.coorX[index],
+    "yCoor"    : el.coorY[index],
+    "zCoor"    : el.coorZ[index],
+    "elecType" : el.elecType[index],
+    "intPopulation" : el.intPopulation[index],
+    "seizType" : el.seizType[index],
+    "visible"  : true // a default value for later filtering
+  })
+}
+
+// create the graphical electrode on the canvas
+function draw_electrode_fx(el) {
+  // destructuring object properties. it is more readable for me, 
+  var {xCoor, yCoor, zCoor, seizType} = el
+  elSphere = new X.sphere()
+  elSphere.center = [xCoor, yCoor, zCoor]
+  elSphere.color = get_color(seizType)
+  elSphere.radius = 1
+  elSphere.visible = el.visible
+  return elSphere
+}
+
+// demo function to hopefully be replaced
+function draw_selection_fx(el) {
+  var {xCoor, yCoor, zCoor} = el
+  elSphere = new X.sphere()
+  elSphere.center = [xCoor, yCoor, zCoor]
+  elSphere.color = [0, 0, 1]
+  elSphere.opacity = 0.7
+  elSphere.radius = 1.5
+  elSphere.visible = false
+  return elSphere
+}
+
+function draw_connection_fx(startNode, endNode) {
+  var connection = new X.cylinder()
+  connection.radius = 0.3
+  connection.start = [startNode.xCoor, startNode.yCoor, startNode.zCoor]
+  connection.end = [endNode.xCoor, endNode.yCoor, endNode.zCoor]
+  return connection
+}
+
+function filter_visibility(electrodes, spheres, connections, data) {
+  const onsetCheckbox = document.getElementById('onset-checkbox')
+  const earlySpreadCheckbox = document.getElementById('early-spread-checkbox')
+  const lateSpreadCheckbox = document.getElementById('late-spread-checkbox')
+  const unlabeledCheckbox = document.getElementById('unlabeled-checkbox')
+  const functionalMapCheckbox = document.getElementById('functional-map-checkbox')
+
+  for (const el of electrodes) {
+    if ((!onsetCheckbox.checked && el.seizType === "Onset") || 
+        (!earlySpreadCheckbox.checked && el.seizType === "Early Spread") ||
+        (!lateSpreadCheckbox.checked && el.seizType === "Late Spread") ||
+        (!unlabeledCheckbox.checked && el.seizType === "")) 
+    { 
+      el.visible = false
+    } else {
+      el.visible = true;
+    }
+  }
+
+  for (var i = 0; i < spheres.length; i++) {
+    spheres[i].visible = electrodes[i].visible
+  }
+
+  var {fmapG1, fmapG2} = data
+  var fmapEntries = fmapG1.length
+
+  for (var i = 0; i < fmapEntries; i++) {
+    if (functionalMapCheckbox.checked) {
+      connections[i].visible = (electrodes[fmapG1[i] - 1].visible && electrodes[fmapG2[i] - 1].visible)
+    } else {
+      connections[i].visible = false;
+    }
+  }
+}
+
+function draw_fmap_connections(data, electrodes) {
+  var {fmapG1, fmapG2} = data
+  var fmapEntries = fmapG1.length
+
+  var connections = []
+
+  for (var i = 0; i < fmapEntries; i++) {
+    var electrodeStartIndex = fmapG1[i]
+    var electrodeEndIndex = fmapG2[i]
+
+    // since the data is generated from matlab, the indices need to be offset to 0-based
+    var startNode = electrodes[electrodeStartIndex - 1]
+    var endNode = electrodes[electrodeEndIndex - 1]
+
+    if (startNode && endNode) {
+      connections.push(draw_connection_fx(startNode, endNode))
+    }
+  }
+
+  return connections
+}
+
+function fill_electrode_options(data, idArray, selectionSpheres) {
+  const electrodeMenu = document.getElementById('electrode-menu')
+  electrodeMenu.addEventListener('click', event => 
+    print_electrode_info(data, event.target.value, idArray, selectionSpheres))
+  for (const entry of data) {
+    const newOption = document.createElement('option')
+    newOption.value = entry.elecID
+    newOption.innerHTML = entry.elecID
+    electrodeMenu.appendChild(newOption)
+  }
+}
+
+function print_electrode_info(data, electrode, idArray, selectionSpheres) {
+  var selected_electrode = data.find(el=> el.elecID === electrode)
+  if (selected_electrode) {
+    var {elecType, intPopulation, seizType} = selected_electrode
+    document.getElementById('electrode-type-label-inner').innerHTML = elecType
+    document.getElementById('int-population-label-inner').innerHTML = intPopulation
+    document.getElementById('seiz-type-label-inner').innerHTML = seizType
+
+    highlight_selected_electrode(electrode, idArray, selectionSpheres)
+  } else {
+    console.log(`Could not find electrode with ID of ${electrode}`)
+  }
+}
+
+function highlight_selected_electrode(el, idArray, selector) {
+  for (var i = 0; i < idArray.length; i++) {
+    if (idArray[i] === el) {
+      selector[i].visible = true;
+    } else {
+      selector[i].visible = false;
+    }
+  }
+}
+
+function load_electrodes(renderer) {
+  (async () => {
+    console.log("Loading Data...")
+    var electrodeData = await(await fetch('./sample.json')).json();
+    console.log("Done")
+
+    document.getElementById('subject-id-lbl').innerHTML = electrodeData.subjID
+    document.getElementById('num-seiz-types-lbl').innerHTML = electrodeData.totalSeizType
+
+    var electrodeIDs = electrodeData.elecID
+
+    // can choose any property here, but it must have same length as other properties
+    var numberOfElectrodes = electrodeData.coorX.length;
+
+    // create an array of electrode objects to access by property
+    var electrodeObjects = Array
+      .apply(null, Array(numberOfElectrodes))
+      .map((_, index) => get_electrode_object(electrodeData, index))
+
+    // create an array of electrode spheres we can access via a closure
+    var electrodeSpheres = electrodeObjects.map(el => draw_electrode_fx(el))
+    electrodeSpheres.forEach(el => renderer.add(el))
+
+    var selectionSpheres = electrodeObjects.map(el => draw_selection_fx(el))
+    selectionSpheres.forEach(el => renderer.add(el))
+
+    var fmapConnections = draw_fmap_connections(electrodeData, electrodeObjects, renderer)
+    fmapConnections.forEach(connection => renderer.add(connection))
+    
+    filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
+    fill_electrode_options(electrodeObjects, electrodeIDs, selectionSpheres)
+
+    // event listeners really should be in their own function
+    // might be able to get away with using just one
+    document
+      .getElementById('unlabeled-checkbox')
+      .addEventListener('click', 
+        () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
+
+    document
+      .getElementById('onset-checkbox')
+      .addEventListener('click', 
+        () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
+
+    document
+      .getElementById('early-spread-checkbox')
+      .addEventListener('click', 
+        () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
+
+    document
+      .getElementById('late-spread-checkbox')
+      .addEventListener('click', 
+        () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
+        
+    document
+      .getElementById('functional-map-checkbox')
+      .addEventListener('click', 
+        () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
+  })();
+}
+
+
