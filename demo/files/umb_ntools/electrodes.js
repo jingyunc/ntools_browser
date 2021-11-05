@@ -2,7 +2,7 @@
 // representations. can possibly revise if we do not want to keep it in that format,
 // and just use indices directly
 
-
+// returns color of electrode
 function get_color(type) {
   var electrodeColors = {
     "Early Spread" : [1, 1, 0],
@@ -39,7 +39,7 @@ function draw_electrode_fx(el) {
   return elSphere
 }
 
-// demo function to hopefully be replaced
+// this function draws the opaque blue shperes around a selected node
 function draw_selection_fx(el) {
   var {xCoor, yCoor, zCoor} = el
   elSphere = new X.sphere()
@@ -51,6 +51,7 @@ function draw_selection_fx(el) {
   return elSphere
 }
 
+// create cylinder between to nodes
 function draw_connection_fx(startNode, endNode) {
   var connection = new X.cylinder()
   connection.radius = 0.3
@@ -59,6 +60,7 @@ function draw_connection_fx(startNode, endNode) {
   return connection
 }
 
+// check if a checkbox is checked, and then set the cooresponding XTK objects visibility
 function filter_visibility(electrodes, spheres, connections, data) {
   const onsetCheckbox = document.getElementById('onset-checkbox')
   const earlySpreadCheckbox = document.getElementById('early-spread-checkbox')
@@ -94,6 +96,7 @@ function filter_visibility(electrodes, spheres, connections, data) {
   }
 }
 
+// finds the two electrodes in the data and calls the cylinder renderer
 function draw_fmap_connections(data, electrodes) {
   var {fmapG1, fmapG2} = data
   var fmapEntries = fmapG1.length
@@ -116,10 +119,12 @@ function draw_fmap_connections(data, electrodes) {
   return connections
 }
 
+// function for adding options based on electrode IDs
 function fill_electrode_options(data, idArray, selectionSpheres) {
   const electrodeMenu = document.getElementById('electrode-menu')
   electrodeMenu.addEventListener('click', event => 
     print_electrode_info(data, event.target.value, idArray, selectionSpheres))
+  // append HTML option to drop down menu
   for (const entry of data) {
     const newOption = document.createElement('option')
     newOption.value = entry.elecID
@@ -128,6 +133,7 @@ function fill_electrode_options(data, idArray, selectionSpheres) {
   }
 }
 
+// find the electrode in the options and display the info on the panel
 function print_electrode_info(data, electrode, idArray, selectionSpheres) {
   var selected_electrode = data.find(el=> el.elecID === electrode)
   if (selected_electrode) {
@@ -142,6 +148,7 @@ function print_electrode_info(data, electrode, idArray, selectionSpheres) {
   }
 }
 
+// find the specific electrode to highlight
 function highlight_selected_electrode(el, idArray, selector) {
   for (var i = 0; i < idArray.length; i++) {
     if (idArray[i] === el) {
@@ -175,16 +182,19 @@ function load_electrodes(renderer) {
     var electrodeSpheres = electrodeObjects.map(el => draw_electrode_fx(el))
     electrodeSpheres.forEach(el => renderer.add(el))
 
+    // array of spheres that will show a highlighted sphere. default invisible
     var selectionSpheres = electrodeObjects.map(el => draw_selection_fx(el))
     selectionSpheres.forEach(el => renderer.add(el))
 
+    // draw the connections between nodes based on fmap arrays
     var fmapConnections = draw_fmap_connections(electrodeData, electrodeObjects, renderer)
     fmapConnections.forEach(connection => renderer.add(connection))
     
     filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
     fill_electrode_options(electrodeObjects, electrodeIDs, selectionSpheres)
 
-    // event listeners really should be in their own function
+    // event listeners really should be in their own function, but they also need to access
+    // the array of XTK spheres
     // might be able to get away with using just one
     document
       .getElementById('unlabeled-checkbox')
