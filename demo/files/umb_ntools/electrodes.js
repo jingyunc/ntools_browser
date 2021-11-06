@@ -30,12 +30,13 @@ function get_electrode_object(el, index) {
 // create the graphical electrode on the canvas
 function draw_electrode_fx(el) {
   // destructuring object properties. it is more readable for me, 
-  var {xCoor, yCoor, zCoor, seizType} = el
+  var {xCoor, yCoor, zCoor, seizType, elecID} = el
   elSphere = new X.sphere()
   elSphere.center = [xCoor, yCoor, zCoor]
   elSphere.color = get_color(seizType)
   elSphere.radius = 1
   elSphere.visible = el.visible
+  elSphere.caption = elecID
   return elSphere
 }
 
