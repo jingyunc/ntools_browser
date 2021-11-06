@@ -72,7 +72,8 @@ window.onload = function() {
         threeD.add(volume);
         threeD.add(surfaces[0]);
 
-        threeD.camera.position = [-360, 0, 0];
+        threeD.camera.position = [0, 360, 0];
+        threeD.camera.rotate(new X.vector(450, 0, 0))
         threeD.render(); // this one triggers the loading of LH and then the onShowtime for the 3d renderer
     };  
 
