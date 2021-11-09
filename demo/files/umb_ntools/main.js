@@ -10,9 +10,10 @@ function load_surfaces() {
     // var rh = new X.mesh();
     // var p = new X.mesh();
 
-    lh.file = 'lh.pial';
+    lh.file = '../fsaverage/lh.pial';
     lh.color = [1, 1, 1];
     lh.opacity = 0.3;
+    
     
     return [lh];
 };
@@ -74,6 +75,7 @@ window.onload = function() {
 
         threeD.camera.position = [0, 360, 0];
         threeD.camera.rotate(new X.vector(450, 0, 0))
+
         threeD.render(); // this one triggers the loading of LH and then the onShowtime for the 3d renderer
     };  
 
