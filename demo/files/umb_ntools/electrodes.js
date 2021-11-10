@@ -211,61 +211,58 @@ function map_coordinate_to_slice_value(coordinate, midPoint) {
   return coordinate / 2
 }
 
-function map_width_to_coordinate() {
-  const sliceXdiv = document.getElementById('sliceX')
-  var widthMidPoint = sliceXdiv.clientWidth / 2
-  var heightMidPoint = sliceXdiv.clientHeight / 2
-  sliceXdiv.onclick = () => console.log(widthMidPoint, heightMidPoint)
+// mainly for testing that canvas will draw in right place
+function map_width_to_coordinate(sliceWindow) {
+  var widthInterval = [0, sliceWindow.clientWidth]
+  var heightInterval = [0, sliceWindow.clientHeight]
+  var boxInterval = [-127.5, 127.5]
+
+  sliceWindow.onclick = function(e) {
+    var rect = e.target.getBoundingClientRect()
+    var x = e.clientX - rect.left
+    var y = e.clientY - rect.top
+    var mappedX = map_interval(x, widthInterval, boxInterval)
+    var mappedY = map_interval(y, heightInterval, boxInterval)
+    console.log(`(${mappedX}, ${mappedY})`)
+  }
 }
 
 
 
 
 function draw_electrodes_on_slices(data, volume) {
+  const sliceXdiv = document.getElementById('sliceX')
+  const sliceYdiv = document.getElementById('sliceY')
+  const sliceZdiv = document.getElementById('sliceZ')
+
+  map_width_to_coordinate(sliceXdiv)
+  map_width_to_coordinate(sliceYdiv)
+  map_width_to_coordinate(sliceZdiv)
+
   const {coorX, coorY, coorZ} = data
   const sliderControllers = volume.__controllers
 
-  var xSlider = sliderControllers[6]
-  var ySlider = sliderControllers[7]
-  var zSlider = sliderControllers[8]
+  var xSlider = sliderControllers[5]
+  var ySlider = sliderControllers[6]
+  var zSlider = sliderControllers[7]
 
-  console.log(ySlider)
+  var sliderRange = [0, 255]
+  var coordinateRange = [-127.5, 127.5]
 
-  const midPoint = xSlider.__max / 2
-
-  map_width_to_coordinate()
-
-  console.log(map_interval(255. [0, 255], [-127.5, 127.5]))
-  
-  
-  // maps a number on the interval from [0, 255] to [-127.5, 127.5]
   xSlider.onChange(() => {
     var sliceXCoordinate = xSlider.object.kb
-    var mappedCoordinate = map_coordinate_to_slice_value(sliceXCoordinate, midPoint)
-    console.log(mappedCoordinate)
+    var mappedCoordinate = map_interval(sliceXCoordinate, sliderRange, coordinateRange)
   })
 
   ySlider.onChange(() => {
     var sliceYCoordinate = ySlider.object.lb
-    var mappedCoordinate = map_coordinate_to_slice_value(sliceYCoordinate, midPoint)
-    console.log(mappedCoordinate)
+    var mappedCoordinate = map_interval(sliceYCoordinate, sliderRange, coordinateRange)
   })
 
   zSlider.onChange(() => {
     var sliceZCoordinate = zSlider.object.mb
-    var mappendCoordinate = map_coordinate_to_slice_value(sliceZCoordinate, midPoint)
-    console.log(mappendCoordinate)
+    var mappedCoordinate = map_interval(sliceZCoordinate, sliderRange, coordinateRange)
   })
-
-  
-
-  // document.getElementById('sliceX').onclick = function(e) {
-  //   var rect = e.target.getBoundingClientRect();
-  //     var x = e.clientX - rect.left; 
-  //     var y = e.clientY - rect.top;  
-  //     console.log(`(${x}, ${y})`)
-  // }
-
 
 }
 
