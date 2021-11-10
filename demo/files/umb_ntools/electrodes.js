@@ -193,11 +193,13 @@ function highlight_selected_electrode(el, idArray, selector) {
   }
 }
 
-
-
-
-
-
+// inspired by https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
+function map_interval(input, inputRange, outputRange) {
+  var [inputStart, inputEnd] = inputRange
+  var [outputStart, outputEnd] = outputRange
+  return outputStart + ((outputEnd - outputStart) / (inputEnd - inputStart))
+                     * (input - inputStart)
+}        
 
 function map_coordinate_to_slice_value(coordinate, midPoint) {
   if (coordinate < midPoint) {
@@ -232,6 +234,8 @@ function draw_electrodes_on_slices(data, volume) {
   const midPoint = xSlider.__max / 2
 
   map_width_to_coordinate()
+
+  console.log(map_interval(255. [0, 255], [-127.5, 127.5]))
   
   
   // maps a number on the interval from [0, 255] to [-127.5, 127.5]
