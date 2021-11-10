@@ -227,6 +227,17 @@ function map_width_to_coordinate(sliceWindow) {
   }
 }
 
+function is_nearby_electrode(sliderCoordinate, elCoordinate) {
+  const tolerance = 1
+  //console.log(sliderCoordinate, elCoordinate)
+  return Math.abs(sliderCoordinate - elCoordinate) < tolerance
+}
+
+function get_nearby_electrodes(sliderCoordinate, data) {
+  //console.log(data)
+  var nearbyElectrodes = data.filter(electrode => is_nearby_electrode(sliderCoordinate, electrode.xCoor))
+  console.log(nearbyElectrodes)
+}
 
 
 
@@ -252,6 +263,7 @@ function draw_electrodes_on_slices(data, volume) {
   xSlider.onChange(() => {
     var sliceXCoordinate = xSlider.object.kb
     var mappedCoordinate = map_interval(sliceXCoordinate, sliderRange, coordinateRange)
+    get_nearby_electrodes(mappedCoordinate, data)
   })
 
   ySlider.onChange(() => {
@@ -307,12 +319,12 @@ function load_electrodes(renderer, volume) {
     filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
     fill_electrode_options(electrodeObjects, electrodeIDs, selectionSpheres)
 
-    draw_electrodes_on_slices(electrodeData, volume)
+    draw_electrodes_on_slices(electrodeObjects, volume)
 
 
     // var sphere = new X.sphere()
     // sphere.radius = 4
-    // sphere.center = [0, 127, 0]
+    // sphere.center = [127.5, 0, 0]
     // renderer.add(sphere)
 
     // event listeners really should be in their own function, but they also need to access

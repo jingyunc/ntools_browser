@@ -102,7 +102,7 @@ window.onload = function() {
         volumeGUI.add(volume, 'windowLow', volume.min, volume.max)
         volumeGUI.add(volume, 'windowHigh', volume.min, volume.max)
 
-        var indexX = volumeGUI.add(volume, 'indexX', 0, volume.dimensions[0] - 1)
+        volumeGUI.add(volume, 'indexX', 0, volume.dimensions[0] - 1)
         volumeGUI.add(volume, 'indexY', 0, volume.dimensions[1] - 1)
         volumeGUI.add(volume, 'indexZ', 0, volume.dimensions[2] - 1)
         volumeGUI.open()
