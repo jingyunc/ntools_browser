@@ -193,7 +193,40 @@ function highlight_selected_electrode(el, idArray, selector) {
   }
 }
 
-function load_electrodes(renderer) {
+function draw_electrodes_on_slices(data, volume) {
+  const {coorX, coorY, coorZ} = data
+  const sliderControllers = volume.__controllers
+  const midPoint = 127.5
+
+  var xSlider = sliderControllers[6]
+  var ySlider = sliderControllers[7]
+  var zSlider = sliderControllers[8]
+  
+  // maps a number on the interval from [0, 255] to [-127.5, 127.5]
+  xSlider.onChange(() => {
+
+    var sliceXCoordinate = xSlider.object.kb
+    if (sliceXCoordinate < midPoint) {
+      sliceXCoordinate = (midPoint - sliceXCoordinate) * -2
+    } else if (sliceXCoordinate === midPoint) {
+      sliceXCoordinate = 0
+    } 
+    
+    console.log(sliceXCoordinate / 2)
+  })
+
+
+
+  // document.getElementById('sliceX').onclick = function(e) {
+  //   var rect = e.target.getBoundingClientRect();
+  //     var x = e.clientX - rect.left; 
+  //     var y = e.clientY - rect.top;  
+  // }
+
+
+}
+
+function load_electrodes(renderer, volume) {
   (async () => {
     console.log("Loading Data...")
     var electrodeData = await(await fetch('./sample.json')).json();
@@ -226,6 +259,14 @@ function load_electrodes(renderer) {
     
     filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
     fill_electrode_options(electrodeObjects, electrodeIDs, selectionSpheres)
+
+    draw_electrodes_on_slices(electrodeData, volume)
+
+
+    // var sphere = new X.sphere()
+    // sphere.radius = 4
+    // sphere.center = [0, 127, 0]
+    // renderer.add(sphere)
 
     // event listeners really should be in their own function, but they also need to access
     // the array of XTK spheres

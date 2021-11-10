@@ -8,7 +8,6 @@ function load_volume() {
 function load_surfaces() {
     var leftHemisphere = new X.mesh();
     var rightHemisphere = new X.mesh();
-    // var p = new X.mesh();
 
     leftHemisphere.file = '../fsaverage/lh.pial'
     rightHemisphere.file = '../fsaverage/rh.pial'
@@ -32,7 +31,7 @@ function load_surfaces() {
    rightHemisphere.transform.matrix = rotationMatrix
    rightHemisphere.transform.flipX()
  
-    return [leftHemisphere, rightHemisphere];
+   return [leftHemisphere, rightHemisphere];
 };
 
 function setup_renderers() {
@@ -65,7 +64,7 @@ window.onload = function() {
 
     volume = load_volume();
 
-    load_electrodes(threeD);
+    
 
     var [leftHemisphereMesh, rightHemisphereMesh] = load_surfaces();
     
@@ -73,7 +72,6 @@ window.onload = function() {
     sliceX.render();
     
     sliceX.onShowtime = function() {
-
         // this is triggered manually by sliceX.render() just 2 lines above
         // execution happens after volume is loaded
 
@@ -94,6 +92,7 @@ window.onload = function() {
 
     // the onShowtime function gets called automatically, just before the first rendering happens
     threeD.onShowtime = function() { 
+
         var gui = new dat.GUI()
 
         var volumeGUI = gui.addFolder('Volume')
@@ -104,7 +103,7 @@ window.onload = function() {
         volumeGUI.add(volume, 'windowLow', volume.min, volume.max)
         volumeGUI.add(volume, 'windowHigh', volume.min, volume.max)
 
-        volumeGUI.add(volume, 'indexX', 0, volume.dimensions[0] - 1)
+        var indexX = volumeGUI.add(volume, 'indexX', 0, volume.dimensions[0] - 1)
         volumeGUI.add(volume, 'indexY', 0, volume.dimensions[1] - 1)
         volumeGUI.add(volume, 'indexZ', 0, volume.dimensions[2] - 1)
         volumeGUI.open()
@@ -118,7 +117,12 @@ window.onload = function() {
         rightHemisphereGUI.add(rightHemisphereMesh, 'visible')
         rightHemisphereGUI.add(rightHemisphereMesh, 'opacity', 0, 1)
         rightHemisphereGUI.open()
+
     
+
+        load_electrodes(threeD, volumeGUI);
+
+        
     };  
 };
 
