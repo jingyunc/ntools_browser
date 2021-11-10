@@ -1,6 +1,6 @@
 function load_volume() {
     var volume = new X.volume();
-    volume.file = '../fsaverage/T1.nii';
+    volume.file = '../fsaverage/labels.nii';
 
     return volume;
 };

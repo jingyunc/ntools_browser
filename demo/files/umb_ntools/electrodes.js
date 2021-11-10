@@ -229,14 +229,13 @@ function map_width_to_coordinate(sliceWindow) {
 
 function is_nearby_electrode(sliderCoordinate, elCoordinate) {
   const tolerance = 1
-  //console.log(sliderCoordinate, elCoordinate)
   return Math.abs(sliderCoordinate - elCoordinate) < tolerance
 }
 
 function get_nearby_electrodes(sliderCoordinate, data) {
-  //console.log(data)
-  var nearbyElectrodes = data.filter(electrode => is_nearby_electrode(sliderCoordinate, electrode.xCoor))
-  console.log(nearbyElectrodes)
+  var nearby = data.filter(electrode => is_nearby_electrode(sliderCoordinate, electrode.xCoor))
+  console.log(nearby)
+  return nearby
 }
 
 
