@@ -94,6 +94,31 @@ window.onload = function() {
 
     // the onShowtime function gets called automatically, just before the first rendering happens
     threeD.onShowtime = function() { 
+        var gui = new dat.GUI()
+
+        var volumeGUI = gui.addFolder('Volume')
+        var volumeRenderingController = volumeGUI.add(volume, 'volumeRendering')
+        var volumeOpacity = volumeGUI.add(volume, 'opacity', 0, 1)
+        var lowerThresholdController = volumeGUI.add(volume, 'lowerThreshold', volume.min, volume.max)
+        var upperThresholdController = volumeGUI.add(volume, 'upperThreshold', volume.min, volume.max)
+        var lowerWindowController = volumeGUI.add(volume, 'windowLow', volume.min, volume.max)
+        var upperWindowController = volumeGUI.add(volume, 'windowHigh', volume.min, volume.max)
+
+        var sliceXController = volumeGUI.add(volume, 'indexX', 0, volume.dimensions[0] - 1)
+        var sliceYController = volumeGUI.add(volume, 'indexY', 0, volume.dimensions[1] - 1)
+        var sliceZController = volumeGUI.add(volume, 'indexZ', 0, volume.dimensions[2] - 1)
+
+        volumeGUI.open()
+
+        var leftHemisphereGUI = gui.addFolder('Left Hemisphere')
+        leftHemisphereGUI.add(leftHemisphereMesh, 'visible')
+        leftHemisphereGUI.add(leftHemisphereMesh, 'opacity', 0, 1)
+        leftHemisphereGUI.open()
+
+        var rightHemisphereGUI = gui.addFolder('Right Hemisphere')
+        rightHemisphereGUI.add(rightHemisphereMesh, 'visible')
+        rightHemisphereGUI.add(rightHemisphereMesh, 'opacity', 0, 1)
+        rightHemisphereGUI.open()
     
     };  
 };
