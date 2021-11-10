@@ -96,7 +96,6 @@ window.onload = function() {
         var gui = new dat.GUI()
 
         var volumeGUI = gui.addFolder('Volume')
-        volumeGUI.add(volume, 'volumeRendering')
         volumeGUI.add(volume, 'opacity', 0, 1)
         volumeGUI.add(volume, 'lowerThreshold', volume.min, volume.max)
         volumeGUI.add(volume, 'upperThreshold', volume.min, volume.max)

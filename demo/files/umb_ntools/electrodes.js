@@ -193,28 +193,64 @@ function highlight_selected_electrode(el, idArray, selector) {
   }
 }
 
+
+
+
+
+
+
+function map_coordinate_to_slice_value(coordinate, midPoint) {
+  if (coordinate < midPoint) {
+    coordinate = (midPoint - coordinate) * -2
+  } else if (coordinate === midPoint) {
+    coordinate = 0
+  }
+
+  return coordinate / 2
+}
+
+function map_width_to_coordinate() {
+  const sliceXdiv = document.getElementById('sliceX')
+  var widthMidPoint = sliceXdiv.clientWidth / 2
+  var heightMidPoint = sliceXdiv.clientHeight / 2
+  sliceXdiv.onclick = () => console.log(widthMidPoint, heightMidPoint)
+}
+
+
+
+
 function draw_electrodes_on_slices(data, volume) {
   const {coorX, coorY, coorZ} = data
   const sliderControllers = volume.__controllers
-  const midPoint = 127.5
 
   var xSlider = sliderControllers[6]
   var ySlider = sliderControllers[7]
   var zSlider = sliderControllers[8]
 
-  const sliceXdiv = document.getElementById('sliceX')
+  console.log(ySlider)
+
+  const midPoint = xSlider.__max / 2
+
+  map_width_to_coordinate()
+  
   
   // maps a number on the interval from [0, 255] to [-127.5, 127.5]
   xSlider.onChange(() => {
-
     var sliceXCoordinate = xSlider.object.kb
-    if (sliceXCoordinate < midPoint) {
-      sliceXCoordinate = (midPoint - sliceXCoordinate) * -2
-    } else if (sliceXCoordinate === midPoint) {
-      sliceXCoordinate = 0
-    } 
-    
-    console.log(sliceXCoordinate / 2)
+    var mappedCoordinate = map_coordinate_to_slice_value(sliceXCoordinate, midPoint)
+    console.log(mappedCoordinate)
+  })
+
+  ySlider.onChange(() => {
+    var sliceYCoordinate = ySlider.object.lb
+    var mappedCoordinate = map_coordinate_to_slice_value(sliceYCoordinate, midPoint)
+    console.log(mappedCoordinate)
+  })
+
+  zSlider.onChange(() => {
+    var sliceZCoordinate = zSlider.object.mb
+    var mappendCoordinate = map_coordinate_to_slice_value(sliceZCoordinate, midPoint)
+    console.log(mappendCoordinate)
   })
 
   
@@ -228,6 +264,13 @@ function draw_electrodes_on_slices(data, volume) {
 
 
 }
+
+
+
+
+
+
+
 
 function load_electrodes(renderer, volume) {
   (async () => {
