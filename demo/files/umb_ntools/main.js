@@ -97,17 +97,16 @@ window.onload = function() {
         var gui = new dat.GUI()
 
         var volumeGUI = gui.addFolder('Volume')
-        var volumeRenderingController = volumeGUI.add(volume, 'volumeRendering')
-        var volumeOpacity = volumeGUI.add(volume, 'opacity', 0, 1)
-        var lowerThresholdController = volumeGUI.add(volume, 'lowerThreshold', volume.min, volume.max)
-        var upperThresholdController = volumeGUI.add(volume, 'upperThreshold', volume.min, volume.max)
-        var lowerWindowController = volumeGUI.add(volume, 'windowLow', volume.min, volume.max)
-        var upperWindowController = volumeGUI.add(volume, 'windowHigh', volume.min, volume.max)
+        volumeGUI.add(volume, 'volumeRendering')
+        volumeGUI.add(volume, 'opacity', 0, 1)
+        volumeGUI.add(volume, 'lowerThreshold', volume.min, volume.max)
+        volumeGUI.add(volume, 'upperThreshold', volume.min, volume.max)
+        volumeGUI.add(volume, 'windowLow', volume.min, volume.max)
+        volumeGUI.add(volume, 'windowHigh', volume.min, volume.max)
 
-        var sliceXController = volumeGUI.add(volume, 'indexX', 0, volume.dimensions[0] - 1)
-        var sliceYController = volumeGUI.add(volume, 'indexY', 0, volume.dimensions[1] - 1)
-        var sliceZController = volumeGUI.add(volume, 'indexZ', 0, volume.dimensions[2] - 1)
-
+        volumeGUI.add(volume, 'indexX', 0, volume.dimensions[0] - 1)
+        volumeGUI.add(volume, 'indexY', 0, volume.dimensions[1] - 1)
+        volumeGUI.add(volume, 'indexZ', 0, volume.dimensions[2] - 1)
         volumeGUI.open()
 
         var leftHemisphereGUI = gui.addFolder('Left Hemisphere')
