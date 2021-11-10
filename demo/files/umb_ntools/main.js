@@ -1,20 +1,38 @@
 function load_volume() {
     var volume = new X.volume();
-    volume.file = 'volume.nii';
+    volume.file = '../fsaverage/T1.nii';
 
     return volume;
 };
 
 function load_surfaces() {
     var leftHemisphere = new X.mesh();
-    // var rh = new X.mesh();
+    var rightHemisphere = new X.mesh();
     // var p = new X.mesh();
 
-    leftHemisphere.file = '../fsaverage/lh.pial';
-    leftHemisphere.color = [1, 1, 1];
-    leftHemisphere.opacity = 0.3;
+    leftHemisphere.file = '../fsaverage/lh.pial'
+    rightHemisphere.file = '../fsaverage/rh.pial'
 
-    return [leftHemisphere];
+    leftHemisphere.color = [1, 1, 1]
+    rightHemisphere.color = [1, 1, 1]
+
+    leftHemisphere.opacity = 0.3
+    rightHemisphere.opacity = 0.3
+
+
+    var rotationMatrix = new Float32Array([
+            -1, 0, 0, 0,
+            0, 0, 1, 0,
+            0, -1, 0, 0,
+            0, 0, 0, 1
+        ])
+   leftHemisphere.transform.matrix = rotationMatrix
+   leftHemisphere.transform.flipX()
+
+   rightHemisphere.transform.matrix = rotationMatrix
+   rightHemisphere.transform.flipX()
+ 
+    return [leftHemisphere, rightHemisphere];
 };
 
 function setup_renderers() {
@@ -49,7 +67,7 @@ window.onload = function() {
 
     load_electrodes(threeD);
 
-    var [leftHemisphereMesh] = load_surfaces();
+    var [leftHemisphereMesh, rightHemisphereMesh] = load_surfaces();
     
     sliceX.add(volume);
     sliceX.render();
@@ -66,19 +84,19 @@ window.onload = function() {
 
         threeD.add(volume);
         threeD.add(leftHemisphereMesh);
+        threeD.add(rightHemisphereMesh)
 
         // fix original camera position
-        threeD.camera.position = [0, 360, 0];
-        threeD.camera.rotate(new X.vector(450, 0, 0))
+        threeD.camera.position = [0, -300, 0];
 
         threeD.render(); // this one triggers the loading of LH and then the onShowtime for the 3d renderer
     };  
 
     // the onShowtime function gets called automatically, just before the first rendering happens
-    threeD.onShowtime = function() {
-       
-
-        
+    threeD.onShowtime = function() { 
     
     };  
 };
+
+
+

@@ -37,6 +37,17 @@ function draw_electrode_fx(el) {
   elSphere.radius = 1
   elSphere.visible = el.visible
   elSphere.caption = elecID
+
+  elSphere.transform.matrix = 
+    new Float32Array([
+      -1, 0, 0, 0,
+       0, 0, 1, 0,
+       0, -1, 0, 0,
+       0, 0, 0, 1
+    ])
+
+  elSphere.transform.flipX()
+
   return elSphere
 }
 
@@ -49,6 +60,17 @@ function draw_selection_fx(el) {
   elSphere.opacity = 0.7
   elSphere.radius = 1.5
   elSphere.visible = false
+
+  elSphere.transform.matrix = 
+    new Float32Array([
+      -1, 0, 0, 0,
+       0, 0, 1, 0,
+       0, -1, 0, 0,
+       0, 0, 0, 1
+  ])
+    
+  elSphere.transform.flipX()
+
   return elSphere
 }
 
@@ -58,6 +80,17 @@ function draw_connection_fx(startNode, endNode) {
   connection.radius = 0.3
   connection.start = [startNode.xCoor, startNode.yCoor, startNode.zCoor]
   connection.end = [endNode.xCoor, endNode.yCoor, endNode.zCoor]
+
+  connection.transform.matrix = 
+    new Float32Array([
+      -1, 0, 0, 0,
+       0, 0, 1, 0,
+       0, -1, 0, 0,
+       0, 0, 0, 1
+    ])
+    
+  connection.transform.flipX()
+
   return connection
 }
 
