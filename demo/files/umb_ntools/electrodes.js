@@ -201,6 +201,8 @@ function draw_electrodes_on_slices(data, volume) {
   var xSlider = sliderControllers[6]
   var ySlider = sliderControllers[7]
   var zSlider = sliderControllers[8]
+
+  const sliceXdiv = document.getElementById('sliceX')
   
   // maps a number on the interval from [0, 255] to [-127.5, 127.5]
   xSlider.onChange(() => {
@@ -215,12 +217,13 @@ function draw_electrodes_on_slices(data, volume) {
     console.log(sliceXCoordinate / 2)
   })
 
-
+  
 
   // document.getElementById('sliceX').onclick = function(e) {
   //   var rect = e.target.getBoundingClientRect();
   //     var x = e.clientX - rect.left; 
   //     var y = e.clientY - rect.top;  
+  //     console.log(`(${x}, ${y})`)
   // }
 
 
