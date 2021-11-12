@@ -2,96 +2,14 @@
     <head>
         <title>ebrowser - brain & json</title>
         <meta charset="UTF-8">
-        <style>
-            html, body { 
-              background-color:#000;
-              margin: 0;
-              padding: 0;
-              height: 100%;
-              overflow: hidden !important;  
-              box-sizing: border-box;
-              min-width: 640px;
-            }
-            canvas {
-              min-width: 50%;
-            }
-
-            #menu {
-              position: absolute;
-              bottom: 20px;
-              width: 100%;
-              text-align: center;
-              padding: 0;
-              margin: 0;
-            }
-
-            button {
-              color: rgb(255,255,255);
-              background: transparent;
-              border: 0px;
-              padding: 5px 10px;
-              cursor: pointer;
-            }
-            button:hover {
-              background-color: rgba(0,255,255,0.5);
-            }
-            button:active {
-              color: #000000;
-              background-color: rgba(0,255,255,1);
-            }
-
-            .label {
-              text-shadow: -1px 1px 1px rgb(0,0,0);
-              margin-left: 25px;
-              font-size: 20px;
-            }
-
-            #electrode-controller {
-              position: absolute;
-              height: 380px;
-              width: 220px;
-              font-family: sans-serif;
-              color: white;
-              display: block;
-              background-color: rgb(29, 29, 29);
-              padding: 10px;
-              z-index: 1;
-              min-width: 10%;
-            }
-
-            .check-box {
-              display: inline-block;
-            }
-            input:hover {
-              cursor: pointer;
-            }
-
-            #onset-label {
-              color: red;
-            }
-            #early-spread-label {
-              color: yellow
-            }
-            #late-spread-label {
-              color: green;
-            }
-
-            #electrode-menu:hover {
-              cursor: pointer;
-            }
-            option:hover {
-              cursor: pointer;
-            }
-        </style>
+        <link rel="stylesheet" href="style.css">
 
         <script type="text/javascript" src="https://get.goXTK.com/xtk.js"></script>
         <script type="text/javascript" src="https://get.goXTK.com/xtk_xdat.gui.js"></script>
         <script type="text/javascript" src='electrodes.js'></script> 
         <script type='text/javascript' src='main.js'></script>
 
-
     </head>
-
     <body>
       <div id="electrode-controller">
         <div id="patient-info">
@@ -131,7 +49,7 @@
           <br>
           <div>
             <label for="functional-map">
-              <input id="functional-map-checkbox" type="checkbox" value="Late Spread" checked>Show Functional Maps 
+              <input id="functional-map-checkbox" type="checkbox" value="Late Spread" checked>Display Functional Maps 
             </label>
           </div>
           <br>
@@ -157,16 +75,16 @@
           </div>
       </div>
 
-        <!-- the container for the renderers -->
-        <div id="3d"
-        style="background-color: #000; width: 100%; height: 70%; margin-bottom: 2px;"></div>
-        <div id="sliceX"
-        style="border-top: 2px solid yellow; background-color: #000; width: calc(100% / 3);; height: 30%; float: left;"></div>
-        <div id="sliceY"
-        style="border-top: 2px solid red;background-color: #000; width: calc(100% / 3); height: 30%; float: left;"></div>
-        <div id="sliceZ"
-        style="border-top: 2px solid green; background-color: #000; width: calc(100% / 3); height: 30%; float: left;"></div>
-        <div id="tags"></div>
+      <!-- the container for the renderers -->
+      <div id="3d"
+      style="background-color: #000; width: 100%; height: 70%; margin-bottom: 2px;"></div>
+      <div id="sliceX"
+      style="border-top: 2px solid yellow; background-color: #000; width: calc(100% / 3);; height: 30%; float: left;"></div>
+      <div id="sliceY"
+      style="border-top: 2px solid red;background-color: #000; width: calc(100% / 3); height: 30%; float: left;"></div>
+      <div id="sliceZ"
+      style="border-top: 2px solid green; background-color: #000; width: calc(100% / 3); height: 30%; float: left;"></div>
+      <div id="tags"></div>
 
     </body>
 </html>
