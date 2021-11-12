@@ -82,10 +82,14 @@ window.onload = function() {
         threeD.add(rightHemisphereMesh)
 
         // fix original camera position
-        threeD.camera.position = [0, -300, 0];
+        
 
         threeD.render(); // this one triggers the loading of LH and then the onShowtime for the 3d renderer
     };  
+
+    window.addEventListener('resize', function(event) {
+        threeD.camera.position = [0, -300, 0]
+    }, true);
 
     // the onShowtime function gets called automatically, just before the first rendering happens
     threeD.onShowtime = function() { 
@@ -113,6 +117,8 @@ window.onload = function() {
         rightHemisphereGUI.add(rightHemisphereMesh, 'visible')
         rightHemisphereGUI.add(rightHemisphereMesh, 'opacity', 0, 1)
         rightHemisphereGUI.open()
+
+        threeD.camera.position = [0, -300, 0];
 
         load_electrodes(threeD, volumeGUI);   
     };  
