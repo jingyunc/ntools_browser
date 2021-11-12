@@ -52,14 +52,15 @@ function draw_electrode_fx(el) {
 }
 
 // this function draws the opaque blue shperes around a selected node
-function draw_selection_fx(el) {
-  var {xCoor, yCoor, zCoor} = el
+function draw_highlight_fx(el) {
+  var {xCoor, yCoor, zCoor, elecID} = el
   elSphere = new X.sphere()
   elSphere.center = [xCoor, yCoor, zCoor]
   elSphere.color = [0, 0, 1]
   elSphere.opacity = 0.7
   elSphere.radius = 1.5
   elSphere.visible = false
+  elSphere.caption = elecID
 
   elSphere.transform.matrix = 
     new Float32Array([
@@ -289,7 +290,7 @@ function load_electrodes(renderer, volume) {
     electrodeSpheres.forEach(el => renderer.add(el))
 
     // array of spheres that will show a highlighted sphere. default invisible
-    var selectionSpheres = electrodeObjects.map(el => draw_selection_fx(el))
+    var selectionSpheres = electrodeObjects.map(el => draw_highlight_fx(el))
     selectionSpheres.forEach(el => renderer.add(el))
 
     // draw the connections between nodes based on fmap arrays
