@@ -1,6 +1,6 @@
 function load_volume() {
     var volume = new X.volume();
-    volume.file = '../fsaverage/labels.nii';
+    volume.file = '../fsaverage/T1.nii';
 
     return volume;
 };
@@ -29,7 +29,6 @@ function load_surfaces() {
    leftHemisphere.transform.flipX()
 
    rightHemisphere.transform.matrix = rotationMatrix
-   rightHemisphere.transform.flipX()
  
    return [leftHemisphere, rightHemisphere];
 };
@@ -63,8 +62,6 @@ window.onload = function() {
     var [threeD, sliceX, sliceY, sliceZ] = setup_renderers();
 
     volume = load_volume();
-
-    
 
     var [leftHemisphereMesh, rightHemisphereMesh] = load_surfaces();
     
@@ -117,11 +114,7 @@ window.onload = function() {
         rightHemisphereGUI.add(rightHemisphereMesh, 'opacity', 0, 1)
         rightHemisphereGUI.open()
 
-    
-
-        load_electrodes(threeD, volumeGUI);
-
-        
+        load_electrodes(threeD, volumeGUI);   
     };  
 };
 

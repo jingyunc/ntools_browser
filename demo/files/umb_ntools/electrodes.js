@@ -201,16 +201,6 @@ function map_interval(input, inputRange, outputRange) {
                      * (input - inputStart)
 }        
 
-function map_coordinate_to_slice_value(coordinate, midPoint) {
-  if (coordinate < midPoint) {
-    coordinate = (midPoint - coordinate) * -2
-  } else if (coordinate === midPoint) {
-    coordinate = 0
-  }
-
-  return coordinate / 2
-}
-
 // mainly for testing that canvas will draw in right place
 function map_width_to_coordinate(sliceWindow) {
   var widthInterval = [0, sliceWindow.clientWidth]
@@ -234,11 +224,9 @@ function is_nearby_electrode(sliderCoordinate, elCoordinate) {
 
 function get_nearby_electrodes(sliderCoordinate, data) {
   var nearby = data.filter(electrode => is_nearby_electrode(sliderCoordinate, electrode.xCoor))
-  console.log(nearby)
+  //console.log(nearby)
   return nearby
 }
-
-
 
 function draw_electrodes_on_slices(data, volume) {
   const sliceXdiv = document.getElementById('sliceX')
@@ -276,13 +264,6 @@ function draw_electrodes_on_slices(data, volume) {
   })
 
 }
-
-
-
-
-
-
-
 
 function load_electrodes(renderer, volume) {
   (async () => {

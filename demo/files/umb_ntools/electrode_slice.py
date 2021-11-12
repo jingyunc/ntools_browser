@@ -15,7 +15,6 @@ class Electrode:
         self.yCoor = yCoor
         self.zCoor = zCoor
         
-
 electrode_objects = []
 for index in range(number_of_electrodes):
     xCoor = electrode_data['coorX'][index]
@@ -29,7 +28,7 @@ def map_interval(input_val, input_range, output_range):
     
     return output_start + ((output_end - output_start) / (input_end - input_start)) * (input_val - input_start)
 
-vol = './T1.nii'
+vol = '../fsaverage/T1.nii'
 
 volume = nib.load(vol)
 
