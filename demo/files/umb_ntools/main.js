@@ -20,17 +20,17 @@ function load_surfaces() {
 
 
     var rotationMatrix = new Float32Array([
-            -1, 0, 0, 0,
-            0, 0, 1, 0,
-            0, -1, 0, 0,
-            0, 0, 0, 1
-        ])
-   leftHemisphere.transform.matrix = rotationMatrix
-   leftHemisphere.transform.flipX()
+        -1, 0, 0, 0,
+        0, 0, 1, 0,
+        0, -1, 0, 0,
+        0, 0, 0, 1
+    ])
+    leftHemisphere.transform.matrix = rotationMatrix
+    leftHemisphere.transform.flipX()
 
-   rightHemisphere.transform.matrix = rotationMatrix
- 
-   return [leftHemisphere, rightHemisphere];
+    rightHemisphere.transform.matrix = rotationMatrix
+
+    return [leftHemisphere, rightHemisphere];
 };
 
 function setup_renderers() {
@@ -53,22 +53,42 @@ function setup_renderers() {
     sliceZ.orientation = 'Z';
     sliceZ.init();
 
+    threeDRenderer.interactor.onMouseMove = function (e) {
+
+        var clicked_object = threeDRenderer.pick(e.clientX, e.clientY);
+
+        if (clicked_object != 0) {
+            var electrodeSphere = threeDRenderer.get(clicked_object);
+            if (electrodeSphere.c == "sphere") {
+                document.body.style.cursor = 'crosshair'
+                electrodeSphere.color = [1, 0, 0];
+            } else {
+                document.body.style.cursor = 'auto'
+                selectedSphere = null
+                hoverObject = 0
+                //console.log(electrodeSphere)
+            }
+        }
+    }
+
     return [threeDRenderer, sliceX, sliceY, sliceZ];
+
+
 }
 
-window.onload = function() {
-    
+window.onload = function () {
+
     // destructure array
     var [threeD, sliceX, sliceY, sliceZ] = setup_renderers();
 
     volume = load_volume();
 
     var [leftHemisphereMesh, rightHemisphereMesh] = load_surfaces();
-    
+
     sliceX.add(volume);
     sliceX.render();
-    
-    sliceX.onShowtime = function() {
+
+    sliceX.onShowtime = function () {
         // this is triggered manually by sliceX.render() just 2 lines above
         // execution happens after volume is loaded
 
@@ -82,17 +102,17 @@ window.onload = function() {
         threeD.add(rightHemisphereMesh)
 
         // fix original camera position
-        
+
 
         threeD.render(); // this one triggers the loading of LH and then the onShowtime for the 3d renderer
-    };  
+    };
 
-    window.addEventListener('resize', function(event) {
+    window.addEventListener('resize', function (event) {
         threeD.camera.position = [0, -300, 0]
     }, true);
 
     // the onShowtime function gets called automatically, just before the first rendering happens
-    threeD.onShowtime = function() { 
+    threeD.onShowtime = function () {
 
         var gui = new dat.GUI()
 
@@ -120,8 +140,9 @@ window.onload = function() {
 
         threeD.camera.position = [0, -300, 0];
 
-        load_electrodes(threeD, volumeGUI);   
-    };  
+        load_electrodes(threeD, volumeGUI);
+    };
+
 };
 
 

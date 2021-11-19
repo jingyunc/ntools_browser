@@ -5,10 +5,10 @@
 // returns color of electrode
 function get_color(type) {
   var electrodeColors = {
-    "Early Spread" : [1, 1, 0],
-    "Onset"        : [1, 0, 0],
-    "Late Spread"  : [0, 1, 0],
-    ""             : [1, 1, 1] // default (no color)
+    "Early Spread": [1, 1, 0],
+    "Onset": [1, 0, 0],
+    "Late Spread": [0, 1, 0],
+    "": [1, 1, 1] // default (no color)
   };
   return electrodeColors[type]
 }
@@ -16,21 +16,21 @@ function get_color(type) {
 // package each electrode together as an object for readability and easier iteration
 function get_electrode_object(el, index) {
   return ({
-    "elecID"   : el.elecID[index],
-    "xCoor"    : el.coorX[index],
-    "yCoor"    : el.coorY[index],
-    "zCoor"    : el.coorZ[index],
-    "elecType" : el.elecType[index],
-    "intPopulation" : el.intPopulation[index],
-    "seizType" : el.seizType[index],
-    "visible"  : true // a default value for later filtering
+    "elecID": el.elecID[index],
+    "xCoor": el.coorX[index],
+    "yCoor": el.coorY[index],
+    "zCoor": el.coorZ[index],
+    "elecType": el.elecType[index],
+    "intPopulation": el.intPopulation[index],
+    "seizType": el.seizType[index],
+    "visible": true // a default value for later filtering
   })
 }
 
 // create the graphical electrode on the canvas
 function draw_electrode_fx(el) {
   // destructuring object properties. it is more readable for me, 
-  var {xCoor, yCoor, zCoor, seizType, elecID} = el
+  var { xCoor, yCoor, zCoor, seizType, elecID } = el
   elSphere = new X.sphere()
   elSphere.center = [xCoor, yCoor, zCoor]
   elSphere.color = get_color(seizType)
@@ -38,22 +38,23 @@ function draw_electrode_fx(el) {
   elSphere.visible = el.visible
   elSphere.caption = elecID
 
-  elSphere.transform.matrix = 
+  elSphere.transform.matrix =
     new Float32Array([
       -1, 0, 0, 0,
-       0, 0, 1, 0,
-       0, -1, 0, 0,
-       0, 0, 0, 1
+      0, 0, 1, 0,
+      0, -1, 0, 0,
+      0, 0, 0, 1
     ])
 
   elSphere.transform.flipX()
+
 
   return elSphere
 }
 
 // this function draws the opaque blue shperes around a selected node
 function draw_highlight_fx(el) {
-  var {xCoor, yCoor, zCoor, elecID} = el
+  var { xCoor, yCoor, zCoor, elecID } = el
   elSphere = new X.sphere()
   elSphere.center = [xCoor, yCoor, zCoor]
   elSphere.color = [0, 0, 1]
@@ -62,14 +63,14 @@ function draw_highlight_fx(el) {
   elSphere.visible = false
   elSphere.caption = elecID
 
-  elSphere.transform.matrix = 
+  elSphere.transform.matrix =
     new Float32Array([
       -1, 0, 0, 0,
-       0, 0, 1, 0,
-       0, -1, 0, 0,
-       0, 0, 0, 1
-  ])
-    
+      0, 0, 1, 0,
+      0, -1, 0, 0,
+      0, 0, 0, 1
+    ])
+
   elSphere.transform.flipX()
 
   return elSphere
@@ -82,14 +83,14 @@ function draw_connection_fx(startNode, endNode) {
   connection.start = [startNode.xCoor, startNode.yCoor, startNode.zCoor]
   connection.end = [endNode.xCoor, endNode.yCoor, endNode.zCoor]
 
-  connection.transform.matrix = 
+  connection.transform.matrix =
     new Float32Array([
       -1, 0, 0, 0,
-       0, 0, 1, 0,
-       0, -1, 0, 0,
-       0, 0, 0, 1
+      0, 0, 1, 0,
+      0, -1, 0, 0,
+      0, 0, 0, 1
     ])
-    
+
   connection.transform.flipX()
 
   return connection
@@ -104,11 +105,10 @@ function filter_visibility(electrodes, spheres, connections, data) {
   const functionalMapCheckbox = document.getElementById('functional-map-checkbox')
 
   for (const el of electrodes) {
-    if ((!onsetCheckbox.checked && el.seizType === "Onset") || 
-        (!earlySpreadCheckbox.checked && el.seizType === "Early Spread") ||
-        (!lateSpreadCheckbox.checked && el.seizType === "Late Spread") ||
-        (!unlabeledCheckbox.checked && el.seizType === "")) 
-    { 
+    if ((!onsetCheckbox.checked && el.seizType === "Onset") ||
+      (!earlySpreadCheckbox.checked && el.seizType === "Early Spread") ||
+      (!lateSpreadCheckbox.checked && el.seizType === "Late Spread") ||
+      (!unlabeledCheckbox.checked && el.seizType === "")) {
       el.visible = false
     } else {
       el.visible = true;
@@ -119,7 +119,7 @@ function filter_visibility(electrodes, spheres, connections, data) {
     spheres[i].visible = electrodes[i].visible
   }
 
-  var {fmapG1, fmapG2} = data
+  var { fmapG1, fmapG2 } = data
   var fmapEntries = fmapG1.length
 
   for (var i = 0; i < fmapEntries; i++) {
@@ -133,7 +133,7 @@ function filter_visibility(electrodes, spheres, connections, data) {
 
 // finds the two electrodes in the data and calls the cylinder renderer
 function draw_fmap_connections(data, electrodes) {
-  var {fmapG1, fmapG2} = data
+  var { fmapG1, fmapG2 } = data
   var fmapEntries = fmapG1.length
 
   var connections = []
@@ -157,7 +157,7 @@ function draw_fmap_connections(data, electrodes) {
 // function for adding options based on electrode IDs
 function fill_electrode_options(data, idArray, selectionSpheres) {
   const electrodeMenu = document.getElementById('electrode-menu')
-  electrodeMenu.addEventListener('click', event => 
+  electrodeMenu.addEventListener('click', event =>
     print_electrode_info(data, event.target.value, idArray, selectionSpheres))
   // append HTML option to drop down menu
   for (const entry of data) {
@@ -170,9 +170,9 @@ function fill_electrode_options(data, idArray, selectionSpheres) {
 
 // find the electrode in the options and display the info on the panel
 function print_electrode_info(data, electrode, idArray, selectionSpheres) {
-  var selected_electrode = data.find(el=> el.elecID === electrode)
+  var selected_electrode = data.find(el => el.elecID === electrode)
   if (selected_electrode) {
-    var {elecType, intPopulation, seizType} = selected_electrode
+    var { elecType, intPopulation, seizType } = selected_electrode
     document.getElementById('electrode-type-label-inner').innerHTML = elecType
     document.getElementById('int-population-label-inner').innerHTML = intPopulation
     document.getElementById('seiz-type-label-inner').innerHTML = seizType
@@ -199,8 +199,8 @@ function map_interval(input, inputRange, outputRange) {
   var [inputStart, inputEnd] = inputRange
   var [outputStart, outputEnd] = outputRange
   return outputStart + ((outputEnd - outputStart) / (inputEnd - inputStart))
-                     * (input - inputStart)
-}        
+    * (input - inputStart)
+}
 
 // mainly for testing that canvas will draw in right place
 function map_width_to_coordinate(sliceWindow) {
@@ -208,7 +208,7 @@ function map_width_to_coordinate(sliceWindow) {
   var heightInterval = [0, sliceWindow.clientHeight]
   var boxInterval = [-127.5, 127.5]
 
-  sliceWindow.onclick = function(e) {
+  sliceWindow.onclick = function (e) {
     var rect = e.target.getBoundingClientRect()
     var x = e.clientX - rect.left
     var y = e.clientY - rect.top
@@ -238,7 +238,7 @@ function draw_electrodes_on_slices(data, volume) {
   map_width_to_coordinate(sliceYdiv)
   map_width_to_coordinate(sliceZdiv)
 
-  const {coorX, coorY, coorZ} = data
+  const { coorX, coorY, coorZ } = data
   const sliderControllers = volume.__controllers
 
   var xSlider = sliderControllers[5]
@@ -269,7 +269,7 @@ function draw_electrodes_on_slices(data, volume) {
 function load_electrodes(renderer, volume) {
   (async () => {
     console.log("Loading Data...")
-    var electrodeData = await(await fetch('./sample.json')).json();
+    var electrodeData = await (await fetch('./sample.json')).json();
     console.log("Done")
 
     document.getElementById('subject-id-lbl').innerHTML = electrodeData.subjID
@@ -296,7 +296,7 @@ function load_electrodes(renderer, volume) {
     // draw the connections between nodes based on fmap arrays
     var fmapConnections = draw_fmap_connections(electrodeData, electrodeObjects, renderer)
     fmapConnections.forEach(connection => renderer.add(connection))
-    
+
     filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
     fill_electrode_options(electrodeObjects, electrodeIDs, selectionSpheres)
 
@@ -313,27 +313,27 @@ function load_electrodes(renderer, volume) {
     // might be able to get away with using just one
     document
       .getElementById('unlabeled-checkbox')
-      .addEventListener('click', 
+      .addEventListener('click',
         () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
 
     document
       .getElementById('onset-checkbox')
-      .addEventListener('click', 
+      .addEventListener('click',
         () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
 
     document
       .getElementById('early-spread-checkbox')
-      .addEventListener('click', 
+      .addEventListener('click',
         () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
 
     document
       .getElementById('late-spread-checkbox')
-      .addEventListener('click', 
+      .addEventListener('click',
         () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
-        
+
     document
       .getElementById('functional-map-checkbox')
-      .addEventListener('click', 
+      .addEventListener('click',
         () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
   })();
 }
