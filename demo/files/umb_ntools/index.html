@@ -60,6 +60,10 @@
             </select>
             <div>
               <div id="electrode-type-label">
+                <label>Electrode ID: </label>
+                <label id="electrode-id-label-inner"></label>
+              </div>
+              <div id="electrode-type-label">
                 <label>Electrode Type: </label>
                 <label id="electrode-type-label-inner"></label>
               </div>
@@ -72,6 +76,17 @@
                 <label id="seiz-type-label-inner"></label>
               </div>
             </div>
+            <label for="fmaps">Select Functional Map</label>
+            <select name="fmaps" id="fmap-menu">
+              <option value="none">None</option>
+              <option value="fmapThreshold">Threshold</option>
+              <option value="fmapMotor">Motor</option>
+              <option value="fmapSensory">Sensory</option>
+              <option value="fmapLanguage">Language</option>
+              <option value="fmapVisual">Visual</option>
+              <option value="fmapOther">Other</option>
+              <option value="fmapAfterDischarge">After Discharge</option>
+            </select>
           </div>
       </div>
 
