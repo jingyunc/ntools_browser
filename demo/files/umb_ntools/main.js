@@ -4,8 +4,6 @@ function load_volume() {
     volume.labelmap.file = '../fsaverage/labels.nii'
     volume.labelmap.colortable.file = 'http://x.babymri.org/?genericanatomy.txt'
 
-    
-    console.log(volume)
     return volume;
 };
 
@@ -21,17 +19,6 @@ function load_surfaces() {
 
     leftHemisphere.opacity = 0.3
     rightHemisphere.opacity = 0.3
-
-    var rotationMatrix = new Float32Array([
-            -1, 0, 0, 0,
-            0, 0, 1, 0,
-            0, -1, 0, 0,
-            0, 0, 0, 1
-        ])
-//    leftHemisphere.transform.matrix = rotationMatrix
-//    leftHemisphere.transform.flipX()
-
-//    rightHemisphere.transform.matrix = rotationMatrix
  
    return [leftHemisphere, rightHemisphere];
 };
@@ -57,8 +44,6 @@ function setup_renderers() {
     sliceZ.orientation = 'Z';
     sliceZ.init();
 
-  
-
     return [threeDRenderer, sliceX, sliceY, sliceZ];
 }
 
@@ -73,7 +58,6 @@ window.onload = function() {
     
     sliceX.add(volume);
     sliceX.render();
-    console.log(sliceX)
 
     sliceX.onShowtime = function() {
         // this is triggered manually by sliceX.render() just 2 lines above
@@ -126,7 +110,6 @@ window.onload = function() {
 
         // fix original camera position
         threeD.camera.position = [0, 300, 0];
-        console.log(threeD)
 
         load_electrodes(threeD, volumeGUI);   
     };  
