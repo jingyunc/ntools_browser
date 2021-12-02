@@ -1,3 +1,6 @@
+var subject = localStorage.getItem("user-search")
+console.log(subject)
+
 function load_volume() {
     var volume = new X.volume()
     volume.file = '../fsaverage/T1_RAS.nii';
@@ -54,7 +57,6 @@ window.onload = function() {
 
     volume = load_volume();
 
-    
     var [leftHemisphereMesh, rightHemisphereMesh] = load_surfaces();
     
     sliceX.add(volume);
