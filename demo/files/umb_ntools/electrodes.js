@@ -32,6 +32,14 @@ function draw_electrode_fx(el) {
   // destructuring object properties. it is more readable for me, 
   var {xCoor, yCoor, zCoor, seizType, elecID} = el
   elSphere = new X.sphere()
+
+  // var mappedXcoor = map_interval(xCoor, [0, 255], [-127.5, 127.5])
+  // var mappedYcoor = map_interval(yCoor, [0, 255], [-127.5, 127.5])
+  // var mappedZcoor = map_interval(zCoor, [0, 255], [-127.5, 127.5])
+
+  // elSphere.center = [mappedXcoor, mappedYcoor, mappedZcoor]
+
+
   elSphere.center = [xCoor, yCoor, zCoor]
   elSphere.color = get_color(seizType)
   elSphere.radius = 1
@@ -49,6 +57,7 @@ function draw_electrode_fx(el) {
   //   ])
 
   // elSphere.transform.flipX()
+  // elSphere.transform.flipY()
 
   return elSphere
 }
@@ -238,13 +247,13 @@ function map_width_to_coordinate(sliceWindow) {
     var mappedX = map_interval(x, widthInterval, boxInterval)
     var mappedY = map_interval(y, heightInterval, boxInterval)
     console.log(`(${mappedX}, ${mappedY})`)
-    var sliceXCanvas = document.getElementById('sliceX').firstChild
-    console.log(sliceXCanvas)
-    var ctx = sliceXCanvas.getContext("2d")
-    ctx.style.zIndex = 1
-    ctx.fillStyle = "#FF0000"
-    ctx.fillRect(20, 20, 150, 75)
-    console.log(ctx)
+    // var sliceXCanvas = document.getElementById('sliceX').firstChild
+    // console.log(sliceXCanvas)
+    // var ctx = sliceXCanvas.getContext("2d")
+    // ctx.style.zIndex = 1
+    // ctx.fillStyle = "#FF0000"
+    // ctx.fillRect(20, 20, 150, 75)
+    // console.log(ctx)
   }
  
 

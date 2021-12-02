@@ -2,7 +2,7 @@ function load_volume() {
     var volume = new X.volume()
     volume.file = '../fsaverage/T1_RAS.nii';
     volume.labelmap.file = '../fsaverage/labels.nii'
-    volume.labelmap.colortable.file = 'https://x.babymri.org/?genericanatomy.txt'
+    volume.labelmap.colortable.file = './colormap.txt'
 
     return volume;
 };
@@ -53,6 +53,7 @@ window.onload = function() {
     var [threeD, sliceX, sliceY, sliceZ] = setup_renderers();
 
     volume = load_volume();
+
     
     var [leftHemisphereMesh, rightHemisphereMesh] = load_surfaces();
     
