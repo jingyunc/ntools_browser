@@ -33,31 +33,11 @@ function draw_electrode_fx(el) {
   var {xCoor, yCoor, zCoor, seizType, elecID} = el
   elSphere = new X.sphere()
 
-  // var mappedXcoor = map_interval(xCoor, [0, 255], [-127.5, 127.5])
-  // var mappedYcoor = map_interval(yCoor, [0, 255], [-127.5, 127.5])
-  // var mappedZcoor = map_interval(zCoor, [0, 255], [-127.5, 127.5])
-
-  // elSphere.center = [mappedXcoor, mappedYcoor, mappedZcoor]
-
-
   elSphere.center = [xCoor, yCoor, zCoor]
   elSphere.color = get_color(seizType)
   elSphere.radius = 1
   elSphere.visible = el.visible
   elSphere.caption = elecID
-  //Object.getPrototypeOf(elSphere).elecID = elecID
-  //elSphere.__proto__.elecID = elecID
-
-  // elSphere.transform.matrix = 
-  //   new Float32Array([
-  //     -1, 0, 0, 0,
-  //      0, 0, 1, 0,
-  //      0, -1, 0, 0,
-  //      0, 0, 0, 1
-  //   ])
-
-  // elSphere.transform.flipX()
-  // elSphere.transform.flipY()
 
   return elSphere
 }
@@ -73,16 +53,6 @@ function draw_highlight_fx(el) {
   elSphere.visible = false
   elSphere.caption = elecID
 
-  // elSphere.transform.matrix = 
-  //   new Float32Array([
-  //     -1, 0, 0, 0,
-  //      0, 0, 1, 0,
-  //      0, -1, 0, 0,
-  //      0, 0, 0, 1
-  // ])
-    
-  // elSphere.transform.flipX()
-
   return elSphere
 }
 
@@ -92,16 +62,6 @@ function draw_connection_fx(startNode, endNode) {
   connection.radius = 0.3
   connection.start = [startNode.xCoor, startNode.yCoor, startNode.zCoor]
   connection.end = [endNode.xCoor, endNode.yCoor, endNode.zCoor]
-
-  // connection.transform.matrix = 
-  //   new Float32Array([
-  //     -1, 0, 0, 0,
-  //      0, 0, 1, 0,
-  //      0, -1, 0, 0,
-  //      0, 0, 0, 1
-  //   ])
-    
-  // connection.transform.flipX()
 
   return connection
 }
@@ -235,29 +195,22 @@ function map_interval(input, inputRange, outputRange) {
 }        
 
 // mainly for testing that canvas will draw in right place
-function map_width_to_coordinate(sliceWindow) {
-  var widthInterval = [0, sliceWindow.clientWidth]
-  var heightInterval = [0, sliceWindow.clientHeight]
-  var boxInterval = [-127.5, 127.5]
+// function map_width_to_coordinate(sliceWindow) {
+//   var widthInterval = [0, sliceWindow.clientWidth]
+//   var heightInterval = [0, sliceWindow.clientHeight]
+//   var boxInterval = [-127.5, 127.5]
 
-  sliceWindow.onclick = function(e) {
-    var rect = e.target.getBoundingClientRect()
-    var x = e.clientX - rect.left
-    var y = e.clientY - rect.top
-    var mappedX = map_interval(x, widthInterval, boxInterval)
-    var mappedY = map_interval(y, heightInterval, boxInterval)
-    console.log(`(${mappedX}, ${mappedY})`)
-    // var sliceXCanvas = document.getElementById('sliceX').firstChild
-    // console.log(sliceXCanvas)
-    // var ctx = sliceXCanvas.getContext("2d")
-    // ctx.style.zIndex = 1
-    // ctx.fillStyle = "#FF0000"
-    // ctx.fillRect(20, 20, 150, 75)
-    // console.log(ctx)
-  }
+//   sliceWindow.onclick = function(e) {
+//     var rect = e.target.getBoundingClientRect()
+//     var x = e.clientX - rect.left
+//     var y = e.clientY - rect.top
+//     var mappedX = map_interval(x, widthInterval, boxInterval)
+//     var mappedY = map_interval(y, heightInterval, boxInterval)
+//     console.log(`(${mappedX}, ${mappedY})`)
+//   }
  
 
-}
+// }
 
 function is_nearby_electrode(sliderCoordinate, elCoordinate) {
   const tolerance = 1
@@ -270,42 +223,42 @@ function get_nearby_electrodes(sliderCoordinate, data) {
   return nearby
 }
 
-function draw_electrodes_on_slices(data, volume) {
-  const sliceXdiv = document.getElementById('sliceX')
-  const sliceYdiv = document.getElementById('sliceY')
-  const sliceZdiv = document.getElementById('sliceZ')
+// function draw_electrodes_on_slices(data, volume) {
+//   const sliceXdiv = document.getElementById('sliceX')
+//   const sliceYdiv = document.getElementById('sliceY')
+//   const sliceZdiv = document.getElementById('sliceZ')
 
-  map_width_to_coordinate(sliceXdiv)
-  map_width_to_coordinate(sliceYdiv)
-  map_width_to_coordinate(sliceZdiv)
+//   map_width_to_coordinate(sliceXdiv)
+//   map_width_to_coordinate(sliceYdiv)
+//   map_width_to_coordinate(sliceZdiv)
 
-  const {coorX, coorY, coorZ} = data
-  const sliderControllers = volume.__controllers
+//   const {coorX, coorY, coorZ} = data
+//   const sliderControllers = volume.__controllers
 
-  var xSlider = sliderControllers[5]
-  var ySlider = sliderControllers[6]
-  var zSlider = sliderControllers[7]
+//   var xSlider = sliderControllers[5]
+//   var ySlider = sliderControllers[6]
+//   var zSlider = sliderControllers[7]
 
-  var sliderRange = [0, 255]
-  var coordinateRange = [-127.5, 127.5]
+//   var sliderRange = [0, 255]
+//   var coordinateRange = [-127.5, 127.5]
 
-  xSlider.onChange(() => {
-    var sliceXCoordinate = xSlider.object.kb
-    var mappedCoordinate = map_interval(sliceXCoordinate, sliderRange, coordinateRange)
-    get_nearby_electrodes(mappedCoordinate, data)
-  })
+//   xSlider.onChange(() => {
+//     var sliceXCoordinate = xSlider.object.kb
+//     var mappedCoordinate = map_interval(sliceXCoordinate, sliderRange, coordinateRange)
+//     get_nearby_electrodes(mappedCoordinate, data)
+//   })
 
-  ySlider.onChange(() => {
-    var sliceYCoordinate = ySlider.object.lb
-    var mappedCoordinate = map_interval(sliceYCoordinate, sliderRange, coordinateRange)
-  })
+//   ySlider.onChange(() => {
+//     var sliceYCoordinate = ySlider.object.lb
+//     var mappedCoordinate = map_interval(sliceYCoordinate, sliderRange, coordinateRange)
+//   })
 
-  zSlider.onChange(() => {
-    var sliceZCoordinate = zSlider.object.mb
-    var mappedCoordinate = map_interval(sliceZCoordinate, sliderRange, coordinateRange)
-  })
+//   zSlider.onChange(() => {
+//     var sliceZCoordinate = zSlider.object.mb
+//     var mappedCoordinate = map_interval(sliceZCoordinate, sliderRange, coordinateRange)
+//   })
 
-}
+// }
 
 function load_electrodes(renderer, volume) {
   (async () => {
