@@ -3,7 +3,11 @@ var subject = localStorage.getItem("user-search")
 
 function load_volume() {
     var volume = new X.volume()
-    volume.file = `../${subject}/${subject}_T1.nii`;
+    if (localStorage.getItem("mode") === "UMB") {
+        volume.file = `../${subject}/${subject}_T1.nii`;
+    } else {
+        volume.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
+    }
     //volume.labelmap.file = '../fsaverage/labels.nii'
    // volume.labelmap.colortable.file = './colormap.txt'
 
@@ -14,8 +18,14 @@ function load_surfaces() {
     var leftHemisphere = new X.mesh();
     var rightHemisphere = new X.mesh();
 
-    leftHemisphere.file = `../${subject}/${subject}_lh.pial`
-    rightHemisphere.file = `../${subject}/${subject}_rh.pial`
+    if (localStorage.getItem("mode") === "UMB") {
+        leftHemisphere.file = `../${subject}/${subject}_lh.pial`
+        rightHemisphere.file = `../${subject}/${subject}_rh.pial`
+    } else {
+        leftHemisphere.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_lh.pial`
+        rightHemisphere.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_rh.pial`
+    }
+
 
     leftHemisphere.color = [1, 1, 1]
     rightHemisphere.color = [1, 1, 1]

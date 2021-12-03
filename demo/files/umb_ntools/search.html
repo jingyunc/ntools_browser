@@ -18,9 +18,9 @@
                     <form >
                         <label class="search-text"> Mode:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</label>
                         <label for="umb-rad-button">UMB</label>
-                        <input name="button-group" type="radio" id="umb-rad-button" value="UMB">
+                        <input name="mode" type="radio" id="umb-rad-button" value="UMB" checked>
                         <label for="nyu-rad-button">NYU</label>
-                        <input name="button-group" type="radio" id="nyu-rad-button" value="NYU>
+                        <input name="mode" type="radio" id="nyu-rad-button" value="NYU>
                     </form>
                 </div>
             </form>
@@ -33,11 +33,10 @@
             document.getElementById('ntools-form').onsubmit = function() {
                 var searchText = document.getElementById('search-bar').value
                 localStorage.setItem("user-search", searchText)
-                if (document.getElementById('umb-rad-button').checked) {
+                document.getElementById('umb-rad-button').checked ?
                     localStorage.setItem("mode", "UMB")
-                } else {
-                    localStorage.setItem("mode", "NYU")
-                }
+                  : localStorage.setItem("mode", "NYU")
+                
                 window.location.href = `${window.location.href}/umb_ntools/index.html`
             }
         }
