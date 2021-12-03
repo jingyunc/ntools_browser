@@ -11,9 +11,20 @@
     <div id="ntools-search-container">
         <div id="ntools-search">
             <form id="ntools-form" action="index.html">
-                <label class="search-text" for="ntools-search">Enter Subject ID:</label>
+                <label class="search-text" for="ntools-search">Subject ID:</label>
                 <input id="search-bar" type="text">
+                <div id="radio-button-modes">
+                    <!-- I will fix this to not have non-breaking-spaces -->
+                    <form >
+                        <label class="search-text"> Mode:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</label>
+                        <label for="umb-rad-button">UMB</label>
+                        <input name="button-group" type="radio" id="umb-rad-button" value="UMB">
+                        <label for="nyu-rad-button">NYU</label>
+                        <input name="button-group" type="radio" id="nyu-rad-button" value="NYU>
+                    </form>
+                </div>
             </form>
+            
         </div>
     </div>
     <script type="text/javascript" src='transition.js'></script> 
@@ -22,6 +33,11 @@
             document.getElementById('ntools-form').onsubmit = function() {
                 var searchText = document.getElementById('search-bar').value
                 localStorage.setItem("user-search", searchText)
+                if (document.getElementById('umb-rad-button').checked) {
+                    localStorage.setItem("mode", "UMB")
+                } else {
+                    localStorage.setItem("mode", "NYU")
+                }
                 window.location.href = `${window.location.href}/umb_ntools/index.html`
             }
         }

@@ -1,5 +1,5 @@
 var subject = localStorage.getItem("user-search")
-console.log(subject)
+
 
 function load_volume() {
     var volume = new X.volume()
@@ -20,8 +20,8 @@ function load_surfaces() {
     leftHemisphere.color = [1, 1, 1]
     rightHemisphere.color = [1, 1, 1]
 
-    leftHemisphere.opacity = 0.3
-    rightHemisphere.opacity = 0.3
+    leftHemisphere.opacity = 0.5
+    rightHemisphere.opacity = 0.5
  
    return [leftHemisphere, rightHemisphere];
 };
