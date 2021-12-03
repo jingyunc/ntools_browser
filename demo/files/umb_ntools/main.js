@@ -3,9 +3,9 @@ console.log(subject)
 
 function load_volume() {
     var volume = new X.volume()
-    volume.file = '../fsaverage/T1_RAS.nii';
-    volume.labelmap.file = '../fsaverage/labels.nii'
-    volume.labelmap.colortable.file = './colormap.txt'
+    volume.file = `../${subject}/${subject}_T1.nii`;
+    //volume.labelmap.file = '../fsaverage/labels.nii'
+   // volume.labelmap.colortable.file = './colormap.txt'
 
     return volume;
 };
@@ -14,8 +14,8 @@ function load_surfaces() {
     var leftHemisphere = new X.mesh();
     var rightHemisphere = new X.mesh();
 
-    leftHemisphere.file = '../fsaverage/lh.pial'
-    rightHemisphere.file = '../fsaverage/rh.pial'
+    leftHemisphere.file = `../${subject}/${subject}_lh.pial`
+    rightHemisphere.file = `../${subject}/${subject}_rh.pial`
 
     leftHemisphere.color = [1, 1, 1]
     rightHemisphere.color = [1, 1, 1]
@@ -51,7 +51,6 @@ function setup_renderers() {
 }
 
 window.onload = function() {
-    
     // destructure array
     var [threeD, sliceX, sliceY, sliceZ] = setup_renderers();
 
@@ -87,6 +86,7 @@ window.onload = function() {
 
     // the onShowtime function gets called automatically, just before the first rendering happens
     threeD.onShowtime = function() { 
+        
         var gui = new dat.GUI()
         
         var volumeGUI = gui.addFolder('Volume')
