@@ -155,7 +155,8 @@ function redraw_fmaps(fmaps, captions) {
 function add_event_to_fmap_menu(electrodeData, fmaps) {
   const fmapMenu = document.getElementById('fmap-menu')
   fmapMenu.addEventListener('click', event => {
-    redraw_fmaps(fmaps, electrodeData[event.target.value])
+    if (event.target.value !== "none")
+      redraw_fmaps(fmaps, electrodeData[event.target.value])
   })
 }
 
@@ -212,16 +213,16 @@ function map_interval(input, inputRange, outputRange) {
 
 // }
 
-function is_nearby_electrode(sliderCoordinate, elCoordinate) {
-  const tolerance = 1
-  return Math.abs(sliderCoordinate - elCoordinate) < tolerance
-}
+// function is_nearby_electrode(sliderCoordinate, elCoordinate) {
+//   const tolerance = 1
+//   return Math.abs(sliderCoordinate - elCoordinate) < tolerance
+// }
 
-function get_nearby_electrodes(sliderCoordinate, data) {
-  var nearby = data.filter(electrode => is_nearby_electrode(sliderCoordinate, electrode.xCoor))
-  //console.log(nearby)
-  return nearby
-}
+// function get_nearby_electrodes(sliderCoordinate, data) {
+//   var nearby = data.filter(electrode => is_nearby_electrode(sliderCoordinate, electrode.xCoor))
+//   //console.log(nearby)
+//   return nearby
+// }
 
 // function draw_electrodes_on_slices(data, volume) {
 //   const sliceXdiv = document.getElementById('sliceX')
@@ -326,7 +327,7 @@ function load_electrodes(renderer, volume) {
     //   }
     // }
 
-    draw_electrodes_on_slices(electrodeObjects, volume)
+    //draw_electrodes_on_slices(electrodeObjects, volume)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
 
     // event listeners really should be in their own function, but they also need to access
