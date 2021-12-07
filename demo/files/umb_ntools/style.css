@@ -77,3 +77,27 @@ input:hover {
 option:hover {
     cursor: pointer;
 }
+
+#ntools-search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#ntools-search {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.search-text {
+    color: white;
+}
+
+#radio-button-modes {
+    color: white;
+}

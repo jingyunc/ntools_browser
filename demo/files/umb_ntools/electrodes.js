@@ -23,7 +23,7 @@ function get_electrode_object(el, index) {
     "elecType": el.elecType[index],
     "intPopulation": el.intPopulation[index],
     "seizType": el.seizType[index],
-    "visible": true // a default value for later filtering
+    "visible": true, // a default value for later filtering
   })
 }
 
@@ -32,22 +32,12 @@ function draw_electrode_fx(el) {
   // destructuring object properties. it is more readable for me, 
   var { xCoor, yCoor, zCoor, seizType, elecID } = el
   elSphere = new X.sphere()
+
   elSphere.center = [xCoor, yCoor, zCoor]
   elSphere.color = get_color(seizType)
   elSphere.radius = 1
   elSphere.visible = el.visible
   elSphere.caption = elecID
-
-  elSphere.transform.matrix =
-    new Float32Array([
-      -1, 0, 0, 0,
-      0, 0, 1, 0,
-      0, -1, 0, 0,
-      0, 0, 0, 1
-    ])
-
-  elSphere.transform.flipX()
-
 
   return elSphere
 }
@@ -58,20 +48,10 @@ function draw_highlight_fx(el) {
   elSphere = new X.sphere()
   elSphere.center = [xCoor, yCoor, zCoor]
   elSphere.color = [0, 0, 1]
-  elSphere.opacity = 0.7
-  elSphere.radius = 1.5
+  elSphere.opacity = 0.5
+  elSphere.radius = 1.3
   elSphere.visible = false
   elSphere.caption = elecID
-
-  elSphere.transform.matrix =
-    new Float32Array([
-      -1, 0, 0, 0,
-      0, 0, 1, 0,
-      0, -1, 0, 0,
-      0, 0, 0, 1
-    ])
-
-  elSphere.transform.flipX()
 
   return elSphere
 }
@@ -82,16 +62,6 @@ function draw_connection_fx(startNode, endNode) {
   connection.radius = 0.3
   connection.start = [startNode.xCoor, startNode.yCoor, startNode.zCoor]
   connection.end = [endNode.xCoor, endNode.yCoor, endNode.zCoor]
-
-  connection.transform.matrix =
-    new Float32Array([
-      -1, 0, 0, 0,
-      0, 0, 1, 0,
-      0, -1, 0, 0,
-      0, 0, 0, 1
-    ])
-
-  connection.transform.flipX()
 
   return connection
 }
@@ -157,8 +127,9 @@ function draw_fmap_connections(data, electrodes) {
 // function for adding options based on electrode IDs
 function fill_electrode_options(data, idArray, selectionSpheres) {
   const electrodeMenu = document.getElementById('electrode-menu')
-  electrodeMenu.addEventListener('click', event =>
-    print_electrode_info(data, event.target.value, idArray, selectionSpheres))
+  electrodeMenu.addEventListener('click', event => {
+    print_electrode_info(data, event.target.value, idArray, selectionSpheres)
+  })
   // append HTML option to drop down menu
   for (const entry of data) {
     const newOption = document.createElement('option')
@@ -168,11 +139,32 @@ function fill_electrode_options(data, idArray, selectionSpheres) {
   }
 }
 
+function redraw_fmaps(fmaps, captions) {
+  fmaps.forEach((fmap, index) => {
+    if (captions[index]) {
+      fmap.visible = true
+      fmap.caption = captions[index]
+    } else {
+      fmap.visible = false
+      fmap.caption = null
+    }
+  })
+}
+
+function add_event_to_fmap_menu(electrodeData, fmaps) {
+  const fmapMenu = document.getElementById('fmap-menu')
+  fmapMenu.addEventListener('click', event => {
+    if (event.target.value !== "none")
+      redraw_fmaps(fmaps, electrodeData[event.target.value])
+  })
+}
+
 // find the electrode in the options and display the info on the panel
 function print_electrode_info(data, electrode, idArray, selectionSpheres) {
   var selected_electrode = data.find(el => el.elecID === electrode)
   if (selected_electrode) {
     var { elecType, intPopulation, seizType } = selected_electrode
+
     document.getElementById('electrode-type-label-inner').innerHTML = elecType
     document.getElementById('int-population-label-inner').innerHTML = intPopulation
     document.getElementById('seiz-type-label-inner').innerHTML = seizType
@@ -203,74 +195,74 @@ function map_interval(input, inputRange, outputRange) {
 }
 
 // mainly for testing that canvas will draw in right place
-function map_width_to_coordinate(sliceWindow) {
-  var widthInterval = [0, sliceWindow.clientWidth]
-  var heightInterval = [0, sliceWindow.clientHeight]
-  var boxInterval = [-127.5, 127.5]
+// function map_width_to_coordinate(sliceWindow) {
+//   var widthInterval = [0, sliceWindow.clientWidth]
+//   var heightInterval = [0, sliceWindow.clientHeight]
+//   var boxInterval = [-127.5, 127.5]
 
-  sliceWindow.onclick = function (e) {
-    var rect = e.target.getBoundingClientRect()
-    var x = e.clientX - rect.left
-    var y = e.clientY - rect.top
-    var mappedX = map_interval(x, widthInterval, boxInterval)
-    var mappedY = map_interval(y, heightInterval, boxInterval)
-    console.log(`(${mappedX}, ${mappedY})`)
-  }
-}
+//   sliceWindow.onclick = function(e) {
+//     var rect = e.target.getBoundingClientRect()
+//     var x = e.clientX - rect.left
+//     var y = e.clientY - rect.top
+//     var mappedX = map_interval(x, widthInterval, boxInterval)
+//     var mappedY = map_interval(y, heightInterval, boxInterval)
+//     console.log(`(${mappedX}, ${mappedY})`)
+//   }
 
-function is_nearby_electrode(sliderCoordinate, elCoordinate) {
-  const tolerance = 1
-  return Math.abs(sliderCoordinate - elCoordinate) < tolerance
-}
 
-function get_nearby_electrodes(sliderCoordinate, data) {
-  var nearby = data.filter(electrode => is_nearby_electrode(sliderCoordinate, electrode.xCoor))
-  //console.log(nearby)
-  return nearby
-}
+// }
 
-function draw_electrodes_on_slices(data, volume) {
-  const sliceXdiv = document.getElementById('sliceX')
-  const sliceYdiv = document.getElementById('sliceY')
-  const sliceZdiv = document.getElementById('sliceZ')
+// function is_nearby_electrode(sliderCoordinate, elCoordinate) {
+//   const tolerance = 1
+//   return Math.abs(sliderCoordinate - elCoordinate) < tolerance
+// }
 
-  map_width_to_coordinate(sliceXdiv)
-  map_width_to_coordinate(sliceYdiv)
-  map_width_to_coordinate(sliceZdiv)
+// function get_nearby_electrodes(sliderCoordinate, data) {
+//   var nearby = data.filter(electrode => is_nearby_electrode(sliderCoordinate, electrode.xCoor))
+//   //console.log(nearby)
+//   return nearby
+// }
 
-  const { coorX, coorY, coorZ } = data
-  const sliderControllers = volume.__controllers
+// function draw_electrodes_on_slices(data, volume) {
+//   const sliceXdiv = document.getElementById('sliceX')
+//   const sliceYdiv = document.getElementById('sliceY')
+//   const sliceZdiv = document.getElementById('sliceZ')
 
-  var xSlider = sliderControllers[5]
-  var ySlider = sliderControllers[6]
-  var zSlider = sliderControllers[7]
+//   map_width_to_coordinate(sliceXdiv)
+//   map_width_to_coordinate(sliceYdiv)
+//   map_width_to_coordinate(sliceZdiv)
 
-  var sliderRange = [0, 255]
-  var coordinateRange = [-127.5, 127.5]
+//   const {coorX, coorY, coorZ} = data
+//   const sliderControllers = volume.__controllers
 
-  xSlider.onChange(() => {
-    var sliceXCoordinate = xSlider.object.kb
-    var mappedCoordinate = map_interval(sliceXCoordinate, sliderRange, coordinateRange)
-    get_nearby_electrodes(mappedCoordinate, data)
-  })
+//   var xSlider = sliderControllers[5]
+//   var ySlider = sliderControllers[6]
+//   var zSlider = sliderControllers[7]
 
-  ySlider.onChange(() => {
-    var sliceYCoordinate = ySlider.object.lb
-    var mappedCoordinate = map_interval(sliceYCoordinate, sliderRange, coordinateRange)
-  })
+//   var sliderRange = [0, 255]
+//   var coordinateRange = [-127.5, 127.5]
 
-  zSlider.onChange(() => {
-    var sliceZCoordinate = zSlider.object.mb
-    var mappedCoordinate = map_interval(sliceZCoordinate, sliderRange, coordinateRange)
-  })
+//   xSlider.onChange(() => {
+//     var sliceXCoordinate = xSlider.object.kb
+//     var mappedCoordinate = map_interval(sliceXCoordinate, sliderRange, coordinateRange)
+//     get_nearby_electrodes(mappedCoordinate, data)
+//   })
 
-}
+//   ySlider.onChange(() => {
+//     var sliceYCoordinate = ySlider.object.lb
+//     var mappedCoordinate = map_interval(sliceYCoordinate, sliderRange, coordinateRange)
+//   })
+
+//   zSlider.onChange(() => {
+//     var sliceZCoordinate = zSlider.object.mb
+//     var mappedCoordinate = map_interval(sliceZCoordinate, sliderRange, coordinateRange)
+//   })
+
+// }
 
 function load_electrodes(renderer, volume) {
   (async () => {
-    console.log("Loading Data...")
-    var electrodeData = await (await fetch('./sample.json')).json();
-    console.log("Done")
+    var electrodeData = await (await fetch('./sample.json')).json()
 
     document.getElementById('subject-id-lbl').innerHTML = electrodeData.subjID
     document.getElementById('num-seiz-types-lbl').innerHTML = electrodeData.totalSeizType
@@ -300,13 +292,42 @@ function load_electrodes(renderer, volume) {
     filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
     fill_electrode_options(electrodeObjects, electrodeIDs, selectionSpheres)
 
-    draw_electrodes_on_slices(electrodeObjects, volume)
+    // var canvas = document.getElementsByTagName('canvas')[0]
+    // canvas.addEventListener('click', e => {
+    //   var clickedObject = renderer.pick(e.clientX, e.clientY)
+    //   if (clickedObject !== 0) {
+    //     var clickedSphere = renderer.get(clickedObject)
+    //     if (clickedSphere.c === "sphere") {
+    //       var sphereIndex = electrodeSpheres.indexOf(clickedSphere)
+    //       var target = get_electrode_object(electrodeData, sphereIndex)
 
+    //       var {elecID, elecType, intPopulation, seizType} = target
+    //       highlight_selected_electrode(elecID, electrodeData.elecID, selectionSpheres)
 
-    // var sphere = new X.sphere()
-    // sphere.radius = 4
-    // sphere.center = [127.5, 0, 0]
-    // renderer.add(sphere)
+    //       document.getElementById('electrode-id-label-inner').innerHTML = elecID
+    //       document.getElementById('electrode-type-label-inner').innerHTML = elecType
+    //       document.getElementById('int-population-label-inner').innerHTML = intPopulation
+    //       document.getElementById('seiz-type-label-inner').innerHTML = seizType
+    //     }
+    //   }
+    // })
+
+    // renderer.interactor.onMouseMove= e => {
+    //   var hoverObject = renderer.pick(e.clientX, e.clientY)
+    //   if (hoverObject !== 0 ) {
+    //     var selectedSphere = renderer.get(hoverObject) 
+    //     if (selectedSphere.c === "sphere" || selectedSphere.c === "cylinder") {
+    //       document.body.style.cursor = 'crosshair'
+    //     } else {
+    //       document.body.style.cursor = 'auto'
+    //       selectedSphere = null
+    //       hoverObject = 0
+    //     }
+    //   }
+    // }
+
+    //draw_electrodes_on_slices(electrodeObjects, volume)
+    add_event_to_fmap_menu(electrodeData, fmapConnections)
 
     // event listeners really should be in their own function, but they also need to access
     // the array of XTK spheres
@@ -335,7 +356,7 @@ function load_electrodes(renderer, volume) {
       .getElementById('functional-map-checkbox')
       .addEventListener('click',
         () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
-  })();
+  })()
 }
 
 

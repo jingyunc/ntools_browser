@@ -1,6 +1,15 @@
+var subject = localStorage.getItem("user-search")
+
+
 function load_volume() {
-    var volume = new X.volume();
-    volume.file = '../fsaverage/T1.nii';
+    var volume = new X.volume()
+    if (localStorage.getItem("mode") === "UMB") {
+        volume.file = `../${subject}/${subject}_T1.nii`;
+    } else {
+        volume.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
+    }
+    //volume.labelmap.file = '../fsaverage/labels.nii'
+    // volume.labelmap.colortable.file = './colormap.txt'
 
     return volume;
 };
@@ -9,26 +18,20 @@ function load_surfaces() {
     var leftHemisphere = new X.mesh();
     var rightHemisphere = new X.mesh();
 
-    leftHemisphere.file = '../fsaverage/lh.pial'
-    rightHemisphere.file = '../fsaverage/rh.pial'
+    if (localStorage.getItem("mode") === "UMB") {
+        leftHemisphere.file = `../${subject}/${subject}_lh.pial`
+        rightHemisphere.file = `../${subject}/${subject}_rh.pial`
+    } else {
+        leftHemisphere.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_lh.pial`
+        rightHemisphere.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_rh.pial`
+    }
+
 
     leftHemisphere.color = [1, 1, 1]
     rightHemisphere.color = [1, 1, 1]
 
-    leftHemisphere.opacity = 0.3
-    rightHemisphere.opacity = 0.3
-
-
-    var rotationMatrix = new Float32Array([
-        -1, 0, 0, 0,
-        0, 0, 1, 0,
-        0, -1, 0, 0,
-        0, 0, 0, 1
-    ])
-    leftHemisphere.transform.matrix = rotationMatrix
-    leftHemisphere.transform.flipX()
-
-    rightHemisphere.transform.matrix = rotationMatrix
+    leftHemisphere.opacity = 0.5
+    rightHemisphere.opacity = 0.5
 
     return [leftHemisphere, rightHemisphere];
 };
@@ -41,6 +44,7 @@ function setup_renderers() {
     var sliceX = new X.renderer2D();
     sliceX.container = 'sliceX';
     sliceX.orientation = 'X';
+
     sliceX.init();
 
     var sliceY = new X.renderer2D();
@@ -77,7 +81,6 @@ function setup_renderers() {
 }
 
 window.onload = function () {
-
     // destructure array
     var [threeD, sliceX, sliceY, sliceZ] = setup_renderers();
 
@@ -97,18 +100,18 @@ window.onload = function () {
         sliceZ.add(volume);
         sliceZ.render();
 
+        var mySphere = new X.sphere()
+        sliceX.add(mySphere)
+
         threeD.add(volume);
         threeD.add(leftHemisphereMesh);
         threeD.add(rightHemisphereMesh)
 
-        // fix original camera position
-
-
         threeD.render(); // this one triggers the loading of LH and then the onShowtime for the 3d renderer
     };
 
-    window.addEventListener('resize', function (event) {
-        threeD.camera.position = [0, -300, 0]
+    window.addEventListener('resize', function () {
+        threeD.camera.position = [0, 300, 0]
     }, true);
 
     // the onShowtime function gets called automatically, just before the first rendering happens
@@ -138,7 +141,8 @@ window.onload = function () {
         rightHemisphereGUI.add(rightHemisphereMesh, 'opacity', 0, 1)
         rightHemisphereGUI.open()
 
-        threeD.camera.position = [0, -300, 0];
+        // fix original camera position
+        threeD.camera.position = [0, 300, 0];
 
         load_electrodes(threeD, volumeGUI);
     };
