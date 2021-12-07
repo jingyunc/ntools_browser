@@ -9,7 +9,7 @@ function load_volume() {
         volume.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
     }
     //volume.labelmap.file = '../fsaverage/labels.nii'
-   // volume.labelmap.colortable.file = './colormap.txt'
+    // volume.labelmap.colortable.file = './colormap.txt'
 
     return volume;
 };
@@ -32,8 +32,8 @@ function load_surfaces() {
 
     leftHemisphere.opacity = 0.5
     rightHemisphere.opacity = 0.5
- 
-   return [leftHemisphere, rightHemisphere];
+
+    return [leftHemisphere, rightHemisphere];
 };
 
 function setup_renderers() {
@@ -57,21 +57,41 @@ function setup_renderers() {
     sliceZ.orientation = 'Z';
     sliceZ.init();
 
+    threeDRenderer.interactor.onMouseMove = function (e) {
+
+        var clicked_object = threeDRenderer.pick(e.clientX, e.clientY);
+
+        if (clicked_object != 0) {
+            var electrodeSphere = threeDRenderer.get(clicked_object);
+            if (electrodeSphere.c == "sphere") {
+                document.body.style.cursor = 'crosshair'
+                electrodeSphere.color = [1, 0, 0];
+            } else {
+                document.body.style.cursor = 'auto'
+                selectedSphere = null
+                hoverObject = 0
+                //console.log(electrodeSphere)
+            }
+        }
+    }
+
     return [threeDRenderer, sliceX, sliceY, sliceZ];
+
+
 }
 
-window.onload = function() {
+window.onload = function () {
     // destructure array
     var [threeD, sliceX, sliceY, sliceZ] = setup_renderers();
 
     volume = load_volume();
 
     var [leftHemisphereMesh, rightHemisphereMesh] = load_surfaces();
-    
+
     sliceX.add(volume);
     sliceX.render();
 
-    sliceX.onShowtime = function() {
+    sliceX.onShowtime = function () {
         // this is triggered manually by sliceX.render() just 2 lines above
         // execution happens after volume is loaded
 
@@ -82,23 +102,23 @@ window.onload = function() {
 
         var mySphere = new X.sphere()
         sliceX.add(mySphere)
-        
+
         threeD.add(volume);
         threeD.add(leftHemisphereMesh);
         threeD.add(rightHemisphereMesh)
 
         threeD.render(); // this one triggers the loading of LH and then the onShowtime for the 3d renderer
-    };  
+    };
 
-    window.addEventListener('resize', function() {
+    window.addEventListener('resize', function () {
         threeD.camera.position = [0, 300, 0]
     }, true);
 
     // the onShowtime function gets called automatically, just before the first rendering happens
-    threeD.onShowtime = function() { 
-        
+    threeD.onShowtime = function () {
+
         var gui = new dat.GUI()
-        
+
         var volumeGUI = gui.addFolder('Volume')
         volumeGUI.add(volume, 'opacity', 0, 1)
         volumeGUI.add(volume, 'lowerThreshold', volume.min, volume.max)
@@ -124,8 +144,9 @@ window.onload = function() {
         // fix original camera position
         threeD.camera.position = [0, 300, 0];
 
-        load_electrodes(threeD, volumeGUI);   
-    };  
+        load_electrodes(threeD, volumeGUI);
+    };
+
 };
 
 
