@@ -101,3 +101,28 @@ option:hover {
 #radio-button-modes {
     color: white;
 }
+
+.slice-container {
+    background-color: #000;
+    width: calc(100% / 3);
+    height: 30%;
+    float: left;
+}
+
+#3d {
+    background-color: #000;
+    width: 100%;
+    height: 70%;
+    margin-bottom: 2px;
+}
+#sliceX {
+    border-top: 2px solid yellow;
+}
+
+#sliceY {
+    border-top: 2px solid red;
+}
+
+#sliceZ {
+    border-top: 2px solid green;
+}

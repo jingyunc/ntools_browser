@@ -292,43 +292,45 @@ function load_electrodes(renderer, volume) {
     filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
     fill_electrode_options(electrodeObjects, electrodeIDs, selectionSpheres)
 
-    // var canvas = document.getElementsByTagName('canvas')[0]
-    // canvas.addEventListener('click', e => {
-    //   var clickedObject = renderer.pick(e.clientX, e.clientY)
-    //   if (clickedObject !== 0) {
-    //     var clickedSphere = renderer.get(clickedObject)
-    //     if (clickedSphere.c === "sphere") {
-    //       var sphereIndex = electrodeSpheres.indexOf(clickedSphere)
-    //       var target = get_electrode_object(electrodeData, sphereIndex)
+    var canvas = document.getElementsByTagName('canvas')[0]
+    canvas.addEventListener('click', e => {
+      var clickedObject = renderer.pick(e.clientX, e.clientY)
+      if (clickedObject !== 0) {
+        var clickedSphere = renderer.get(clickedObject)
+        if (clickedSphere.c === "sphere") {
+          var sphereIndex = electrodeSpheres.indexOf(clickedSphere)
+          var target = get_electrode_object(electrodeData, sphereIndex)
 
-    //       var {elecID, elecType, intPopulation, seizType} = target
-    //       highlight_selected_electrode(elecID, electrodeData.elecID, selectionSpheres)
+          var {elecID, elecType, intPopulation, seizType} = target
+          highlight_selected_electrode(elecID, electrodeData.elecID, selectionSpheres)
 
-    //       document.getElementById('electrode-id-label-inner').innerHTML = elecID
-    //       document.getElementById('electrode-type-label-inner').innerHTML = elecType
-    //       document.getElementById('int-population-label-inner').innerHTML = intPopulation
-    //       document.getElementById('seiz-type-label-inner').innerHTML = seizType
-    //     }
-    //   }
-    // })
+          document.getElementById('electrode-id-label-inner').innerHTML = elecID
+          document.getElementById('electrode-type-label-inner').innerHTML = elecType
+          document.getElementById('int-population-label-inner').innerHTML = intPopulation
+          document.getElementById('seiz-type-label-inner').innerHTML = seizType
+        }
+      }
+    })
 
-    // renderer.interactor.onMouseMove= e => {
-    //   var hoverObject = renderer.pick(e.clientX, e.clientY)
-    //   if (hoverObject !== 0 ) {
-    //     var selectedSphere = renderer.get(hoverObject) 
-    //     if (selectedSphere.c === "sphere" || selectedSphere.c === "cylinder") {
-    //       document.body.style.cursor = 'crosshair'
-    //     } else {
-    //       document.body.style.cursor = 'auto'
-    //       selectedSphere = null
-    //       hoverObject = 0
-    //     }
-    //   }
-    // }
+    renderer.interactor.onMouseMove= e => {
+      var hoverObject = renderer.pick(e.clientX, e.clientY)
+      if (hoverObject !== 0 ) {
+        var selectedSphere = renderer.get(hoverObject) 
+        if (selectedSphere.c === "sphere" || selectedSphere.c === "cylinder") {
+          document.body.style.cursor = 'crosshair'
+        } else {
+          document.body.style.cursor = 'auto'
+          selectedSphere = null
+          hoverObject = 0
+        }
+      }
+    }
 
     //draw_electrodes_on_slices(electrodeObjects, volume)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
-
+    
+    var gl = canvas.getContext('webgl')
+    console.log(gl)
     // event listeners really should be in their own function, but they also need to access
     // the array of XTK spheres
     // might be able to get away with using just one
