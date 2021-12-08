@@ -301,13 +301,35 @@ function load_electrodes(renderer, volume) {
           var sphereIndex = electrodeSpheres.indexOf(clickedSphere)
           var target = get_electrode_object(electrodeData, sphereIndex)
 
-          var {elecID, elecType, intPopulation, seizType} = target
+          var {elecID, elecType, intPopulation, seizType, xCoor, yCoor, zCoor} = target
           highlight_selected_electrode(elecID, electrodeData.elecID, selectionSpheres)
 
           document.getElementById('electrode-id-label-inner').innerHTML = elecID
           document.getElementById('electrode-type-label-inner').innerHTML = elecType
           document.getElementById('int-population-label-inner').innerHTML = intPopulation
           document.getElementById('seiz-type-label-inner').innerHTML = seizType
+
+          const sliderControllers = volume.__controllers
+
+          var sliderRange = [0, 255]
+          var coordinateRange = [-127.5, 127.5]
+
+          var mappedXCoor= map_interval(xCoor, coordinateRange, sliderRange)
+          var mappedYCoor= map_interval(yCoor, coordinateRange, sliderRange)
+          var mappedZCoor= map_interval(zCoor, coordinateRange, sliderRange)
+
+          var xSlider = sliderControllers[5]
+          var ySlider = sliderControllers[6]
+          var zSlider = sliderControllers[7]
+      
+          xSlider.object.indexX = mappedXCoor
+          xSlider.object.kb = mappedXCoor
+
+          ySlider.object.indexY = mappedYCoor
+          ySlider.object.lb = mappedYCoor
+
+          zSlider.object.indexZ = mappedZCoor
+          zSlider.object.mb = mappedZCoor
         }
       }
     })
