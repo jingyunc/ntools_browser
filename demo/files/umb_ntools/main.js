@@ -57,27 +57,7 @@ function setup_renderers() {
     sliceZ.orientation = 'Z';
     sliceZ.init();
 
-    threeDRenderer.interactor.onMouseMove = function (e) {
-
-        var clicked_object = threeDRenderer.pick(e.clientX, e.clientY);
-
-        if (clicked_object != 0) {
-            var electrodeSphere = threeDRenderer.get(clicked_object);
-            if (electrodeSphere.c == "sphere") {
-                document.body.style.cursor = 'crosshair'
-                electrodeSphere.color = [1, 0, 0];
-            } else {
-                document.body.style.cursor = 'auto'
-                selectedSphere = null
-                hoverObject = 0
-                //console.log(electrodeSphere)
-            }
-        }
-    }
-
     return [threeDRenderer, sliceX, sliceY, sliceZ];
-
-
 }
 
 window.onload = function () {

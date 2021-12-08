@@ -312,6 +312,20 @@ function load_electrodes(renderer, volume) {
       }
     })
 
+    renderer.interactor.onMouseMove= e => {
+      var hoverObject = renderer.pick(e.clientX, e.clientY)
+      if (hoverObject !== 0 ) {
+        var selectedSphere = renderer.get(hoverObject) 
+        if (selectedSphere.c === "sphere" || selectedSphere.c === "cylinder") {
+          document.body.style.cursor = 'crosshair'
+        } else {
+          document.body.style.cursor = 'auto'
+          selectedSphere = null
+          hoverObject = 0
+        }
+      }
+    }
+
     //draw_electrodes_on_slices(electrodeObjects, volume)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
     
