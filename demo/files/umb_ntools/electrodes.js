@@ -33,7 +33,13 @@ function draw_electrode_fx(el) {
   var { xCoor, yCoor, zCoor, seizType, elecID } = el
   elSphere = new X.sphere()
 
+  // var mappedXcoor = map_interval(xCoor, [0, 255], [-127.5, 127.5])
+  // var mappedYcoor = map_interval(yCoor, [0, 255], [-127.5, 127.5])
+  // var mappedZcoor = map_interval(zCoor, [0, 255], [-127.5, 127.5])
+
+  // elSphere.center = [mappedXcoor, mappedYcoor, mappedZcoor]
   elSphere.center = [xCoor, yCoor, zCoor]
+
   elSphere.color = get_color(seizType)
   elSphere.radius = 1
   elSphere.visible = el.visible
@@ -46,7 +52,14 @@ function draw_electrode_fx(el) {
 function draw_highlight_fx(el) {
   var { xCoor, yCoor, zCoor, elecID } = el
   elSphere = new X.sphere()
+
+  // var mappedXcoor = map_interval(xCoor, [0, 255], [-127.5, 127.5])
+  // var mappedYcoor = map_interval(yCoor, [0, 255], [-127.5, 127.5])
+  // var mappedZcoor = map_interval(zCoor, [0, 255], [-127.5, 127.5])
+
+  // elSphere.center = [mappedXcoor, mappedYcoor, mappedZcoor]
   elSphere.center = [xCoor, yCoor, zCoor]
+
   elSphere.color = [0, 0, 1]
   elSphere.opacity = 0.5
   elSphere.radius = 1.3
@@ -196,7 +209,12 @@ function map_interval(input, inputRange, outputRange) {
 
 function load_electrodes(renderer, volume) {
   (async () => {
-    var electrodeData = await (await fetch('./sample.json')).json()
+    var subject = localStorage.getItem("user-search")
+    if (localStorage.getItem("mode") === "UMB") {
+      var electrodeData = await (await fetch(`../${subject}/${subject}.json`)).json()
+    } else {
+      var electrodeData = await (await fetch (`http://ievappwpdcpvm01.nyumc.org/?file=${subject}.json`)).json()
+    }
 
     document.getElementById('subject-id-lbl').innerHTML = electrodeData.subjID
     document.getElementById('num-seiz-types-lbl').innerHTML = electrodeData.totalSeizType
