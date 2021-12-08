@@ -10,7 +10,7 @@ function load_volume() {
             volume.labelmap.colortable.file = `./colormap.txt`
         }
     } else {
-        volume.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
+        volume.file = `https://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
     }
 
     return volume;
@@ -24,8 +24,8 @@ function load_surfaces() {
         leftHemisphere.file = `../${subject}/${subject}_lh.pial`
         rightHemisphere.file = `../${subject}/${subject}_rh.pial`
     } else {
-        leftHemisphere.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_lh.pial`
-        rightHemisphere.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_rh.pial`
+        leftHemisphere.file = `https://ievappwpdcpvm01.nyumc.org/?file=${subject}_lh.pial`
+        rightHemisphere.file = `https://ievappwpdcpvm01.nyumc.org/?file=${subject}_rh.pial`
     }
 
 
