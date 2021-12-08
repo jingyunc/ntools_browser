@@ -1,6 +1,5 @@
 var subject = localStorage.getItem("user-search")
 
-
 function load_volume() {
     var volume = new X.volume()
     if (localStorage.getItem("mode") === "UMB") {
@@ -13,8 +12,6 @@ function load_volume() {
     } else {
         volume.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
     }
-    //volume.labelmap.file = '../fsaverage/labels.nii'
-    // volume.labelmap.colortable.file = './colormap.txt'
 
     return volume;
 };

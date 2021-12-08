@@ -303,8 +303,6 @@ function load_electrodes(renderer, volume) {
     //draw_electrodes_on_slices(electrodeObjects, volume)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
     
-    var gl = canvas.getContext('webgl')
-    console.log(gl)
     // event listeners really should be in their own function, but they also need to access
     // the array of XTK spheres
     // might be able to get away with using just one
