@@ -10,7 +10,17 @@ function get_seiztype_color(type) {
     "Onset":        [1, 0, 0],
     "Late Spread":  [0, 1, 0.19],
     "Very Early Spread": [1, 0.35, 0.12],
-    "":             [1, 1, 1] // default (no color)
+    // int pop
+    "0": [1, 1, 1],
+    "1": [0, 1, 0.19],
+    "2": [0, 0, 0.9],
+    "3": [1, 0, 1],
+    "4": [0, 1, 1],
+    "5": [0.27, 0.46, 0.2],
+    "6": [0.4, 0.17, 0.57],
+    "7": [0.76, 0.76, 0.76],
+    "8": [0.46, 0.55, 0.65],
+    "":  [1, 1, 1] // default (no color)
   };
   return electrodeColors[type]
 }
@@ -172,9 +182,17 @@ function fill_electrode_ID_box(data, idArray, selectionSpheres) {
   }
 }
 
-function fill_seizure_type_box(data) {
+function fill_seizure_type_box(data, spheres) {
   const seizureTypes = data.SeizDisplay
   const displayMenu = document.getElementById('seizure-display-menu')
+  displayMenu.addEventListener('click', event => {
+    // need to add functional map support separetely 
+    if (event.target.value !== "funMapping"){
+      spheres.forEach((sphere, index) => {
+        sphere.color = get_seiztype_color(data[index])
+      })
+    }
+  })
 
   seizureTypes.forEach(type => {
     const newOption = document.createElement('option')
@@ -342,7 +360,7 @@ function load_electrodes(renderer, volume) {
     fmapConnections.forEach(connection => renderer.add(connection))
 
    // filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
-    fill_seizure_type_box(electrodeData)
+    fill_seizure_type_box(electrodeData, electrodeSpheres)
     fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres)
     jump_slices_on_click(renderer, volume, electrodeSpheres, electrodeData, selectionSpheres)
     add_mouse_hover(renderer)
