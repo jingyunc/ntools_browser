@@ -293,8 +293,7 @@ function load_electrodes(renderer, volume) {
   (async () => {
     var subject = localStorage.getItem("user-search")
     if (localStorage.getItem("mode") === "UMB") {
-      //var electrodeData = await (await fetch(`../${subject}/${subject}.json`)).json()
-      var electrodeData = await (await fetch(`../fsMNI/fsMNI_matching.json`)).json()
+      var electrodeData = await (await fetch(`../${subject}/${subject}.json`)).json()
     } else {
       var electrodeData = await (await fetch (`https://ievappwpdcpvm01.nyumc.org/?file=${subject}.json`)).json()
     }
