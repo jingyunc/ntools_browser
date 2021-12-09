@@ -28,7 +28,6 @@ function load_surfaces() {
         rightHemisphere.file = `https://ievappwpdcpvm01.nyumc.org/?file=${subject}_rh.pial`
     }
 
-
     leftHemisphere.color = [1, 1, 1]
     rightHemisphere.color = [1, 1, 1]
 
@@ -102,7 +101,6 @@ window.onload = function () {
         var gui = new dat.GUI()
 
         var volumeGUI = gui.addFolder('Volume')
-       // volumeGUI.add(volume.children[0], 'visible')
         volumeGUI.add(volume, 'opacity', 0, 1)
         volumeGUI.add(volume, 'lowerThreshold', volume.min, volume.max)
         volumeGUI.add(volume, 'upperThreshold', volume.min, volume.max)
@@ -171,10 +169,4 @@ window.onload = function () {
         //     volume.children[2].children[Math.floor(zval)].visible = true
         // }, true)
     };
-
-    
-
 };
-
-
-

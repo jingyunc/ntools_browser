@@ -25,24 +25,11 @@ function get_seiztype_color(type) {
   return electrodeColors[type]
 }
 
-function get_int_population_color(type) {
-  var electrodeColors = {
-    "0": [1, 1, 1],
-    "1": [0, 1, 0.19],
-    "2": [0, 0, 0.9],
-    "3": [1, 0, 1],
-    "4": [0, 1, 1],
-    "5": [0.27, 0.46, 0.2],
-    "6": [0.4, 0.17, 0.57],
-    "7": [0.76, 0.76, 0.76],
-    "8": [0.46, 0.55, 0.65]
-  }
-
-  return electrodeColors[type]
-}
-
 // package each electrode together as an object for readability and easier iteration
 function get_electrode_object(el, index) {
+  var defaultSeizType = el.SeizDisplay[0]
+  //var defaultSeizType = "seizType"
+ 
   return ({
     "elecID": el.elecID[index],
     "xCoor": el.coorX[index],
@@ -50,7 +37,7 @@ function get_electrode_object(el, index) {
     "zCoor": el.coorZ[index],
     "elecType": el.elecType[index],
     "intPopulation": el.intPopulation[index],
-    "seizType": el.seizType[index],
+    "seizType": el[defaultSeizType][index],
     "visible": true, // a default value for later filtering
   })
 }
@@ -58,15 +45,20 @@ function get_electrode_object(el, index) {
 // create the graphical electrode on the canvas
 function draw_electrode_fx(el) {
   // destructuring object properties. it is more readable for me, 
-  var { xCoor, yCoor, zCoor, seizType, elecID } = el
+  var { xCoor, yCoor, zCoor, elecID, seizType } = el
   elSphere = new X.sphere()
+
+ 
 
   // var mappedXcoor = map_interval(xCoor, [0, 255], [-127.5, 127.5])
   // var mappedYcoor = map_interval(yCoor, [0, 255], [-127.5, 127.5])
   // var mappedZcoor = map_interval(zCoor, [0, 255], [-127.5, 127.5])
-  // console.log(`${elecID} ${mappedXcoor} ${mappedYcoor} ${mappedZcoor}`)
+  //console.log(`${elecID} ${mappedXcoor} ${mappedYcoor} ${mappedZcoor}`)
+  //process.stdout.write(`${mappedXcoor},`)
 
-  // elSphere.center = [mappedXcoor, mappedYcoor, mappedZcoor]
+  //var mappedXArray = 
+
+ // elSphere.center = [mappedXcoor, mappedYcoor, mappedZcoor]
   elSphere.center = [xCoor, yCoor, zCoor]
 
   elSphere.color = get_seiztype_color(seizType)
@@ -109,40 +101,6 @@ function draw_connection_fx(startNode, endNode) {
   return connection
 }
 
-// // check if a checkbox is checked, and then set the cooresponding XTK objects visibility
-// function filter_visibility(electrodes, spheres, connections, data) {
-//   const onsetCheckbox = document.getElementById('onset-checkbox')
-//   const earlySpreadCheckbox = document.getElementById('early-spread-checkbox')
-//   const lateSpreadCheckbox = document.getElementById('late-spread-checkbox')
-//   const unlabeledCheckbox = document.getElementById('unlabeled-checkbox')
-//   const functionalMapCheckbox = document.getElementById('functional-map-checkbox')
-
-//   for (const el of electrodes) {
-//     if ((!onsetCheckbox.checked && el.seizType === "Onset") ||
-//       (!earlySpreadCheckbox.checked && el.seizType === "Early Spread") ||
-//       (!lateSpreadCheckbox.checked && el.seizType === "Late Spread") ||
-//       (!unlabeledCheckbox.checked && el.seizType === "")) {
-//       el.visible = false
-//     } else {
-//       el.visible = true;
-//     }
-//   }
-
-//   for (var i = 0; i < spheres.length; i++) {
-//     spheres[i].visible = electrodes[i].visible
-//   }
-
-//   var { fmapG1, fmapG2 } = data
-//   var fmapEntries = fmapG1.length
-
-//   for (var i = 0; i < fmapEntries; i++) {
-//     if (functionalMapCheckbox.checked) {
-//       connections[i].visible = (electrodes[fmapG1[i] - 1].visible && electrodes[fmapG2[i] - 1].visible)
-//     } else {
-//       connections[i].visible = false;
-//     }
-//   }
-// }
 
 // finds the two electrodes in the data and calls the cylinder renderer
 
@@ -288,7 +246,7 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
       var clickedObject = renderer.pick(e.clientX, e.clientY)
       if (clickedObject !== 0) {
         var clickedSphere = renderer.get(clickedObject)
-        console.log(clickedSphere)
+      //  console.log(clickedSphere)
         if (clickedSphere.c === "sphere") {
           var sphereIndex = spheres.indexOf(clickedSphere)
           // fix crashing when a sphere is clicked twice
@@ -335,7 +293,8 @@ function load_electrodes(renderer, volume) {
   (async () => {
     var subject = localStorage.getItem("user-search")
     if (localStorage.getItem("mode") === "UMB") {
-      var electrodeData = await (await fetch(`../${subject}/${subject}.json`)).json()
+      //var electrodeData = await (await fetch(`../${subject}/${subject}.json`)).json()
+      var electrodeData = await (await fetch(`../fsMNI/fsMNI_matching.json`)).json()
     } else {
       var electrodeData = await (await fetch (`https://ievappwpdcpvm01.nyumc.org/?file=${subject}.json`)).json()
     }
@@ -371,6 +330,18 @@ function load_electrodes(renderer, volume) {
     jump_slices_on_click(renderer, volume, electrodeSpheres, electrodeData, selectionSpheres)
     add_mouse_hover(renderer)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
+
+    // var mappedXcoor = map_interval(xCoor, [0, 255], [-127.5, 127.5])
+    // var mappedYcoor = map_interval(yCoor, [0, 255], [-127.5, 127.5])
+    // var mappedZcoor = map_interval(zCoor, [0, 255], [-127.5, 127.5])
+
+    // var mappedXarray = electrodeData.coorX.map(coordinate => map_interval(coordinate, [0, 255], [-127.5, 127.5]))
+    // var mappedYarray = electrodeData.coorY.map(coordinate => map_interval(coordinate, [0, 255], [-127.5, 127.5]))
+    // var mappedZarray = electrodeData.coorZ.map(coordinate => map_interval(coordinate, [0, 255], [-127.5, 127.5]))
+
+    // console.log(mappedXarray)
+    // console.log(mappedYarray)
+    // console.log(mappedZarray)
    
   })()
 }
