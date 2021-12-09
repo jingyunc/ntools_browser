@@ -188,8 +188,9 @@ function fill_seizure_type_box(data, spheres) {
   displayMenu.addEventListener('click', event => {
     // need to add functional map support separetely 
     if (event.target.value !== "funMapping"){
+      const selectedSeizType = data[event.target.value]
       spheres.forEach((sphere, index) => {
-        sphere.color = get_seiztype_color(data[index])
+        sphere.color = get_seiztype_color(selectedSeizType[index])
       })
     }
   })
