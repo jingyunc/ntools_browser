@@ -93,46 +93,48 @@ function draw_connection_fx(startNode, endNode) {
   connection.radius = 0.3
   connection.start = [startNode.xCoor, startNode.yCoor, startNode.zCoor]
   connection.end = [endNode.xCoor, endNode.yCoor, endNode.zCoor]
+  connection.visible = false
 
   return connection
 }
 
-// check if a checkbox is checked, and then set the cooresponding XTK objects visibility
-function filter_visibility(electrodes, spheres, connections, data) {
-  const onsetCheckbox = document.getElementById('onset-checkbox')
-  const earlySpreadCheckbox = document.getElementById('early-spread-checkbox')
-  const lateSpreadCheckbox = document.getElementById('late-spread-checkbox')
-  const unlabeledCheckbox = document.getElementById('unlabeled-checkbox')
-  const functionalMapCheckbox = document.getElementById('functional-map-checkbox')
+// // check if a checkbox is checked, and then set the cooresponding XTK objects visibility
+// function filter_visibility(electrodes, spheres, connections, data) {
+//   const onsetCheckbox = document.getElementById('onset-checkbox')
+//   const earlySpreadCheckbox = document.getElementById('early-spread-checkbox')
+//   const lateSpreadCheckbox = document.getElementById('late-spread-checkbox')
+//   const unlabeledCheckbox = document.getElementById('unlabeled-checkbox')
+//   const functionalMapCheckbox = document.getElementById('functional-map-checkbox')
 
-  for (const el of electrodes) {
-    if ((!onsetCheckbox.checked && el.seizType === "Onset") ||
-      (!earlySpreadCheckbox.checked && el.seizType === "Early Spread") ||
-      (!lateSpreadCheckbox.checked && el.seizType === "Late Spread") ||
-      (!unlabeledCheckbox.checked && el.seizType === "")) {
-      el.visible = false
-    } else {
-      el.visible = true;
-    }
-  }
+//   for (const el of electrodes) {
+//     if ((!onsetCheckbox.checked && el.seizType === "Onset") ||
+//       (!earlySpreadCheckbox.checked && el.seizType === "Early Spread") ||
+//       (!lateSpreadCheckbox.checked && el.seizType === "Late Spread") ||
+//       (!unlabeledCheckbox.checked && el.seizType === "")) {
+//       el.visible = false
+//     } else {
+//       el.visible = true;
+//     }
+//   }
 
-  for (var i = 0; i < spheres.length; i++) {
-    spheres[i].visible = electrodes[i].visible
-  }
+//   for (var i = 0; i < spheres.length; i++) {
+//     spheres[i].visible = electrodes[i].visible
+//   }
 
-  var { fmapG1, fmapG2 } = data
-  var fmapEntries = fmapG1.length
+//   var { fmapG1, fmapG2 } = data
+//   var fmapEntries = fmapG1.length
 
-  for (var i = 0; i < fmapEntries; i++) {
-    if (functionalMapCheckbox.checked) {
-      connections[i].visible = (electrodes[fmapG1[i] - 1].visible && electrodes[fmapG2[i] - 1].visible)
-    } else {
-      connections[i].visible = false;
-    }
-  }
-}
+//   for (var i = 0; i < fmapEntries; i++) {
+//     if (functionalMapCheckbox.checked) {
+//       connections[i].visible = (electrodes[fmapG1[i] - 1].visible && electrodes[fmapG2[i] - 1].visible)
+//     } else {
+//       connections[i].visible = false;
+//     }
+//   }
+// }
 
 // finds the two electrodes in the data and calls the cylinder renderer
+
 function draw_fmap_connections(data, electrodes) {
   var { fmapG1, fmapG2 } = data
   var fmapEntries = fmapG1.length
@@ -156,7 +158,7 @@ function draw_fmap_connections(data, electrodes) {
 }
 
 // function for adding options based on electrode IDs
-function fill_electrode_options(data, idArray, selectionSpheres) {
+function fill_electrode_ID_box(data, idArray, selectionSpheres) {
   const electrodeMenu = document.getElementById('electrode-menu')
   electrodeMenu.addEventListener('click', event => {
     print_electrode_info(data, event.target.value, idArray, selectionSpheres)
@@ -168,6 +170,18 @@ function fill_electrode_options(data, idArray, selectionSpheres) {
     newOption.innerHTML = entry.elecID
     electrodeMenu.appendChild(newOption)
   }
+}
+
+function fill_seizure_type_box(data) {
+  const seizureTypes = data.SeizDisplay
+  const displayMenu = document.getElementById('seizure-display-menu')
+
+  seizureTypes.forEach(type => {
+    const newOption = document.createElement('option')
+    newOption.value = type
+    newOption.innerHTML = type
+    displayMenu.appendChild(newOption)
+  })
 }
 
 function redraw_fmaps(fmaps, captions) {
@@ -319,39 +333,13 @@ function load_electrodes(renderer, volume) {
     var fmapConnections = draw_fmap_connections(electrodeData, electrodeObjects, renderer)
     fmapConnections.forEach(connection => renderer.add(connection))
 
-    filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
-    fill_electrode_options(electrodeObjects, electrodeIDs, selectionSpheres)
+   // filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
+    fill_seizure_type_box(electrodeData)
+    fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres)
     jump_slices_on_click(renderer, volume, electrodeSpheres, electrodeData, selectionSpheres)
     add_mouse_hover(renderer)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
-    
-    // event listeners really should be in their own function, but they also need to access
-    // the array of XTK spheres
-    // might be able to get away with using just one
-    document
-      .getElementById('unlabeled-checkbox')
-      .addEventListener('click',
-        () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
-
-    document
-      .getElementById('onset-checkbox')
-      .addEventListener('click',
-        () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
-
-    document
-      .getElementById('early-spread-checkbox')
-      .addEventListener('click',
-        () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
-
-    document
-      .getElementById('late-spread-checkbox')
-      .addEventListener('click',
-        () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
-
-    document
-      .getElementById('functional-map-checkbox')
-      .addEventListener('click',
-        () => filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData))
+   
   })()
 }
 

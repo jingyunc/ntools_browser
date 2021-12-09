@@ -22,7 +22,7 @@
             <label id="num-seiz-types-lbl"></label>
           </div>
         </div>
-        <br>
+        <!-- <br>
         <fieldset>
           <legend>Seizure Types</legend>
             <div>
@@ -52,6 +52,7 @@
               <input id="functional-map-checkbox" type="checkbox" value="Late Spread" checked>Display Functional Maps 
             </label>
           </div>
+          <br> -->
           <br>
           <div>
             <label for="electrode">Select Electrode ID</label>
@@ -76,6 +77,12 @@
                 <label id="seiz-type-label-inner"></label>
               </div>
             </div>
+            <br>
+            <label for="electrode-types">Select Seizure Type</label> 
+              <select name="electrode-types" id="seizure-display-menu">
+              </select>
+
+            <br>
             <label for="fmaps">Select Functional Map</label>
             <select name="fmaps" id="fmap-menu">
               <!-- <option value="none">None</option> -->
@@ -88,6 +95,7 @@
               <option value="fmapAfterDischarge">After Discharge</option>
             </select>
           </div>
+        
       </div>
 
       <!-- the container for the renderers -->
