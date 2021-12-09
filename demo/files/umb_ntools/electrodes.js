@@ -207,6 +207,70 @@ function map_interval(input, inputRange, outputRange) {
     * (input - inputStart)
 }
 
+function add_mouse_hover(renderer) {
+  renderer.interactor.onMouseMove= e => {
+    var hoverObject = renderer.pick(e.clientX, e.clientY)
+    if (hoverObject !== 0 ) {
+      var selectedSphere = renderer.get(hoverObject) 
+      if (selectedSphere.c === "sphere" || selectedSphere.c === "cylinder") {
+        document.body.style.cursor = 'crosshair'
+      } else {
+        document.body.style.cursor = 'auto'
+        selectedSphere = null
+        hoverObject = 0
+      }
+    }
+  }
+}
+
+// function get_clicked_object(e, renderer) {
+
+// }
+
+function jump_slices_on_click(renderer, volume, spheres, data, selections) {
+  var canvas = document.getElementsByTagName('canvas')[0]
+    canvas.addEventListener('click', e => {
+      var clickedObject = renderer.pick(e.clientX, e.clientY)
+      if (clickedObject !== 0) {
+        var clickedSphere = renderer.get(clickedObject)
+        if (clickedSphere.c === "sphere") {
+          var sphereIndex = spheres.indexOf(clickedSphere)
+          var target = get_electrode_object(data, sphereIndex)
+
+          var {elecID, elecType, intPopulation, seizType, xCoor, yCoor, zCoor} = target
+          highlight_selected_electrode(elecID, data.elecID, selections)
+
+          document.getElementById('electrode-id-label-inner').innerHTML = elecID
+          document.getElementById('electrode-type-label-inner').innerHTML = elecType
+          document.getElementById('int-population-label-inner').innerHTML = intPopulation
+          document.getElementById('seiz-type-label-inner').innerHTML = seizType
+
+          const sliderControllers = volume.__controllers
+
+          var sliderRange = [0, 255]
+          var coordinateRange = [-127.5, 127.5]
+
+          var mappedXCoor= map_interval(xCoor, coordinateRange, sliderRange)
+          var mappedYCoor= map_interval(yCoor, coordinateRange, sliderRange)
+          var mappedZCoor= map_interval(zCoor, coordinateRange, sliderRange)
+
+          var xSlider = sliderControllers[5]
+          var ySlider = sliderControllers[6]
+          var zSlider = sliderControllers[7]
+      
+          xSlider.object.indexX = mappedXCoor
+          xSlider.object.kb = mappedXCoor
+
+          ySlider.object.indexY = mappedYCoor
+          ySlider.object.lb = mappedYCoor
+
+          zSlider.object.indexZ = mappedZCoor
+          zSlider.object.mb = mappedZCoor
+        }
+      }
+    })
+}
+
 function load_electrodes(renderer, volume) {
   (async () => {
     var subject = localStorage.getItem("user-search")
@@ -243,64 +307,8 @@ function load_electrodes(renderer, volume) {
 
     filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
     fill_electrode_options(electrodeObjects, electrodeIDs, selectionSpheres)
-
-    var canvas = document.getElementsByTagName('canvas')[0]
-    canvas.addEventListener('click', e => {
-      var clickedObject = renderer.pick(e.clientX, e.clientY)
-      if (clickedObject !== 0) {
-        var clickedSphere = renderer.get(clickedObject)
-        if (clickedSphere.c === "sphere") {
-          var sphereIndex = electrodeSpheres.indexOf(clickedSphere)
-          var target = get_electrode_object(electrodeData, sphereIndex)
-
-          var {elecID, elecType, intPopulation, seizType, xCoor, yCoor, zCoor} = target
-          highlight_selected_electrode(elecID, electrodeData.elecID, selectionSpheres)
-
-          document.getElementById('electrode-id-label-inner').innerHTML = elecID
-          document.getElementById('electrode-type-label-inner').innerHTML = elecType
-          document.getElementById('int-population-label-inner').innerHTML = intPopulation
-          document.getElementById('seiz-type-label-inner').innerHTML = seizType
-
-          const sliderControllers = volume.__controllers
-
-          var sliderRange = [0, 255]
-          var coordinateRange = [-127.5, 127.5]
-
-          var mappedXCoor= map_interval(xCoor, coordinateRange, sliderRange)
-          var mappedYCoor= map_interval(yCoor, coordinateRange, sliderRange)
-          var mappedZCoor= map_interval(zCoor, coordinateRange, sliderRange)
-
-          var xSlider = sliderControllers[5]
-          var ySlider = sliderControllers[6]
-          var zSlider = sliderControllers[7]
-      
-          xSlider.object.indexX = mappedXCoor
-          xSlider.object.kb = mappedXCoor
-
-          ySlider.object.indexY = mappedYCoor
-          ySlider.object.lb = mappedYCoor
-
-          zSlider.object.indexZ = mappedZCoor
-          zSlider.object.mb = mappedZCoor
-        }
-      }
-    })
-
-    renderer.interactor.onMouseMove= e => {
-      var hoverObject = renderer.pick(e.clientX, e.clientY)
-      if (hoverObject !== 0 ) {
-        var selectedSphere = renderer.get(hoverObject) 
-        if (selectedSphere.c === "sphere" || selectedSphere.c === "cylinder") {
-          document.body.style.cursor = 'crosshair'
-        } else {
-          document.body.style.cursor = 'auto'
-          selectedSphere = null
-          hoverObject = 0
-        }
-      }
-    }
-
-    //draw_electrodes_on_slices(electrodeObjects, volume)
+    jump_slices_on_click(renderer, volume, electrodeSpheres, electrodeData, selectionSpheres)
+    add_mouse_hover(renderer)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
     
     // event listeners really should be in their own function, but they also need to access
