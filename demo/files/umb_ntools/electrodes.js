@@ -257,20 +257,12 @@ function map_interval(input, inputRange, outputRange) {
 function add_mouse_hover(renderer) {
   renderer.interactor.onMouseMove= e => {
     var hoverObject = renderer.pick(e.clientX, e.clientY)
-    //console.log(hoverObject)
     if (hoverObject !== 0 ) {
       var selectedSphere = renderer.get(hoverObject) 
-   //   console.log(selectedSphere)
+ 
       if (selectedSphere.c === "sphere" || selectedSphere.c === "cylinder") {
         document.body.style.cursor = 'crosshair'
-      } else if (selectedSphere.c === "slice") {
-        if (e.shiftKey) {
-         // console.log("WOAH")
-          e.preventDefault()
-          selectedSphere.visible = false
-        } 
-      }  
-      else {
+      } else {
         selectedSphere.visible = true
         document.body.style.cursor = 'auto'
         selectedSphere = null
@@ -296,6 +288,7 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
       var clickedObject = renderer.pick(e.clientX, e.clientY)
       if (clickedObject !== 0) {
         var clickedSphere = renderer.get(clickedObject)
+        console.log(clickedSphere)
         if (clickedSphere.c === "sphere") {
           var sphereIndex = spheres.indexOf(clickedSphere)
           // fix crashing when a sphere is clicked twice
@@ -335,8 +328,6 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
           }
         }
       }
-
-     
     })
 }
 

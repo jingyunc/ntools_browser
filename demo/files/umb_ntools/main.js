@@ -125,39 +125,51 @@ window.onload = function () {
         rightHemisphereGUI.add(rightHemisphereMesh, 'opacity', 0, 1)
         rightHemisphereGUI.open()
 
+        var slicesGUI = gui.addFolder('Slices')
+        slicesGUI.add(volume, 'visible') 
+        slicesGUI.open()
+
         // fix original camera position
         threeD.camera.position = [0, 300, 0];
-        console.log(threeD)
-        console.log(volume.children[0].e[4])
-        
+   
         load_electrodes(threeD, volumeGUI);
 
-
-       
-      
-
-        document.addEventListener("keydown", e => {
-            var keyCode = e.ctrlKey
+        slicesGUI.__controllers[0].__onChange = () => {
             var xval = volumeGUI.__controllers[5].object.indexX
             var yval = volumeGUI.__controllers[6].object.indexY
             var zval = volumeGUI.__controllers[7].object.indexZ
 
-            if (keyCode) {
-               volume.children[0].children[Math.floor(xval)].visible = false
-               volume.children[1].children[Math.floor(yval)].visible = false
-               volume.children[2].children[Math.floor(zval)].visible = false
-            } 
-        }, false)
+            volume.children[0].children.forEach(child => child.visible = false)
+            volume.children[1].children.forEach(child => child.visible = false)
+            volume.children[2].children.forEach(child => child.visible = false)
 
-        document.addEventListener("keyup", e => {
-            var xval = volumeGUI.__controllers[5].object.indexX
-            var yval = volumeGUI.__controllers[6].object.indexY
-            var zval = volumeGUI.__controllers[7].object.indexZ
-            
             volume.children[0].children[Math.floor(xval)].visible = true
             volume.children[1].children[Math.floor(yval)].visible = true
             volume.children[2].children[Math.floor(zval)].visible = true
-        }, true)
+        }
+
+        // document.addEventListener("keydown", e => {
+        //     var keyCode = e.ctrlKey
+        //     var xval = volumeGUI.__controllers[5].object.indexX
+        //     var yval = volumeGUI.__controllers[6].object.indexY
+        //     var zval = volumeGUI.__controllers[7].object.indexZ
+
+        //     if (keyCode) {
+        //        volume.children[0].children[Math.floor(xval)].visible = false
+        //        volume.children[1].children[Math.floor(yval)].visible = false
+        //        volume.children[2].children[Math.floor(zval)].visible = false
+        //     } 
+        // }, false)
+
+        // document.addEventListener("keyup", () => {
+        //     var xval = volumeGUI.__controllers[5].object.indexX
+        //     var yval = volumeGUI.__controllers[6].object.indexY
+        //     var zval = volumeGUI.__controllers[7].object.indexZ
+            
+        //     volume.children[0].children[Math.floor(xval)].visible = true
+        //     volume.children[1].children[Math.floor(yval)].visible = true
+        //     volume.children[2].children[Math.floor(zval)].visible = true
+        // }, true)
     };
 
     
