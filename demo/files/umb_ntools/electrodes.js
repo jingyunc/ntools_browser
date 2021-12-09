@@ -301,7 +301,7 @@ function load_electrodes(renderer, volume) {
 
     document.getElementById('subject-id-lbl').innerHTML = electrodeData.subjID
     document.getElementById('num-seiz-types-lbl').innerHTML = electrodeData.totalSeizType
-
+    console.log(electrodeData)
     var electrodeIDs = electrodeData.elecID
 
     // can choose any property here, but it must have same length as other properties
@@ -335,13 +335,14 @@ function load_electrodes(renderer, volume) {
     // var mappedYcoor = map_interval(yCoor, [0, 255], [-127.5, 127.5])
     // var mappedZcoor = map_interval(zCoor, [0, 255], [-127.5, 127.5])
 
-    // var mappedXarray = electrodeData.coorX.map(coordinate => map_interval(coordinate, [0, 255], [-127.5, 127.5]))
-    // var mappedYarray = electrodeData.coorY.map(coordinate => map_interval(coordinate, [0, 255], [-127.5, 127.5]))
-    // var mappedZarray = electrodeData.coorZ.map(coordinate => map_interval(coordinate, [0, 255], [-127.5, 127.5]))
-
-    // console.log(mappedXarray)
-    // console.log(mappedYarray)
-    // console.log(mappedZarray)
+    // var mappedXarray = electrodeData.coorX.map(coordinate => Number(map_interval(coordinate, [0, 255], [-127.5, 127.5]).toFixed(5)))
+    // var mappedYarray = electrodeData.coorY.map(coordinate => Number(map_interval(coordinate, [0, 255], [-127.5, 127.5]).toFixed(5)))
+    // var mappedZarray = electrodeData.coorZ.map(coordinate => Number(map_interval(coordinate, [0, 255], [-127.5, 127.5]).toFixed(5)))
+    
+    // console.log('coorX:[' + mappedXarray + '],')
+    // console.log('coorY:[' + mappedYarray + '],')
+    // console.log('coorZ:[' + mappedZarray + ']',)
+   // console.log("Hello")
    
   })()
 }
