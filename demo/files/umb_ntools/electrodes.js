@@ -3,13 +3,31 @@
 // and just use indices directly
 
 // returns color of electrode
-function get_color(type) {
+function get_seiztype_color(type) {
   var electrodeColors = {
+    // Seizure Type X
     "Early Spread": [1, 1, 0],
-    "Onset": [1, 0, 0],
-    "Late Spread": [0, 1, 0],
-    "": [1, 1, 1] // default (no color)
+    "Onset":        [1, 0, 0],
+    "Late Spread":  [0, 1, 0.19],
+    "Very Early Spread": [1, 0.35, 0.12],
+    "":             [1, 1, 1] // default (no color)
   };
+  return electrodeColors[type]
+}
+
+function get_int_population_color(type) {
+  var electrodeColors = {
+    "0": [1, 1, 1],
+    "1": [0, 1, 0.19],
+    "2": [0, 0, 0.9],
+    "3": [1, 0, 1],
+    "4": [0, 1, 1],
+    "5": [0.27, 0.46, 0.2],
+    "6": [0.4, 0.17, 0.57],
+    "7": [0.76, 0.76, 0.76],
+    "8": [0.46, 0.55, 0.65]
+  }
+
   return electrodeColors[type]
 }
 
@@ -40,7 +58,7 @@ function draw_electrode_fx(el) {
   // elSphere.center = [mappedXcoor, mappedYcoor, mappedZcoor]
   elSphere.center = [xCoor, yCoor, zCoor]
 
-  elSphere.color = get_color(seizType)
+  elSphere.color = get_seiztype_color(seizType)
   elSphere.radius = 1
   elSphere.visible = el.visible
   elSphere.caption = elecID
@@ -222,10 +240,6 @@ function add_mouse_hover(renderer) {
     }
   }
 }
-
-// function get_clicked_object(e, renderer) {
-
-// }
 
 function jump_slices_on_click(renderer, volume, spheres, data, selections) {
   var canvas = document.getElementsByTagName('canvas')[0]
