@@ -208,12 +208,12 @@ function add_event_to_fmap_menu(electrodeData, fmaps) {
 function print_electrode_info(data, electrode, idArray, selectionSpheres) {
   var selected_electrode = data.find(el => el.elecID === electrode)
   if (selected_electrode) {
-    var { elecType, intPopulation, seizType } = selected_electrode
+    var { elecID, elecType, intPopulation, seizType } = selected_electrode
 
+    document.getElementById('electrode-id-label-inner').innerHTML = elecID
     document.getElementById('electrode-type-label-inner').innerHTML = elecType
     document.getElementById('int-population-label-inner').innerHTML = intPopulation
     document.getElementById('seiz-type-label-inner').innerHTML = seizType
-
     highlight_selected_electrode(electrode, idArray, selectionSpheres)
   } else {
     console.log(`Could not find electrode with ID of ${electrode}`)
@@ -276,7 +276,11 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
             document.getElementById('seiz-type-label-inner').innerHTML = seizType
   
             const sliderControllers = volume.__controllers
-  
+
+            // sync with electrode menu options
+            const electrodeIDMenuOptions = document.getElementById('electrode-menu').options
+            electrodeIDMenuOptions.selectedIndex = sphereIndex + 1
+           
             var sliderRange = [0, 255]
             var coordinateRange = [-127.5, 127.5]
   
