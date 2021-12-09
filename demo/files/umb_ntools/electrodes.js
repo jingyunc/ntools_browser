@@ -208,12 +208,7 @@ function add_event_to_fmap_menu(electrodeData, fmaps) {
 function print_electrode_info(data, electrode, idArray, selectionSpheres) {
   var selected_electrode = data.find(el => el.elecID === electrode)
   if (selected_electrode) {
-    var { elecID, elecType, intPopulation, seizType } = selected_electrode
-
-    document.getElementById('electrode-id-label-inner').innerHTML = elecID
-    document.getElementById('electrode-type-label-inner').innerHTML = elecType
-    document.getElementById('int-population-label-inner').innerHTML = intPopulation
-    document.getElementById('seiz-type-label-inner').innerHTML = seizType
+    update_labels(selected_electrode)
     highlight_selected_electrode(electrode, idArray, selectionSpheres)
   } else {
     console.log(`Could not find electrode with ID of ${electrode}`)
@@ -255,6 +250,15 @@ function add_mouse_hover(renderer) {
   }
 }
 
+function update_labels(electrode) {
+  var {elecID, elecType, intPopulation, seizType} = electrode
+  document.getElementById('electrode-id-label-inner').innerHTML = elecID
+  document.getElementById('electrode-type-label-inner').innerHTML = elecType
+  document.getElementById('int-population-label-inner').innerHTML = intPopulation
+  document.getElementById('seiz-type-label-inner').innerHTML = seizType
+
+}
+
 function jump_slices_on_click(renderer, volume, spheres, data, selections) {
   var canvas = document.getElementsByTagName('canvas')[0]
     canvas.addEventListener('click', e => {
@@ -267,13 +271,10 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
           if (sphereIndex > 0) {
             var target = get_electrode_object(data, sphereIndex)
   
-            var {elecID, elecType, intPopulation, seizType, xCoor, yCoor, zCoor} = target
+            var {elecID, xCoor, yCoor, zCoor} = target
             highlight_selected_electrode(elecID, data.elecID, selections)
-  
-            document.getElementById('electrode-id-label-inner').innerHTML = elecID
-            document.getElementById('electrode-type-label-inner').innerHTML = elecType
-            document.getElementById('int-population-label-inner').innerHTML = intPopulation
-            document.getElementById('seiz-type-label-inner').innerHTML = seizType
+
+            update_labels(target)
   
             const sliderControllers = volume.__controllers
 
@@ -284,9 +285,9 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
             var sliderRange = [0, 255]
             var coordinateRange = [-127.5, 127.5]
   
-            var mappedXCoor= map_interval(xCoor, coordinateRange, sliderRange)
-            var mappedYCoor= map_interval(yCoor, coordinateRange, sliderRange)
-            var mappedZCoor= map_interval(zCoor, coordinateRange, sliderRange)
+            var mappedXCoor = map_interval(xCoor, coordinateRange, sliderRange)
+            var mappedYCoor = map_interval(yCoor, coordinateRange, sliderRange)
+            var mappedZCoor = map_interval(zCoor, coordinateRange, sliderRange)
   
             var xSlider = sliderControllers[5]
             var ySlider = sliderControllers[6]
