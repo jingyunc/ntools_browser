@@ -64,6 +64,7 @@ function draw_electrode_fx(el) {
   // var mappedXcoor = map_interval(xCoor, [0, 255], [-127.5, 127.5])
   // var mappedYcoor = map_interval(yCoor, [0, 255], [-127.5, 127.5])
   // var mappedZcoor = map_interval(zCoor, [0, 255], [-127.5, 127.5])
+  // console.log(`${elecID} ${mappedXcoor} ${mappedYcoor} ${mappedZcoor}`)
 
   // elSphere.center = [mappedXcoor, mappedYcoor, mappedZcoor]
   elSphere.center = [xCoor, yCoor, zCoor]
@@ -256,16 +257,27 @@ function map_interval(input, inputRange, outputRange) {
 function add_mouse_hover(renderer) {
   renderer.interactor.onMouseMove= e => {
     var hoverObject = renderer.pick(e.clientX, e.clientY)
+    //console.log(hoverObject)
     if (hoverObject !== 0 ) {
       var selectedSphere = renderer.get(hoverObject) 
+   //   console.log(selectedSphere)
       if (selectedSphere.c === "sphere" || selectedSphere.c === "cylinder") {
         document.body.style.cursor = 'crosshair'
-      } else {
+      } else if (selectedSphere.c === "slice") {
+        if (e.shiftKey) {
+         // console.log("WOAH")
+          e.preventDefault()
+          selectedSphere.visible = false
+        } 
+      }  
+      else {
+        selectedSphere.visible = true
         document.body.style.cursor = 'auto'
         selectedSphere = null
         hoverObject = 0
       }
     }
+   // console.log("done")
   }
 }
 
@@ -291,8 +303,8 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
             var target = get_electrode_object(data, sphereIndex)
   
             var {elecID, xCoor, yCoor, zCoor} = target
-            highlight_selected_electrode(elecID, data.elecID, selections)
 
+            highlight_selected_electrode(elecID, data.elecID, selections)
             update_labels(target)
   
             const sliderControllers = volume.__controllers
@@ -323,6 +335,8 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
           }
         }
       }
+
+     
     })
 }
 

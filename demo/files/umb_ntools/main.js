@@ -102,6 +102,7 @@ window.onload = function () {
         var gui = new dat.GUI()
 
         var volumeGUI = gui.addFolder('Volume')
+       // volumeGUI.add(volume.children[0], 'visible')
         volumeGUI.add(volume, 'opacity', 0, 1)
         volumeGUI.add(volume, 'lowerThreshold', volume.min, volume.max)
         volumeGUI.add(volume, 'upperThreshold', volume.min, volume.max)
@@ -112,6 +113,7 @@ window.onload = function () {
         volumeGUI.add(volume, 'indexY', 0, volume.dimensions[1] - 1)
         volumeGUI.add(volume, 'indexZ', 0, volume.dimensions[2] - 1)
         volumeGUI.open()
+
 
         var leftHemisphereGUI = gui.addFolder('Left Hemisphere')
         leftHemisphereGUI.add(leftHemisphereMesh, 'visible')
@@ -125,9 +127,40 @@ window.onload = function () {
 
         // fix original camera position
         threeD.camera.position = [0, 300, 0];
-
+        console.log(threeD)
+        console.log(volume.children[0].e[4])
+        
         load_electrodes(threeD, volumeGUI);
+
+
+       
+      
+
+        document.addEventListener("keydown", e => {
+            var keyCode = e.ctrlKey
+            var xval = volumeGUI.__controllers[5].object.indexX
+            var yval = volumeGUI.__controllers[6].object.indexY
+            var zval = volumeGUI.__controllers[7].object.indexZ
+
+            if (keyCode) {
+               volume.children[0].children[Math.floor(xval)].visible = false
+               volume.children[1].children[Math.floor(yval)].visible = false
+               volume.children[2].children[Math.floor(zval)].visible = false
+            } 
+        }, false)
+
+        document.addEventListener("keyup", e => {
+            var xval = volumeGUI.__controllers[5].object.indexX
+            var yval = volumeGUI.__controllers[6].object.indexY
+            var zval = volumeGUI.__controllers[7].object.indexZ
+            
+            volume.children[0].children[Math.floor(xval)].visible = true
+            volume.children[1].children[Math.floor(yval)].visible = true
+            volume.children[2].children[Math.floor(zval)].visible = true
+        }, true)
     };
+
+    
 
 };
 
