@@ -263,37 +263,40 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
         var clickedSphere = renderer.get(clickedObject)
         if (clickedSphere.c === "sphere") {
           var sphereIndex = spheres.indexOf(clickedSphere)
-          var target = get_electrode_object(data, sphereIndex)
-
-          var {elecID, elecType, intPopulation, seizType, xCoor, yCoor, zCoor} = target
-          highlight_selected_electrode(elecID, data.elecID, selections)
-
-          document.getElementById('electrode-id-label-inner').innerHTML = elecID
-          document.getElementById('electrode-type-label-inner').innerHTML = elecType
-          document.getElementById('int-population-label-inner').innerHTML = intPopulation
-          document.getElementById('seiz-type-label-inner').innerHTML = seizType
-
-          const sliderControllers = volume.__controllers
-
-          var sliderRange = [0, 255]
-          var coordinateRange = [-127.5, 127.5]
-
-          var mappedXCoor= map_interval(xCoor, coordinateRange, sliderRange)
-          var mappedYCoor= map_interval(yCoor, coordinateRange, sliderRange)
-          var mappedZCoor= map_interval(zCoor, coordinateRange, sliderRange)
-
-          var xSlider = sliderControllers[5]
-          var ySlider = sliderControllers[6]
-          var zSlider = sliderControllers[7]
-      
-          xSlider.object.indexX = mappedXCoor
-          xSlider.object.kb = mappedXCoor
-
-          ySlider.object.indexY = mappedYCoor
-          ySlider.object.lb = mappedYCoor
-
-          zSlider.object.indexZ = mappedZCoor
-          zSlider.object.mb = mappedZCoor
+          // fix crashing when a sphere is clicked twice
+          if (sphereIndex > 0) {
+            var target = get_electrode_object(data, sphereIndex)
+  
+            var {elecID, elecType, intPopulation, seizType, xCoor, yCoor, zCoor} = target
+            highlight_selected_electrode(elecID, data.elecID, selections)
+  
+            document.getElementById('electrode-id-label-inner').innerHTML = elecID
+            document.getElementById('electrode-type-label-inner').innerHTML = elecType
+            document.getElementById('int-population-label-inner').innerHTML = intPopulation
+            document.getElementById('seiz-type-label-inner').innerHTML = seizType
+  
+            const sliderControllers = volume.__controllers
+  
+            var sliderRange = [0, 255]
+            var coordinateRange = [-127.5, 127.5]
+  
+            var mappedXCoor= map_interval(xCoor, coordinateRange, sliderRange)
+            var mappedYCoor= map_interval(yCoor, coordinateRange, sliderRange)
+            var mappedZCoor= map_interval(zCoor, coordinateRange, sliderRange)
+  
+            var xSlider = sliderControllers[5]
+            var ySlider = sliderControllers[6]
+            var zSlider = sliderControllers[7]
+        
+            xSlider.object.indexX = mappedXCoor
+            xSlider.object.kb = mappedXCoor
+  
+            ySlider.object.indexY = mappedYCoor
+            ySlider.object.lb = mappedYCoor
+  
+            zSlider.object.indexZ = mappedZCoor
+            zSlider.object.mb = mappedZCoor
+          }
         }
       }
     })
