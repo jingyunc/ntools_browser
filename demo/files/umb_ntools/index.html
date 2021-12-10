@@ -22,38 +22,22 @@
             <label id="num-seiz-types-lbl"></label>
           </div>
         </div>
-        <!-- <br>
-        <fieldset>
-          <legend>Seizure Types</legend>
-            <div>
-              <label for="">
-                <input id="unlabeled-checkbox" type="checkbox" value="" checked>Unlabeled
-              </label>
-            </div>
-            <div>
-              <label for="onset" id="onset-label">
-                <input id="onset-checkbox" type="checkbox" value="Onset" checked>Onset
-              </label>
-            </div>
-            <div>
-              <label for="early-spread" id="early-spread-label">
-                <input id="early-spread-checkbox" type="checkbox" value="Early Spread" checked>Early Spread
-              </label>
-            </div>
-            <div>
-              <label for="late-spread" id="late-spread-label">
-                <input id="late-spread-checkbox" type="checkbox" value="Late Spread" checked>Late Spread 
-              </label>
-            </div>
-          </fieldset>
           <br>
-          <div>
-            <label for="functional-map">
-              <input id="functional-map-checkbox" type="checkbox" value="Late Spread" checked>Display Functional Maps 
-            </label>
-          </div>
-          <br> -->
-          <br>
+            <label for="electrode-types">Select Seizure Type</label> 
+              <select name="electrode-types" id="seizure-display-menu"></select>
+            <br><br>
+            <label for="fmaps">Select Functional Map</label>
+            <select name="fmaps" id="fmap-menu">
+              <!-- <option value="none">None</option> -->
+              <option value="fmapThreshold">Threshold</option>
+              <option value="fmapMotor">Motor</option>
+              <option value="fmapSensory">Sensory</option>
+              <option value="fmapLanguage">Language</option>
+              <option value="fmapVisual">Visual</option>
+              <option value="fmapOther">Other</option>
+              <option value="fmapAfterDischarge">After Discharge</option>
+            </select>
+          <br><br>
           <div>
             <label for="electrode">Select Electrode ID</label>
             <select name="electrodes" id="electrode-menu">
@@ -77,23 +61,7 @@
                 <label id="seiz-type-label-inner"></label>
               </div>
             </div>
-            <br>
-            <label for="electrode-types">Select Seizure Type</label> 
-              <select name="electrode-types" id="seizure-display-menu">
-              </select>
-
-            <br>
-            <label for="fmaps">Select Functional Map</label>
-            <select name="fmaps" id="fmap-menu">
-              <!-- <option value="none">None</option> -->
-              <option value="fmapThreshold">Threshold</option>
-              <option value="fmapMotor">Motor</option>
-              <option value="fmapSensory">Sensory</option>
-              <option value="fmapLanguage">Language</option>
-              <option value="fmapVisual">Visual</option>
-              <option value="fmapOther">Other</option>
-              <option value="fmapAfterDischarge">After Discharge</option>
-            </select>
+       
           </div>
         
       </div>

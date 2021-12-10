@@ -342,6 +342,7 @@ function load_electrodes(renderer, volume) {
     // console.log('coorY:[' + mappedYarray + '],')
     // console.log('coorZ:[' + mappedZarray + ']',)
    // console.log("Hello")
+
    
   })()
 }
