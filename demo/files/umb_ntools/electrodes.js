@@ -127,13 +127,13 @@ function draw_fmap_connections(data, electrodes) {
 }
 
 // function for adding options based on electrode IDs
-function fill_electrode_ID_box(data, idArray, selectionSpheres) {
+function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data) {
   const electrodeMenu = document.getElementById('electrode-menu')
   electrodeMenu.addEventListener('click', event => {
-    print_electrode_info(data, event.target.value, idArray, selectionSpheres)
+    print_electrode_info(elObjects, event.target.value, idArray, selectionSpheres, data)
   })
   // append HTML option to drop down menu
-  for (const entry of data) {
+  for (const entry of elObjects) {
     const newOption = document.createElement('option')
     newOption.value = entry.elecID
     newOption.innerHTML = entry.elecID
@@ -183,10 +183,10 @@ function add_event_to_fmap_menu(electrodeData, fmaps) {
 }
 
 // find the electrode in the options and display the info on the panel
-function print_electrode_info(data, electrode, idArray, selectionSpheres) {
-  var selected_electrode = data.find(el => el.elecID === electrode)
+function print_electrode_info(elObjects, electrode, idArray, selectionSpheres, data) {
+  var selected_electrode = elObjects.find(el => el.elecID === electrode)
   if (selected_electrode) {
-    update_labels(selected_electrode)
+    update_labels(selected_electrode, data)
     highlight_selected_electrode(electrode, idArray, selectionSpheres)
   } else {
     console.log(`Could not find electrode with ID of ${electrode}`)
@@ -231,13 +231,26 @@ function add_mouse_hover(renderer) {
   }
 }
 
-function update_labels(electrode) {
-  var {elecID, elecType, intPopulation, seizType} = electrode
-  document.getElementById('electrode-id-label-inner').innerHTML = elecID
-  document.getElementById('electrode-type-label-inner').innerHTML = elecType
-  document.getElementById('int-population-label-inner').innerHTML = intPopulation
-  document.getElementById('seiz-type-label-inner').innerHTML = seizType
+function update_labels(electrode, data) {
+  var {elecType, intPopulation} = electrode
 
+  var seizTypeMenu = document.getElementById('seizure-display-menu')
+  var intPopulationLabel = document.getElementById('int-population-label-inner')
+  var seizTypeLabel = document.getElementById('seiz-type-label-inner')
+
+  var selectedSeizType = seizTypeMenu.options[seizTypeMenu.selectedIndex].value
+  var seizureTypeValues = data[selectedSeizType]
+  var allElectrodeIDs = data.elecID
+
+  document.getElementById('electrode-id-label-inner').innerHTML = electrode.elecID
+  document.getElementById('electrode-type-label-inner').innerHTML = elecType
+  if (selectedSeizType === "intPopulation") {
+    intPopulationLabel.innerHTML = intPopulation
+    seizTypeLabel.innerHTML = ''
+  } else {
+    seizTypeLabel.innerHTML = seizureTypeValues[allElectrodeIDs.indexOf(electrode.elecID)]
+    intPopulationLabel.innerHTML = ''
+  }
 }
 
 function jump_slices_on_click(renderer, volume, spheres, data, selections) {
@@ -256,7 +269,7 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
             var {elecID, xCoor, yCoor, zCoor} = target
 
             highlight_selected_electrode(elecID, data.elecID, selections)
-            update_labels(target)
+            update_labels(target, data)
   
             const sliderControllers = volume.__controllers
 
@@ -325,7 +338,7 @@ function load_electrodes(renderer, volume) {
 
    // filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
     fill_seizure_type_box(electrodeData, electrodeSpheres)
-    fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres)
+    fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres, electrodeData)
     jump_slices_on_click(renderer, volume, electrodeSpheres, electrodeData, selectionSpheres)
     add_mouse_hover(renderer)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
