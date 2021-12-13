@@ -342,6 +342,7 @@ function load_electrodes(renderer, volume) {
     jump_slices_on_click(renderer, volume, electrodeSpheres, electrodeData, selectionSpheres)
     add_mouse_hover(renderer)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
+ 
    
   })()
 }

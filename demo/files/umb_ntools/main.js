@@ -5,10 +5,10 @@ function load_volume() {
     if (localStorage.getItem("mode") === "UMB") {
         volume.file = `../${subject}/${subject}_T1.nii`;
         var labelMap = `../${subject}/${subject}_labels.nii`
-        // if (labelMap) {
-        //     volume.labelmap.file = labelMap
-        //     volume.labelmap.colortable.file = `./colormap.txt`
-        // }
+        if (labelMap) {
+            volume.labelmap.file = labelMap
+            volume.labelmap.colortable.file = `./colormap.txt`
+        }
     } else {
         volume.file = `https://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
     }
