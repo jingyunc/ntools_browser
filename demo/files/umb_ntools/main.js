@@ -5,10 +5,10 @@ function load_volume() {
     if (localStorage.getItem("mode") === "UMB") {
         volume.file = `../${subject}/${subject}_T1.nii`;
         var labelMap = `../${subject}/${subject}_labels.nii`
-        if (labelMap) {
-            volume.labelmap.file = labelMap
-            volume.labelmap.colortable.file = `./colormap.txt`
-        }
+        // if (labelMap) {
+        //     volume.labelmap.file = labelMap
+        //     volume.labelmap.colortable.file = `./colormap.txt`
+        // }
     } else {
         volume.file = `https://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
     }
@@ -65,9 +65,16 @@ window.onload = function () {
     // destructure array
     var [threeD, sliceX, sliceY, sliceZ] = setup_renderers();
 
+ 
+
     volume = load_volume();
 
     var [leftHemisphereMesh, rightHemisphereMesh] = load_surfaces();
+
+    var p = new X.mesh()
+    threeD.add(leftHemisphereMesh)
+    threeD.add(rightHemisphereMesh)
+    threeD.add(p)
 
     sliceX.add(volume);
     sliceX.render();
@@ -85,8 +92,7 @@ window.onload = function () {
         sliceX.add(mySphere)
 
         threeD.add(volume);
-        threeD.add(leftHemisphereMesh);
-        threeD.add(rightHemisphereMesh)
+   
 
         threeD.render(); // this one triggers the loading of LH and then the onShowtime for the 3d renderer
     };
@@ -145,28 +151,5 @@ window.onload = function () {
             volume.children[1].children[Math.floor(yval)].visible = true
             volume.children[2].children[Math.floor(zval)].visible = true
         }
-
-        // document.addEventListener("keydown", e => {
-        //     var keyCode = e.ctrlKey
-        //     var xval = volumeGUI.__controllers[5].object.indexX
-        //     var yval = volumeGUI.__controllers[6].object.indexY
-        //     var zval = volumeGUI.__controllers[7].object.indexZ
-
-        //     if (keyCode) {
-        //        volume.children[0].children[Math.floor(xval)].visible = false
-        //        volume.children[1].children[Math.floor(yval)].visible = false
-        //        volume.children[2].children[Math.floor(zval)].visible = false
-        //     } 
-        // }, false)
-
-        // document.addEventListener("keyup", () => {
-        //     var xval = volumeGUI.__controllers[5].object.indexX
-        //     var yval = volumeGUI.__controllers[6].object.indexY
-        //     var zval = volumeGUI.__controllers[7].object.indexZ
-            
-        //     volume.children[0].children[Math.floor(xval)].visible = true
-        //     volume.children[1].children[Math.floor(yval)].visible = true
-        //     volume.children[2].children[Math.floor(zval)].visible = true
-        // }, true)
     };
 };

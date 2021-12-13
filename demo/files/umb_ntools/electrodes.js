@@ -4,12 +4,20 @@
 
 // returns color of electrode
 function get_seiztype_color(type) {
+
+  // if type is null
+  if (!type) return [1, 1, 1]
+
+  var lowerCaseType = type.toString().toLowerCase().replace(/\s+/g, ' ').trim()
+
   var electrodeColors = {
     // Seizure Type X
-    "Early Spread": [1, 1, 0],
-    "Onset":        [1, 0, 0],
-    "Late Spread":  [0, 1, 0.19],
-    "Very Early Spread": [1, 0.35, 0.12],
+    "early spread": [1, 1, 0],
+    "onset":        [1, 0, 0],
+    "late spread":  [0, 1, 0.19],
+    "very early spread": [1, 0.35, 0.12],
+    "rapid spread": [0, 0, 1],
+    "early onset": [0, 1, 1],
     // int pop
     "0": [1, 1, 1],
     "1": [0, 1, 0.19],
@@ -22,7 +30,7 @@ function get_seiztype_color(type) {
     "8": [0.46, 0.55, 0.65],
     "":  [1, 1, 1] // default (no color)
   };
-  return electrodeColors[type]
+  return electrodeColors[lowerCaseType]
 }
 
 // package each electrode together as an object for readability and easier iteration
@@ -45,47 +53,40 @@ function get_electrode_object(el, index) {
 // create the graphical electrode on the canvas
 function draw_electrode_fx(el) {
   // destructuring object properties. it is more readable for me, 
-  var { xCoor, yCoor, zCoor, elecID, seizType } = el
+  var { xCoor, yCoor, zCoor, elecID, seizType, elecType } = el
   elSphere = new X.sphere()
 
- 
-
-  // var mappedXcoor = map_interval(xCoor, [0, 255], [-127.5, 127.5])
-  // var mappedYcoor = map_interval(yCoor, [0, 255], [-127.5, 127.5])
-  // var mappedZcoor = map_interval(zCoor, [0, 255], [-127.5, 127.5])
-  //console.log(`${elecID} ${mappedXcoor} ${mappedYcoor} ${mappedZcoor}`)
-  //process.stdout.write(`${mappedXcoor},`)
-
-  //var mappedXArray = 
-
- // elSphere.center = [mappedXcoor, mappedYcoor, mappedZcoor]
   elSphere.center = [xCoor, yCoor, zCoor]
-
-  elSphere.color = get_seiztype_color(seizType)
-  elSphere.radius = 1
+  if (elecType === "EG" || elecType === "MG") {
+    elSphere.color = [1, 0, 1]
+    elSphere.radius = 1 / 4
+  } else {
+    elSphere.color = get_seiztype_color(seizType)
+    elSphere.radius = 1
+  }
   elSphere.visible = el.visible
   elSphere.caption = elecID
-
+ 
   return elSphere
 }
 
 // this function draws the opaque blue shperes around a selected node
 function draw_highlight_fx(el) {
-  var { xCoor, yCoor, zCoor, elecID } = el
+  var { xCoor, yCoor, zCoor, elecID, elecType } = el
   elSphere = new X.sphere()
 
-  // var mappedXcoor = map_interval(xCoor, [0, 255], [-127.5, 127.5])
-  // var mappedYcoor = map_interval(yCoor, [0, 255], [-127.5, 127.5])
-  // var mappedZcoor = map_interval(zCoor, [0, 255], [-127.5, 127.5])
-
-  // elSphere.center = [mappedXcoor, mappedYcoor, mappedZcoor]
   elSphere.center = [xCoor, yCoor, zCoor]
 
   elSphere.color = [0, 0, 1]
   elSphere.opacity = 0.5
-  elSphere.radius = 1.3
+  if (elecType === "EG" || elecType === "MG") {
+    elSphere.radius = 1.3 / 5
+  } else {
+    elSphere.radius = 1.3
+  }
   elSphere.visible = false
   elSphere.caption = elecID
+  elSphere.modified()
 
   return elSphere
 }
@@ -227,7 +228,6 @@ function add_mouse_hover(renderer) {
         hoverObject = 0
       }
     }
-   // console.log("done")
   }
 }
 
@@ -313,7 +313,7 @@ function load_electrodes(renderer, volume) {
 
     document.getElementById('subject-id-lbl').innerHTML = electrodeData.subjID
     document.getElementById('num-seiz-types-lbl').innerHTML = electrodeData.totalSeizType
-    console.log(electrodeData)
+    //console.log(electrodeData)
     var electrodeIDs = electrodeData.elecID
 
     // can choose any property here, but it must have same length as other properties
@@ -342,20 +342,6 @@ function load_electrodes(renderer, volume) {
     jump_slices_on_click(renderer, volume, electrodeSpheres, electrodeData, selectionSpheres)
     add_mouse_hover(renderer)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
-
-    // var mappedXcoor = map_interval(xCoor, [0, 255], [-127.5, 127.5])
-    // var mappedYcoor = map_interval(yCoor, [0, 255], [-127.5, 127.5])
-    // var mappedZcoor = map_interval(zCoor, [0, 255], [-127.5, 127.5])
-
-    // var mappedXarray = electrodeData.coorX.map(coordinate => Number(map_interval(coordinate, [0, 255], [-127.5, 127.5]).toFixed(5)))
-    // var mappedYarray = electrodeData.coorY.map(coordinate => Number(map_interval(coordinate, [0, 255], [-127.5, 127.5]).toFixed(5)))
-    // var mappedZarray = electrodeData.coorZ.map(coordinate => Number(map_interval(coordinate, [0, 255], [-127.5, 127.5]).toFixed(5)))
-    
-    // console.log('coorX:[' + mappedXarray + '],')
-    // console.log('coorY:[' + mappedYarray + '],')
-    // console.log('coorZ:[' + mappedZarray + ']',)
-   // console.log("Hello")
-
    
   })()
 }
