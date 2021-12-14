@@ -127,11 +127,47 @@ function draw_fmap_connections(data, electrodes) {
   return connections
 }
 
+function find_sphere_from_label(spheres, label) {
+  return spheres.find(s => s.caption === label)
+}
+
 // function for adding options based on electrode IDs
-function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data) {
+function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, spheres, volume) {
   const electrodeMenu = document.getElementById('electrode-menu')
   electrodeMenu.addEventListener('click', event => {
     print_electrode_info(elObjects, event.target.value, idArray, selectionSpheres, data)
+    var correspondingData = elObjects.find(e => e.elecID === event.target.value)
+
+    if (event.target.value !== "None" && correspondingData) {
+
+      const sliderControllers = volume.__controllers
+      const { xCoor, yCoor, zCoor } = correspondingData
+  
+      // sync with electrode menu options
+      // const electrodeIDMenuOptions = document.getElementById('electrode-menu').options
+      // electrodeIDMenuOptions.selectedIndex = sphereIndex + 1
+      
+      var sliderRange = [0, 255]
+      var coordinateRange = [-127.5, 127.5]
+  
+      var mappedXCoor = map_interval(xCoor, coordinateRange, sliderRange)
+      var mappedYCoor = map_interval(yCoor, coordinateRange, sliderRange)
+      var mappedZCoor = map_interval(zCoor, coordinateRange, sliderRange)
+  
+      var xSlider = sliderControllers[5]
+      var ySlider = sliderControllers[6]
+      var zSlider = sliderControllers[7]
+  
+      xSlider.object.indexX = mappedXCoor
+      xSlider.object.kb = mappedXCoor
+  
+      ySlider.object.indexY = mappedYCoor
+      ySlider.object.lb = mappedYCoor
+  
+      zSlider.object.indexZ = mappedZCoor
+      zSlider.object.mb = mappedZCoor
+    }
+    
   })
   // append HTML option to drop down menu
   for (const entry of elObjects) {
@@ -259,8 +295,6 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
       var clickedObject = renderer.pick(e.clientX, e.clientY)
       if (clickedObject !== 0) {
         var clickedSphere = renderer.get(clickedObject)
-        console.log(clickedSphere)
-       
         if (clickedSphere.c === "sphere") {
           var sphereIndex = spheres.indexOf(clickedSphere)
           
@@ -340,7 +374,7 @@ function load_electrodes(renderer, volume) {
 
    // filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
     fill_seizure_type_box(electrodeData, electrodeSpheres)
-    fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres, electrodeData)
+    fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres, electrodeData, electrodeSpheres, volume)
     jump_slices_on_click(renderer, volume, electrodeSpheres, electrodeData, selectionSpheres)
     add_mouse_hover(renderer)
     add_event_to_fmap_menu(electrodeData, fmapConnections)

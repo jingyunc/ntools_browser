@@ -65,17 +65,13 @@ window.onload = function () {
     // destructure array
     var [threeD, sliceX, sliceY, sliceZ] = setup_renderers();
 
- 
-
     volume = load_volume();
 
     var [leftHemisphereMesh, rightHemisphereMesh] = load_surfaces();
 
-    var p = new X.mesh()
     threeD.add(leftHemisphereMesh)
     threeD.add(rightHemisphereMesh)
-    threeD.add(p)
-
+   
     sliceX.add(volume);
     sliceX.render();
 
@@ -93,7 +89,6 @@ window.onload = function () {
 
         threeD.add(volume);
    
-
         threeD.render(); // this one triggers the loading of LH and then the onShowtime for the 3d renderer
     };
 
