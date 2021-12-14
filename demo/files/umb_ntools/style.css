@@ -39,6 +39,7 @@ button:active {
     text-shadow: -1px 1px 1px rgb(0,0,0);
     margin-left: 25px;
     font-size: 20px;
+    z-index: 10;
 }
 
 #electrode-controller {

@@ -259,11 +259,13 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
       var clickedObject = renderer.pick(e.clientX, e.clientY)
       if (clickedObject !== 0) {
         var clickedSphere = renderer.get(clickedObject)
-      //  console.log(clickedSphere)
+        console.log(clickedSphere)
+       
         if (clickedSphere.c === "sphere") {
           var sphereIndex = spheres.indexOf(clickedSphere)
+          
           // fix crashing when a sphere is clicked twice
-          if (sphereIndex > 0) {
+          if (sphereIndex >= 0) {
             var target = get_electrode_object(data, sphereIndex)
   
             var {elecID, xCoor, yCoor, zCoor} = target
@@ -342,7 +344,8 @@ function load_electrodes(renderer, volume) {
     jump_slices_on_click(renderer, volume, electrodeSpheres, electrodeData, selectionSpheres)
     add_mouse_hover(renderer)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
- 
+    
+    console.log(electrodeSpheres[0])
    
   })()
 }
