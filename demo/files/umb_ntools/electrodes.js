@@ -268,70 +268,40 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
           if (sphereIndex >= 0) {
             var target = get_electrode_object(data, sphereIndex)
   
-            // var {elecID, xCoor, yCoor, zCoor} = target
+            var {elecID, xCoor, yCoor, zCoor} = target
 
-            highlight_selected_electrode(target.elecID, data.elecID, selections)
+            highlight_selected_electrode(elecID, data.elecID, selections)
             update_labels(target, data)
-            jump_slices(volume, target, sphereIndex)
-  
-            // const sliderControllers = volume.__controllers
+       
+            const sliderControllers = volume.__controllers
 
-            // // sync with electrode menu options
-            // const electrodeIDMenuOptions = document.getElementById('electrode-menu').options
-            // electrodeIDMenuOptions.selectedIndex = sphereIndex + 1
+            // sync with electrode menu options
+            const electrodeIDMenuOptions = document.getElementById('electrode-menu').options
+            electrodeIDMenuOptions.selectedIndex = sphereIndex + 1
            
-            // var sliderRange = [0, 255]
-            // var coordinateRange = [-127.5, 127.5]
+            var sliderRange = [0, 255]
+            var coordinateRange = [-127.5, 127.5]
   
-            // var mappedXCoor = map_interval(xCoor, coordinateRange, sliderRange)
-            // var mappedYCoor = map_interval(yCoor, coordinateRange, sliderRange)
-            // var mappedZCoor = map_interval(zCoor, coordinateRange, sliderRange)
+            var mappedXCoor = map_interval(xCoor, coordinateRange, sliderRange)
+            var mappedYCoor = map_interval(yCoor, coordinateRange, sliderRange)
+            var mappedZCoor = map_interval(zCoor, coordinateRange, sliderRange)
   
-            // var xSlider = sliderControllers[5]
-            // var ySlider = sliderControllers[6]
-            // var zSlider = sliderControllers[7]
+            var xSlider = sliderControllers[5]
+            var ySlider = sliderControllers[6]
+            var zSlider = sliderControllers[7]
         
-            // xSlider.object.indexX = mappedXCoor
-            // xSlider.object.kb = mappedXCoor
+            xSlider.object.indexX = mappedXCoor
+            xSlider.object.kb = mappedXCoor
   
-            // ySlider.object.indexY = mappedYCoor
-            // ySlider.object.lb = mappedYCoor
+            ySlider.object.indexY = mappedYCoor
+            ySlider.object.lb = mappedYCoor
   
-            // zSlider.object.indexZ = mappedZCoor
-            // zSlider.object.mb = mappedZCoor
+            zSlider.object.indexZ = mappedZCoor
+            zSlider.object.mb = mappedZCoor
           }
         }
       }
     })
-}
-
-function jump_slices(volume, target, sphereIndex) {
-  var { xCoor, yCoor, zCoor } = target
-  const sliderControllers = volume.__controllers
-
-  // sync with electrode menu options
-  const electrodeIDMenuOptions = document.getElementById('electrode-menu').options
-  electrodeIDMenuOptions.selectedIndex = sphereIndex + 1
-  
-  var sliderRange = [0, 255]
-  var coordinateRange = [-127.5, 127.5]
-
-  var mappedXCoor = map_interval(xCoor, coordinateRange, sliderRange)
-  var mappedYCoor = map_interval(yCoor, coordinateRange, sliderRange)
-  var mappedZCoor = map_interval(zCoor, coordinateRange, sliderRange)
-
-  var xSlider = sliderControllers[5]
-  var ySlider = sliderControllers[6]
-  var zSlider = sliderControllers[7]
-
-  xSlider.object.indexX = mappedXCoor
-  xSlider.object.kb = mappedXCoor
-
-  ySlider.object.indexY = mappedYCoor
-  ySlider.object.lb = mappedYCoor
-
-  zSlider.object.indexZ = mappedZCoor
-  zSlider.object.mb = mappedZCoor
 }
 
 function load_electrodes(renderer, volume) {
