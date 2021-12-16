@@ -127,9 +127,7 @@ function draw_fmap_connections(data, electrodes) {
   return connections
 }
 
-function find_sphere_from_label(spheres, label) {
-  return spheres.find(s => s.caption === label)
-}
+
 
 // function for adding options based on electrode IDs
 function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, spheres, volume) {
@@ -143,10 +141,6 @@ function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, spher
       const sliderControllers = volume.__controllers
       const { xCoor, yCoor, zCoor } = correspondingData
   
-      // sync with electrode menu options
-      // const electrodeIDMenuOptions = document.getElementById('electrode-menu').options
-      // electrodeIDMenuOptions.selectedIndex = sphereIndex + 1
-      
       var sliderRange = [0, 255]
       var coordinateRange = [-127.5, 127.5]
   
@@ -255,7 +249,7 @@ function add_mouse_hover(renderer) {
     if (hoverObject !== 0 ) {
       var selectedSphere = renderer.get(hoverObject) 
  
-      if (selectedSphere.c === "sphere" || selectedSphere.c === "cylinder") {
+      if (selectedSphere.g === "sphere" || selectedSphere.g === "cylinder") {
         document.body.style.cursor = 'crosshair'
       } else {
         selectedSphere.visible = true
@@ -293,9 +287,11 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
   var canvas = document.getElementsByTagName('canvas')[0]
     canvas.addEventListener('click', e => {
       var clickedObject = renderer.pick(e.clientX, e.clientY)
+      console.log(clickedObject)
       if (clickedObject !== 0) {
         var clickedSphere = renderer.get(clickedObject)
-        if (clickedSphere.c === "sphere") {
+        console.log(clickedSphere)
+        if (clickedSphere.g === "sphere") {
           var sphereIndex = spheres.indexOf(clickedSphere)
           
           // fix crashing when a sphere is clicked twice
@@ -338,6 +334,10 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
     })
 }
 
+function show_all_tags(renderer, sphereIDs) {
+  renderer.showAllCaptions(sphereIDs)
+}
+
 function load_electrodes(renderer, volume) {
   (async () => {
     var subject = localStorage.getItem("user-search")
@@ -364,6 +364,11 @@ function load_electrodes(renderer, volume) {
     var electrodeSpheres = electrodeObjects.map(el => draw_electrode_fx(el))
     electrodeSpheres.forEach(el => renderer.add(el))
 
+    console.log(electrodeSpheres)
+
+    var sphereIDs = electrodeSpheres.map(el => el.id)
+    console.log(sphereIDs)
+
     // array of spheres that will show a highlighted sphere. default invisible
     var selectionSpheres = electrodeObjects.map(el => draw_highlight_fx(el))
     selectionSpheres.forEach(el => renderer.add(el))
@@ -378,9 +383,14 @@ function load_electrodes(renderer, volume) {
     jump_slices_on_click(renderer, volume, electrodeSpheres, electrodeData, selectionSpheres)
     add_mouse_hover(renderer)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
+
+
+    const tagsBtn = document.getElementById('show-tags-btn')
+    console.log(tagsBtn)
+    tagsBtn.addEventListener('click', () => {
+      show_all_tags(renderer, sphereIDs)
+    })
     
-    console.log(electrodeSpheres[0])
-   
   })()
 }
 

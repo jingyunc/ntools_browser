@@ -90,6 +90,8 @@ window.onload = function () {
         threeD.add(volume);
    
         threeD.render(); // this one triggers the loading of LH and then the onShowtime for the 3d renderer
+
+        threeD.resetBoundingBox();
     };
 
     window.addEventListener('resize', function () {
