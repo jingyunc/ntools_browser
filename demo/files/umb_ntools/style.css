@@ -117,13 +117,13 @@ option:hover {
     margin-bottom: 2px;
 }
 #sliceX {
-    border-top: 2px solid yellow;
-}
-
-#sliceY {
     border-top: 2px solid red;
 }
 
-#sliceZ {
+#sliceY {
     border-top: 2px solid green;
+}
+
+#sliceZ {
+    border-top: 2px solid blue;
 }
