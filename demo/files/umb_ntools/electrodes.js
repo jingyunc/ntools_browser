@@ -186,11 +186,12 @@ function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, spher
   }
 }
 
-function fill_seizure_type_box(data, spheres, fmaps) {
+function fill_seizure_type_box(data, spheres, fmaps, volume) {
   const seizureTypes = data.SeizDisplay
   const displayMenu = document.getElementById('seizure-display-menu')
   const seizTypeList = document.getElementById('seiztype-list')
   const intPopList = document.getElementById('int-pop-list')
+  var subject = localStorage.getItem("user-search")
 
   displayMenu.addEventListener('click', event => {
     // need to add functional map support separetely 
@@ -200,10 +201,23 @@ function fill_seizure_type_box(data, spheres, fmaps) {
       if (event.target.value === "intPopulation") {
         intPopList.style.visibility = 'visible'
         seizTypeList.style.visibility = 'hidden'
+        volume.labelmap.file = null
+        volume.labelmap.colortable.file = null
+        volume.labelmap.file = `../${subject}/${subject}_intPopulation_labels.nii`
+        volume.labelmap.colortable.file = './colormap_intpop.txt'
+        volume.modified()
       } else {
         seizTypeList.style.visibility = 'visible'
         intPopList.style.visibility = 'hidden'
+        volume.labelmap.file = null
+        volume.labelmap.colortable.file = null
+        volume.labelmap.file = `../${subject}/${subject}_${event.target.value}_labels.nii`
+        volume.labelmap.colortable.file = './colormap_seiztype.txt'
+        volume.modified()
       }
+
+      console.log(volume.labelmap.file)
+
       const selectedSeizType = data[event.target.value]
       spheres.forEach((sphere, index) => {
         sphere.color = get_seiztype_color(selectedSeizType[index])
@@ -268,9 +282,6 @@ function highlight_selected_electrode(el, idArray, selector) {
 }
 
 function highlight_selected_fmap(fmapHighlights, index) {
-  // for (var i = 0; i < fmapHighlights.length; i++) {
-  //   fmapHighlights[i].visible = false
-  // }
   fmapHighlights.forEach(fmap => fmap.visible = false)
   fmapHighlights[index].visible = true
 }
@@ -413,10 +424,10 @@ function load_electrodes(renderer, volumeGUI, volume) {
     var fmapHighlights = fmapConnections.map(fmap => draw_fmap_highlight_fx(fmap))
     fmapHighlights.forEach(highlight => renderer.add(highlight))
 
-    fmapIDs = fmapConnections.map(fmap => fmap.id)
-    console.log(fmapIDs)
+    // fmapIDs = fmapConnections.map(fmap => fmap.id)
+    // console.log(fmapIDs)
 
-    fill_seizure_type_box(electrodeData, electrodeSpheres, fmapConnections)
+    fill_seizure_type_box(electrodeData, electrodeSpheres, fmapConnections, volume)
     fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres, 
                           electrodeData, electrodeSpheres, volumeGUI)
     jump_slices_on_click(renderer, volumeGUI, electrodeSpheres, electrodeData, selectionSpheres, 
@@ -429,14 +440,6 @@ function load_electrodes(renderer, volumeGUI, volume) {
       renderer.resetBoundingBox()
       renderer.showAllCaptions(sphereIDs)
     })
-
-      // const fmapBtn = document.getElementById('show-fmaps-btn')
-      //       fmapBtn.addEventListener('click', () =>{
-      //         renderer.resetBoundingBox()
-      //         renderer.showAllCaptions(fmaps.map(fmap => fmap.id))
-      //       })
-
- 
 
   })()
 }

@@ -4,11 +4,11 @@ function load_volume() {
     var volume = new X.volume()
     if (localStorage.getItem("mode") === "UMB") {
         volume.file = `../${subject}/${subject}_T1.nii`;
-        // var labelMap = `../${subject}/${subject}_labels.nii`
-        // if (labelMap) {
-        //     volume.labelmap.file = labelMap
-        //     volume.labelmap.colortable.file = `./colormap.txt`
-        // }
+        var labelMap = `../${subject}/${subject}_default_labels.nii`
+        if (labelMap) {
+            volume.labelmap.file = labelMap
+            volume.labelmap.colortable.file = `./colormap_seiztype.txt`
+        }
     } else {
         volume.file = `https://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
     }
