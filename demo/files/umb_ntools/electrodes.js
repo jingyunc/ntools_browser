@@ -50,15 +50,15 @@ function get_electrode_object(el, index, bBox) {
   }
 
   electrodeObject.xSlice = Math.round(map_interval(
-    electrodeObject.xCoor, [-128, 127], [0, 255]
+    (electrodeObject.xCoor - xOffset), [-127.5, 127.5], [0, 255]
   ))
 
   electrodeObject.ySlice = Math.round(map_interval(
-    electrodeObject.yCoor, [-128, 127], [0, 255]
+    (electrodeObject.yCoor - yOffset), [-127.5, 127.5], [0, 255]
   ))
 
   electrodeObject.zSlice = Math.round(map_interval(
-    electrodeObject.zCoor, [-128, 127], [0, 255]
+    (electrodeObject.zCoor - zOffset), [-127.5, 127.5], [0, 255]
   ))
 
   return electrodeObject
@@ -74,7 +74,7 @@ function draw_electrode_fx(el, renderer) {
   elSphere.center = [xCoor, yCoor, zCoor]
   if (elecType === "EG" || elecType === "MG") {
     elSphere.color = [1, 0, 1]
-    elSphere.radius = 1 / 4
+    elSphere.radius = 1 / 3
   } else {
     elSphere.color = get_seiztype_color(seizType)
     elSphere.radius = 1
@@ -284,8 +284,8 @@ function update_labels(electrode, data) {
 }
 
 function jump_slices_on_click(
-  renderer, volume, spheres, 
-  data, selections, IDs, electrodeObjects
+  renderer, volume, spheres, data, 
+  selections, IDs, electrodeObjects
 ) {
   var canvas = document.getElementsByTagName('canvas')[0]
     canvas.addEventListener('click', e => {
