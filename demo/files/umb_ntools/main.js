@@ -4,11 +4,11 @@ function load_volume() {
     var volume = new X.volume()
     if (localStorage.getItem("mode") === "UMB") {
         volume.file = `../${subject}/${subject}_T1.nii`;
-        var labelMap = `../${subject}/${subject}_labels.nii`
-        if (labelMap) {
-            volume.labelmap.file = labelMap
-            volume.labelmap.colortable.file = `./colormap.txt`
-        }
+        // var labelMap = `../${subject}/${subject}_labels.nii`
+        // if (labelMap) {
+        //     volume.labelmap.file = labelMap
+        //     volume.labelmap.colortable.file = `./colormap.txt`
+        // }
     } else {
         volume.file = `https://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
     }
@@ -84,19 +84,13 @@ window.onload = function () {
         sliceZ.add(volume);
         sliceZ.render();
 
-        var mySphere = new X.sphere()
-        sliceX.add(mySphere)
-
         threeD.add(volume);
    
         threeD.render(); // this one triggers the loading of LH and then the onShowtime for the 3d renderer
+        
 
-        threeD.resetBoundingBox();
+        //threeD.resetBoundingBox();
     };
-
-    window.addEventListener('resize', function () {
-        threeD.camera.position = [0, 300, 0]
-    }, true);
 
     // the onShowtime function gets called automatically, just before the first rendering happens
     threeD.onShowtime = function () {
@@ -132,21 +126,13 @@ window.onload = function () {
 
         // fix original camera position
         threeD.camera.position = [0, 300, 0];
+
+        load_electrodes(threeD, volumeGUI, volume);
+
    
-        load_electrodes(threeD, volumeGUI);
+        
 
-        slicesGUI.__controllers[0].__onChange = () => {
-            var xval = volumeGUI.__controllers[5].object.indexX
-            var yval = volumeGUI.__controllers[6].object.indexY
-            var zval = volumeGUI.__controllers[7].object.indexZ
+       // threeD.resetBoundingBox()
 
-            volume.children[0].children.forEach(child => child.visible = false)
-            volume.children[1].children.forEach(child => child.visible = false)
-            volume.children[2].children.forEach(child => child.visible = false)
-
-            volume.children[0].children[Math.floor(xval)].visible = true
-            volume.children[1].children[Math.floor(yval)].visible = true
-            volume.children[2].children[Math.floor(zval)].visible = true
-        }
     };
 };

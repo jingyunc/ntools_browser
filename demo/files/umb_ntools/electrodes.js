@@ -34,27 +34,40 @@ function get_seiztype_color(type) {
 }
 
 // package each electrode together as an object for readability and easier iteration
-function get_electrode_object(el, index) {
+function get_electrode_object(el, index, bBox) {
   var defaultSeizType = el.SeizDisplay[0]
-  //var defaultSeizType = "seizType"
+  var [xOffset, yOffset, zOffset] = bBox
+
  
   return ({
     "elecID": el.elecID[index],
-    "xCoor": el.coorX[index],
-    "yCoor": el.coorY[index],
-    "zCoor": el.coorZ[index],
+    "xCoor": (el.coorX[index] + xOffset),
+    "yCoor": (el.coorY[index] + yOffset),
+    "zCoor": (el.coorZ[index] + zOffset),
     "elecType": el.elecType[index],
     "intPopulation": el.intPopulation[index],
     "seizType": el[defaultSeizType][index],
     "visible": true, // a default value for later filtering
   })
+  // return ({
+  //     "elecID": el.elecID[index],
+  //     "xCoor": el.coorX[index],
+  //     "yCoor": el.coorY[index],
+  //     "zCoor": el.coorZ[index],
+  //     "elecType": el.elecType[index],
+  //     "intPopulation": el.intPopulation[index],
+  //     "seizType": el[defaultSeizType][index],
+  //     "visible": true, // a default value for later filtering
+  // })
 }
 
 // create the graphical electrode on the canvas
-function draw_electrode_fx(el) {
+function draw_electrode_fx(el, renderer) {
   // destructuring object properties. it is more readable for me, 
   var { xCoor, yCoor, zCoor, elecID, seizType, elecType } = el
+
   elSphere = new X.sphere()
+
 
   elSphere.center = [xCoor, yCoor, zCoor]
   if (elecType === "EG" || elecType === "MG") {
@@ -287,10 +300,8 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
   var canvas = document.getElementsByTagName('canvas')[0]
     canvas.addEventListener('click', e => {
       var clickedObject = renderer.pick(e.clientX, e.clientY)
-      console.log(clickedObject)
       if (clickedObject !== 0) {
         var clickedSphere = renderer.get(clickedObject)
-        console.log(clickedSphere)
         if (clickedSphere.g === "sphere") {
           var sphereIndex = spheres.indexOf(clickedSphere)
           
@@ -315,30 +326,24 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
             var mappedXCoor = map_interval(xCoor, coordinateRange, sliderRange)
             var mappedYCoor = map_interval(yCoor, coordinateRange, sliderRange)
             var mappedZCoor = map_interval(zCoor, coordinateRange, sliderRange)
+
+            
   
             var xSlider = sliderControllers[5]
             var ySlider = sliderControllers[6]
             var zSlider = sliderControllers[7]
-        
-            xSlider.object.indexX = mappedXCoor
-            xSlider.object.kb = mappedXCoor
-  
-            ySlider.object.indexY = mappedYCoor
-            ySlider.object.lb = mappedYCoor
-  
-            zSlider.object.indexZ = mappedZCoor
-            zSlider.object.mb = mappedZCoor
+
+            xSlider.object.indexX = Math.round(mappedXCoor)
+            ySlider.object.indexY = Math.round(mappedYCoor)
+            zSlider.object.indexZ = Math.round(mappedZCoor)
+
           }
         }
       }
     })
 }
 
-function show_all_tags(renderer, sphereIDs) {
-  renderer.showAllCaptions(sphereIDs)
-}
-
-function load_electrodes(renderer, volume) {
+function load_electrodes(renderer, volumeGUI, volume) {
   (async () => {
     var subject = localStorage.getItem("user-search")
     if (localStorage.getItem("mode") === "UMB") {
@@ -346,10 +351,15 @@ function load_electrodes(renderer, volume) {
     } else {
       var electrodeData = await (await fetch (`https://ievappwpdcpvm01.nyumc.org/?file=${subject}.json`)).json()
     }
+    
+    const oldBoundingBox = renderer.u
+    console.log(oldBoundingBox)
+
+    //renderer.resetBoundingBox()
 
     document.getElementById('subject-id-lbl').innerHTML = electrodeData.subjID
     document.getElementById('num-seiz-types-lbl').innerHTML = electrodeData.totalSeizType
-    //console.log(electrodeData)
+
     var electrodeIDs = electrodeData.elecID
 
     // can choose any property here, but it must have same length as other properties
@@ -358,16 +368,14 @@ function load_electrodes(renderer, volume) {
     // create an array of electrode objects to access by property
     var electrodeObjects = Array
       .apply(null, Array(numberOfElectrodes))
-      .map((_, index) => get_electrode_object(electrodeData, index))
+      .map((_, index) => get_electrode_object(electrodeData, index, oldBoundingBox))
 
     // create an array of electrode spheres we can access via a closure
-    var electrodeSpheres = electrodeObjects.map(el => draw_electrode_fx(el))
+    var electrodeSpheres = electrodeObjects.map(el => draw_electrode_fx(el, renderer))
     electrodeSpheres.forEach(el => renderer.add(el))
 
-    console.log(electrodeSpheres)
-
+    // create an array of sphere IDs
     var sphereIDs = electrodeSpheres.map(el => el.id)
-    console.log(sphereIDs)
 
     // array of spheres that will show a highlighted sphere. default invisible
     var selectionSpheres = electrodeObjects.map(el => draw_highlight_fx(el))
@@ -377,20 +385,19 @@ function load_electrodes(renderer, volume) {
     var fmapConnections = draw_fmap_connections(electrodeData, electrodeObjects, renderer)
     fmapConnections.forEach(connection => renderer.add(connection))
 
-   // filter_visibility(electrodeObjects, electrodeSpheres, fmapConnections, electrodeData)
     fill_seizure_type_box(electrodeData, electrodeSpheres)
-    fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres, electrodeData, electrodeSpheres, volume)
-    jump_slices_on_click(renderer, volume, electrodeSpheres, electrodeData, selectionSpheres)
+    fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres, electrodeData, electrodeSpheres, volumeGUI)
+    jump_slices_on_click(renderer, volumeGUI, electrodeSpheres, electrodeData, selectionSpheres)
     add_mouse_hover(renderer)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
 
-
+    //renderer.resetBoundingBox()
     const tagsBtn = document.getElementById('show-tags-btn')
-    console.log(tagsBtn)
     tagsBtn.addEventListener('click', () => {
-      show_all_tags(renderer, sphereIDs)
+      renderer.resetBoundingBox()
+      renderer.showAllCaptions(sphereIDs)
     })
-    
+
   })()
 }
 
