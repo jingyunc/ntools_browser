@@ -28,18 +28,6 @@
           <br>
             <label for="electrode-types">Select Seizure Type</label> 
               <select name="electrode-types" id="seizure-display-menu"></select>
-            <br><br>
-            <label for="fmaps">Select Functional Map</label>
-            <select name="fmaps" id="fmap-menu">
-              <!-- <option value="none">None</option> -->
-              <option value="fmapThreshold">Threshold</option>
-              <option value="fmapMotor">Motor</option>
-              <option value="fmapSensory">Sensory</option>
-              <option value="fmapLanguage">Language</option>
-              <option value="fmapVisual">Visual</option>
-              <option value="fmapOther">Other</option>
-              <option value="fmapAfterDischarge">After Discharge</option>
-            </select>
           <br><br>
           <div>
             <label for="electrode">Select Electrode ID</label>
@@ -64,10 +52,26 @@
                 <label id="seiz-type-label-inner"></label>
               </div>
             </div>
-            <button id="show-tags-btn">
-              Show All Tags
-            </button>
-       
+            <br>
+            <div>
+              <button id="show-tags-btn">
+                Show All Tags
+              </button>
+            </div>
+            <br>
+            <label for="fmaps">Select Functional Map</label>
+            <select name="fmaps" id="fmap-menu">
+              <option value="none">None</option>
+              <option value="fmapThreshold">Threshold</option>
+              <option value="fmapMotor">Motor</option>
+              <option value="fmapSensory">Sensory</option>
+              <option value="fmapLanguage">Language</option>
+              <option value="fmapVisual">Visual</option>
+              <option value="fmapOther">Other</option>
+              <option value="fmapAfterDischarge">After Discharge</option>
+            </select>
+            <br><br>
+            <label id="fmap-caption"></label>
           </div>
         
       </div>

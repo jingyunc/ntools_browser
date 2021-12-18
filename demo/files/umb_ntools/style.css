@@ -127,3 +127,7 @@ option:hover {
 #sliceZ {
     border-top: 2px solid blue;
 }
+
+button {
+    border: 1px solid white;
+}

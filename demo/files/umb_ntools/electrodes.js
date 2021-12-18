@@ -3,6 +3,7 @@
 // and just use indices directly
 
 // returns color of electrode
+
 function get_seiztype_color(type) {
 
   // if type is null
@@ -117,6 +118,19 @@ function draw_connection_fx(startNode, endNode) {
   return connection
 }
 
+function draw_fmap_highlight_fx(fmap) {
+  var { start, end } = fmap
+  var highlight = new X.cylinder()
+  highlight.radius = 0.4
+  highlight.start = start
+  highlight.end = end
+  highlight.opacity = 0.5
+  highlight.color = [0, 0, 1]
+  highlight.visible = false
+
+  return highlight
+}
+
 
 // finds the two electrodes in the data and calls the cylinder renderer
 
@@ -172,7 +186,7 @@ function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, spher
   }
 }
 
-function fill_seizure_type_box(data, spheres) {
+function fill_seizure_type_box(data, spheres, fmaps) {
   const seizureTypes = data.SeizDisplay
   const displayMenu = document.getElementById('seizure-display-menu')
   displayMenu.addEventListener('click', event => {
@@ -182,6 +196,8 @@ function fill_seizure_type_box(data, spheres) {
       spheres.forEach((sphere, index) => {
         sphere.color = get_seiztype_color(selectedSeizType[index])
       })
+    } else {
+      fmaps.forEach(fmap => fmap.visible = true)
     }
   })
 
@@ -205,11 +221,16 @@ function redraw_fmaps(fmaps, captions) {
   })
 }
 
-function add_event_to_fmap_menu(electrodeData, fmaps) {
+function add_event_to_fmap_menu(electrodeData, fmaps, fmapHighlights) {
   const fmapMenu = document.getElementById('fmap-menu')
   fmapMenu.addEventListener('click', event => {
-    if (event.target.value !== "none")
+    if (event.target.value !== "none") {
       redraw_fmaps(fmaps, electrodeData[event.target.value])
+      document.getElementById('fmap-caption').innerText = ''
+    } else {
+      fmaps.forEach(fmap => fmap.visible = false)
+    }
+    fmapHighlights.forEach(fmap => fmap.visible = false)
   })
 }
 
@@ -233,6 +254,14 @@ function highlight_selected_electrode(el, idArray, selector) {
       selector[i].visible = false;
     }
   }
+}
+
+function highlight_selected_fmap(fmapHighlights, index) {
+  // for (var i = 0; i < fmapHighlights.length; i++) {
+  //   fmapHighlights[i].visible = false
+  // }
+  fmapHighlights.forEach(fmap => fmap.visible = false)
+  fmapHighlights[index].visible = true
 }
 
 // inspired by https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
@@ -285,7 +314,8 @@ function update_labels(electrode, data) {
 
 function jump_slices_on_click(
   renderer, volume, spheres, data, 
-  selections, IDs, electrodeObjects
+  selections, IDs, electrodeObjects,
+  fmaps, fmapHighlights
 ) {
   var canvas = document.getElementsByTagName('canvas')[0]
     canvas.addEventListener('click', e => {
@@ -317,6 +347,13 @@ function jump_slices_on_click(
             xSlider.object.indexX = xSlice
             ySlider.object.indexY = ySlice
             zSlider.object.indexZ = zSlice
+            
+          }
+        } else if (clickedSphere.g === "cylinder") {
+          var cylinderIndex = fmaps.indexOf(clickedSphere)
+          if (cylinderIndex >= 0) {
+            document.getElementById('fmap-caption').innerText = clickedSphere.caption
+            highlight_selected_fmap(fmapHighlights, cylinderIndex)
           }
         }
       }
@@ -362,11 +399,16 @@ function load_electrodes(renderer, volumeGUI, volume) {
     var fmapConnections = draw_fmap_connections(electrodeData, electrodeObjects, renderer)
     fmapConnections.forEach(connection => renderer.add(connection))
 
-    fill_seizure_type_box(electrodeData, electrodeSpheres)
-    fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres, electrodeData, electrodeSpheres, volumeGUI)
-    jump_slices_on_click(renderer, volumeGUI, electrodeSpheres, electrodeData, selectionSpheres, electrodeIDs, electrodeObjects)
+    var fmapHighlights = fmapConnections.map(fmap => draw_fmap_highlight_fx(fmap))
+    fmapHighlights.forEach(highlight => renderer.add(highlight))
+
+    fill_seizure_type_box(electrodeData, electrodeSpheres, fmapConnections)
+    fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres, 
+                          electrodeData, electrodeSpheres, volumeGUI)
+    jump_slices_on_click(renderer, volumeGUI, electrodeSpheres, electrodeData, selectionSpheres, 
+                         electrodeIDs, electrodeObjects, fmapConnections, fmapHighlights)
     add_mouse_hover(renderer)
-    add_event_to_fmap_menu(electrodeData, fmapConnections)
+    add_event_to_fmap_menu(electrodeData, fmapConnections, fmapHighlights)
 
     const tagsBtn = document.getElementById('show-tags-btn')
     tagsBtn.addEventListener('click', () => {
