@@ -44,7 +44,7 @@ button:active {
 
 #electrode-controller {
     position: absolute;
-    height: 380px;
+    height: 65%;
     width: 220px;
     font-family: sans-serif;
     color: white;
@@ -131,3 +131,12 @@ option:hover {
 button {
     border: 1px solid white;
 }
+
+#color-legend{
+    border: 1px solid white;
+    margin-top: 10px;
+    font-size: 1rem;
+    position: relative;
+    display: block;
+}
+

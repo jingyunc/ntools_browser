@@ -189,16 +189,27 @@ function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, spher
 function fill_seizure_type_box(data, spheres, fmaps) {
   const seizureTypes = data.SeizDisplay
   const displayMenu = document.getElementById('seizure-display-menu')
+  const seizTypeList = document.getElementById('seiztype-list')
+  const intPopList = document.getElementById('int-pop-list')
+
   displayMenu.addEventListener('click', event => {
     // need to add functional map support separetely 
-    if (event.target.value !== "funMapping"){
+    if (event.target.value === "funMapping"){
+      fmaps.forEach(fmap => fmap.visible = true)
+    } else {
+      if (event.target.value === "intPopulation") {
+        intPopList.style.visibility = 'visible'
+        seizTypeList.style.visibility = 'hidden'
+      } else {
+        seizTypeList.style.visibility = 'visible'
+        intPopList.style.visibility = 'hidden'
+      }
       const selectedSeizType = data[event.target.value]
       spheres.forEach((sphere, index) => {
         sphere.color = get_seiztype_color(selectedSeizType[index])
       })
-    } else {
-      fmaps.forEach(fmap => fmap.visible = true)
     }
+
   })
 
   seizureTypes.forEach(type => {
@@ -226,7 +237,7 @@ function add_event_to_fmap_menu(electrodeData, fmaps, fmapHighlights) {
   fmapMenu.addEventListener('click', event => {
     if (event.target.value !== "none") {
       redraw_fmaps(fmaps, electrodeData[event.target.value])
-      document.getElementById('fmap-caption').innerText = ''
+      document.getElementById('fmap-caption').innerText = 'No Functional Mapping Selected'
     } else {
       fmaps.forEach(fmap => fmap.visible = false)
     }
@@ -402,6 +413,9 @@ function load_electrodes(renderer, volumeGUI, volume) {
     var fmapHighlights = fmapConnections.map(fmap => draw_fmap_highlight_fx(fmap))
     fmapHighlights.forEach(highlight => renderer.add(highlight))
 
+    fmapIDs = fmapConnections.map(fmap => fmap.id)
+    console.log(fmapIDs)
+
     fill_seizure_type_box(electrodeData, electrodeSpheres, fmapConnections)
     fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres, 
                           electrodeData, electrodeSpheres, volumeGUI)
@@ -415,6 +429,14 @@ function load_electrodes(renderer, volumeGUI, volume) {
       renderer.resetBoundingBox()
       renderer.showAllCaptions(sphereIDs)
     })
+
+      // const fmapBtn = document.getElementById('show-fmaps-btn')
+      //       fmapBtn.addEventListener('click', () =>{
+      //         renderer.resetBoundingBox()
+      //         renderer.showAllCaptions(fmaps.map(fmap => fmap.id))
+      //       })
+
+ 
 
   })()
 }
