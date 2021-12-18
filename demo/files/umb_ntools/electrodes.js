@@ -38,8 +38,7 @@ function get_electrode_object(el, index, bBox) {
   var defaultSeizType = el.SeizDisplay[0]
   var [xOffset, yOffset, zOffset] = bBox
 
- 
-  return ({
+  var electrodeObject = {
     "elecID": el.elecID[index],
     "xCoor": (el.coorX[index] + xOffset),
     "yCoor": (el.coorY[index] + yOffset),
@@ -48,17 +47,21 @@ function get_electrode_object(el, index, bBox) {
     "intPopulation": el.intPopulation[index],
     "seizType": el[defaultSeizType][index],
     "visible": true, // a default value for later filtering
-  })
-  // return ({
-  //     "elecID": el.elecID[index],
-  //     "xCoor": el.coorX[index],
-  //     "yCoor": el.coorY[index],
-  //     "zCoor": el.coorZ[index],
-  //     "elecType": el.elecType[index],
-  //     "intPopulation": el.intPopulation[index],
-  //     "seizType": el[defaultSeizType][index],
-  //     "visible": true, // a default value for later filtering
-  // })
+  }
+
+  electrodeObject.xSlice = Math.round(map_interval(
+    electrodeObject.xCoor, [-128, 127], [0, 255]
+  ))
+
+  electrodeObject.ySlice = Math.round(map_interval(
+    electrodeObject.yCoor, [-128, 127], [0, 255]
+  ))
+
+  electrodeObject.zSlice = Math.round(map_interval(
+    electrodeObject.zCoor, [-128, 127], [0, 255]
+  ))
+
+  return electrodeObject
 }
 
 // create the graphical electrode on the canvas
@@ -67,7 +70,6 @@ function draw_electrode_fx(el, renderer) {
   var { xCoor, yCoor, zCoor, elecID, seizType, elecType } = el
 
   elSphere = new X.sphere()
-
 
   elSphere.center = [xCoor, yCoor, zCoor]
   if (elecType === "EG" || elecType === "MG") {
@@ -140,8 +142,6 @@ function draw_fmap_connections(data, electrodes) {
   return connections
 }
 
-
-
 // function for adding options based on electrode IDs
 function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, spheres, volume) {
   const electrodeMenu = document.getElementById('electrode-menu')
@@ -152,29 +152,16 @@ function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, spher
     if (event.target.value !== "None" && correspondingData) {
 
       const sliderControllers = volume.__controllers
-      const { xCoor, yCoor, zCoor } = correspondingData
-  
-      var sliderRange = [0, 255]
-      var coordinateRange = [-127.5, 127.5]
-  
-      var mappedXCoor = map_interval(xCoor, coordinateRange, sliderRange)
-      var mappedYCoor = map_interval(yCoor, coordinateRange, sliderRange)
-      var mappedZCoor = map_interval(zCoor, coordinateRange, sliderRange)
+      const { xSlice, ySlice, zSlice } = correspondingData
   
       var xSlider = sliderControllers[5]
       var ySlider = sliderControllers[6]
       var zSlider = sliderControllers[7]
   
-      xSlider.object.indexX = mappedXCoor
-      xSlider.object.kb = mappedXCoor
-  
-      ySlider.object.indexY = mappedYCoor
-      ySlider.object.lb = mappedYCoor
-  
-      zSlider.object.indexZ = mappedZCoor
-      zSlider.object.mb = mappedZCoor
+      xSlider.object.indexX = xSlice
+      ySlider.object.indexY = ySlice
+      zSlider.object.indexZ = zSlice
     }
-    
   })
   // append HTML option to drop down menu
   for (const entry of elObjects) {
@@ -296,7 +283,10 @@ function update_labels(electrode, data) {
   }
 }
 
-function jump_slices_on_click(renderer, volume, spheres, data, selections) {
+function jump_slices_on_click(
+  renderer, volume, spheres, 
+  data, selections, IDs, electrodeObjects
+) {
   var canvas = document.getElementsByTagName('canvas')[0]
     canvas.addEventListener('click', e => {
       var clickedObject = renderer.pick(e.clientX, e.clientY)
@@ -307,11 +297,11 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
           
           // fix crashing when a sphere is clicked twice
           if (sphereIndex >= 0) {
-            var target = get_electrode_object(data, sphereIndex)
+            var target = electrodeObjects[sphereIndex]
   
-            var {elecID, xCoor, yCoor, zCoor} = target
+            var {elecID, xSlice, ySlice, zSlice} = target
 
-            highlight_selected_electrode(elecID, data.elecID, selections)
+            highlight_selected_electrode(elecID, IDs, selections)
             update_labels(target, data)
        
             const sliderControllers = volume.__controllers
@@ -320,23 +310,13 @@ function jump_slices_on_click(renderer, volume, spheres, data, selections) {
             const electrodeIDMenuOptions = document.getElementById('electrode-menu').options
             electrodeIDMenuOptions.selectedIndex = sphereIndex + 1
            
-            var sliderRange = [0, 255]
-            var coordinateRange = [-127.5, 127.5]
-  
-            var mappedXCoor = map_interval(xCoor, coordinateRange, sliderRange)
-            var mappedYCoor = map_interval(yCoor, coordinateRange, sliderRange)
-            var mappedZCoor = map_interval(zCoor, coordinateRange, sliderRange)
-
-            
-  
             var xSlider = sliderControllers[5]
             var ySlider = sliderControllers[6]
             var zSlider = sliderControllers[7]
 
-            xSlider.object.indexX = Math.round(mappedXCoor)
-            ySlider.object.indexY = Math.round(mappedYCoor)
-            zSlider.object.indexZ = Math.round(mappedZCoor)
-
+            xSlider.object.indexX = xSlice
+            ySlider.object.indexY = ySlice
+            zSlider.object.indexZ = zSlice
           }
         }
       }
@@ -353,9 +333,6 @@ function load_electrodes(renderer, volumeGUI, volume) {
     }
     
     const oldBoundingBox = renderer.u
-    console.log(oldBoundingBox)
-
-    //renderer.resetBoundingBox()
 
     document.getElementById('subject-id-lbl').innerHTML = electrodeData.subjID
     document.getElementById('num-seiz-types-lbl').innerHTML = electrodeData.totalSeizType
@@ -387,11 +364,10 @@ function load_electrodes(renderer, volumeGUI, volume) {
 
     fill_seizure_type_box(electrodeData, electrodeSpheres)
     fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres, electrodeData, electrodeSpheres, volumeGUI)
-    jump_slices_on_click(renderer, volumeGUI, electrodeSpheres, electrodeData, selectionSpheres)
+    jump_slices_on_click(renderer, volumeGUI, electrodeSpheres, electrodeData, selectionSpheres, electrodeIDs, electrodeObjects)
     add_mouse_hover(renderer)
     add_event_to_fmap_menu(electrodeData, fmapConnections)
 
-    //renderer.resetBoundingBox()
     const tagsBtn = document.getElementById('show-tags-btn')
     tagsBtn.addEventListener('click', () => {
       renderer.resetBoundingBox()
