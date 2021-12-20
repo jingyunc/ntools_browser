@@ -41,7 +41,7 @@ def map_interval(input_val, input_range, output_range):
     return output_start + ((output_end - output_start) / (input_end - input_start)) * (input_val - input_start)
 
 r = 1 # maybe switch to scikit image draw
-for seizType in all_seiztypes[0:len(all_seiztypes)]:
+for seizType in all_seiztypes:
     vol = f'../nyu/ntools_browser/demo/files/{subject}/{subject}_T1.nii'
 
     volume = nib.load(vol)
