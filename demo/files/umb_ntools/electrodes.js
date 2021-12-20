@@ -213,7 +213,7 @@ function draw_fmap_connections(data, electrodes) {
  */
 function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, volume) {
   const electrodeMenu = document.getElementById('electrode-menu')
-  electrodeMenu.addEventListener('click', event => {
+  electrodeMenu.addEventListener('change', event => {
     print_electrode_info(elObjects, event.target.value, idArray, selectionSpheres, data)
     var correspondingData = elObjects.find(e => e.elecID === event.target.value)
 
@@ -221,6 +221,8 @@ function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, volum
 
       const sliderControllers = volume.__controllers
       const { xSlice, ySlice, zSlice } = correspondingData
+
+      console.log(volume)
   
       var xSlider = sliderControllers[5]
       var ySlider = sliderControllers[6]
@@ -292,7 +294,7 @@ function redraw_fmaps(fmaps, captions) {
  */
 function add_event_to_fmap_menu(electrodeData, fmaps, fmapHighlights) {
   const fmapMenu = document.getElementById('fmap-menu')
-  fmapMenu.addEventListener('click', event => {
+  fmapMenu.addEventListener('change', event => {
     if (event.target.value !== "none") {
       redraw_fmaps(fmaps, electrodeData[event.target.value])
       document.getElementById('fmap-caption').innerText = 'No Functional Mapping Selected'
@@ -545,9 +547,11 @@ function load_electrodes(renderer, volumeGUI, volume) {
     // adds the seizure types to the first drop down menu on the panel
     fill_seizure_type_box(electrodeData, electrodeSpheres, fmapConnections, volume, renderer)
 
+    console.log(volumeGUI)
     // adds the IDs to the elctrode ID menu and sets up event listeners
     fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres, 
-                          electrodeData, electrodeSpheres, volumeGUI)
+                          electrodeData, volumeGUI)
+
     jump_slices_on_click(renderer, volumeGUI, electrodeSpheres, electrodeData, selectionSpheres, 
                          electrodeIDs, electrodeObjects, fmapConnections, fmapHighlights)
 

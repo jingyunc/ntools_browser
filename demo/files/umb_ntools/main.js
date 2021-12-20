@@ -153,11 +153,13 @@ window.onload = function () {
           if (selectedSeizType === "intPopulation") {
             intPopList.style.visibility = 'visible'
             seizTypeList.style.visibility = 'hidden'
+           // volume.file = `../${subject}/${subject}_T1.nii`;
             volume.labelmap.file = `../${subject}/${subject}_intPopulation_labels.nii`
             volume.labelmap.colortable.file = './colormap_intpop.txt'
           } else {
             seizTypeList.style.visibility = 'visible'
             intPopList.style.visibility = 'hidden'
+          //  volume.file = `../${subject}/${subject}_T1.nii`;
             volume.labelmap.file = `../${subject}/${subject}_${selectedSeizType}_labels.nii`
             volume.labelmap.colortable.file = './colormap_seiztype.txt'
           }
