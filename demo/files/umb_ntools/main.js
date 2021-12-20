@@ -1,5 +1,9 @@
-var subject = localStorage.getItem("user-search")
+var subject = localStorage.getItem("user-search") // get the subject name from search page
 
+/**
+ * loads the .nii data into a X.volume and returns it
+ * @returns {X.volume}
+ */
 function load_volume() {
     var volume = new X.volume()
     if (localStorage.getItem("mode") === "UMB") {
@@ -14,6 +18,10 @@ function load_volume() {
     return volume;
 };
 
+/**
+ * Loads the .pial data into two X.meshes and returns them
+ * @returns {[X.mesh, X.mesh]}
+ */
 function load_surfaces() {
     var leftHemisphere = new X.mesh();
     var rightHemisphere = new X.mesh();
@@ -34,6 +42,10 @@ function load_surfaces() {
 
     return [leftHemisphere, rightHemisphere];
 };
+/**
+ * Initializes the renderers and sets them to their needed container
+ * @returns {[X.renderer3D, x.renderer2D, X.renderer2D, X.renderer2D]}
+ */
 
 function setup_renderers() {
     var threeDRenderer = new X.renderer3D();
@@ -59,7 +71,7 @@ function setup_renderers() {
 }
 
 window.onload = function () {
-    // destructure array
+    // destructure array of renderers
     var [threeD, sliceX, sliceY, sliceZ] = setup_renderers();
 
     volume = load_volume();
@@ -89,6 +101,7 @@ window.onload = function () {
     // the onShowtime function gets called automatically, just before the first rendering happens
     threeD.onShowtime = function () {
 
+        // add the GUI once data is done loading
         var gui = new dat.GUI()
 
         var volumeGUI = gui.addFolder('Volume')
@@ -98,11 +111,13 @@ window.onload = function () {
         volumeGUI.add(volume, 'windowLow', volume.min, volume.max)
         volumeGUI.add(volume, 'windowHigh', volume.min, volume.max)
 
+        // slice indicies
         volumeGUI.add(volume, 'indexX', 0, volume.dimensions[0] - 1)
         volumeGUI.add(volume, 'indexY', 0, volume.dimensions[1] - 1)
         volumeGUI.add(volume, 'indexZ', 0, volume.dimensions[2] - 1)
         volumeGUI.open()
 
+        // hemisphere GUIs
         var leftHemisphereGUI = gui.addFolder('Left Hemisphere')
         leftHemisphereGUI.add(leftHemisphereMesh, 'visible')
         leftHemisphereGUI.add(leftHemisphereMesh, 'opacity', 0, 1)
@@ -113,6 +128,7 @@ window.onload = function () {
         rightHemisphereGUI.add(rightHemisphereMesh, 'opacity', 0, 1)
         rightHemisphereGUI.open()
 
+        // making slices invisible
         var slicesGUI = gui.addFolder('Slices')
         slicesGUI.add(volume, 'visible') 
         slicesGUI.open()
@@ -121,6 +137,10 @@ window.onload = function () {
         threeD.camera.position = [0, 300, 0];
 
         load_electrodes(threeD, volumeGUI, volume);
+
+        // this should ideally reset the colormap and labelmap of volume
+        // whenever the menu is changed. It also will put the appropriate
+        // color legend on the screen
 
         const displayMenu = document.getElementById('seizure-display-menu')
         const seizTypeList = document.getElementById('seiztype-list')
