@@ -3,24 +3,36 @@
 get_ipython().run_line_magic('pylab', 'inline')
 import nibabel as nib
 import json
+import re
 
-with open('./sample.json') as f:
+# UPDATE SUBJECT AND PATH BEFORE USE!
+subject = "fsMNI"
+
+with open(f'../nyu/ntools_browser/demo/files/{subject}/{subject}.json') as f:
     electrode_data = json.load(f)
 
 number_of_electrodes = len(electrode_data['elecID'])
 
 class Electrode:
-    def __init__(self, xCoor, yCoor, zCoor):
+    def __init__(self, xCoor, yCoor, zCoor, seizType, intPopulation):
         self.xCoor = xCoor
         self.yCoor = yCoor
         self.zCoor = zCoor
+        self.seizType = seizType
+        self.intPopulation = intPopulation
         
+all_seiztypes = electrode_data["SeizDisplay"]
+
+default_seizType = electrode_data["SeizDisplay"][0]
+
 electrode_objects = []
 for index in range(number_of_electrodes):
     xCoor = electrode_data['coorX'][index]
     yCoor = electrode_data['coorY'][index]
     zCoor = electrode_data['coorZ'][index]
-    electrode_objects.append(Electrode(xCoor, yCoor, zCoor))
+    seizType = electrode_data[default_seizType][index]
+    intPop = electrode_data['intPopulation'][index]
+    electrode_objects.append(Electrode(xCoor, yCoor, zCoor, seizType, intPop))
 
 def map_interval(input_val, input_range, output_range):
     (input_start, input_end) = input_range
@@ -28,26 +40,64 @@ def map_interval(input_val, input_range, output_range):
     
     return output_start + ((output_end - output_start) / (input_end - input_start)) * (input_val - input_start)
 
-vol = '../fsaverage/T1.nii'
+r = 1 # maybe switch to scikit image draw
+for seizType in all_seiztypes[0:len(all_seiztypes)]:
+    vol = f'../nyu/ntools_browser/demo/files/{subject}/{subject}_T1.nii'
 
-volume = nib.load(vol)
-
-print(volume.affine)
-labels = np.zeros((volume.shape[0], volume.shape[1], volume.shape[2]), dtype=np.uint8)
-
-r = 3 # maybe switch to scikit image draw
-
-for electrode in electrode_objects:
-    first_interval = (-127.5, 127.5)
-    second_interval = (0, 255)
+    volume = nib.load(vol)
+    labels = np.zeros((volume.shape[0], volume.shape[1], volume.shape[2]), dtype=np.uint8)
     
-    # map raw coordinates to slice
-    mapped_xCoor = int(round(map_interval(electrode.xCoor, first_interval, second_interval)))
-    mapped_yCoor = int(round(map_interval(electrode.yCoor, first_interval, second_interval)))
-    mapped_zCoor = int(round(map_interval(electrode.zCoor, first_interval, second_interval)))    
-
-    labels[mapped_xCoor:mapped_xCoor+r, mapped_yCoor:mapped_yCoor+r, mapped_zCoor:mapped_zCoor+r] = 1
+    # really hacky way to make a default seiztype based on just the first seiztype
+    # we're not making a labelmap for funMapping, since funMapping never exists as a 
+    # JSON property
+    if seizType == 'funMapping':
+        current_seiztype_list = electrode_data[all_seiztypes[0]]
+    else:
+        current_seiztype_list = electrode_data[seizType]
     
-# store the labelmap
-labelmap = nib.Nifti1Image(labels, volume.affine)
-nib.save(labelmap, 'labels.nii')
+    for index, electrode in enumerate(electrode_objects):
+        first_interval = (-127.5, 127.5)
+        second_interval = (0, 255)
+        electrode_color = 1
+  
+        current_seiztype = current_seiztype_list[index]
+        
+        if seizType == 'intPopulation':
+            # since 0 is the background on the colormap, offset by 1
+            electrode_color = current_seiztype + 1
+        else:
+            current_seiztype = re.sub(' +', ' ', current_seiztype)
+            current_seiztype = current_seiztype.lower()
+            
+            if current_seiztype == 'onset':
+                electrode_color = 2
+            elif current_seiztype == 'early spread':
+                electrode_color = 3
+            elif current_seiztype == 'late spread':
+                electrode_color = 4
+            elif current_seiztype == 'very early spread':
+                electrode_color = 5
+            elif current_seiztype == 'rapid spread':
+                electrode_color = 6
+            elif current_seiztype == 'early onset':
+                electrode_color = 7
+            else:
+                electrode_color = 1
+        
+        mapped_xCoor = int(round(map_interval(electrode.xCoor, first_interval, second_interval), 5))
+        mapped_yCoor = int(round(map_interval(electrode.yCoor, first_interval, second_interval), 5))
+        mapped_zCoor = int(round(map_interval(electrode.zCoor, first_interval, second_interval), 5))
+     
+        try:
+            print(electrode_color)
+            labels[mapped_xCoor:mapped_xCoor + r + 1, mapped_yCoor:mapped_yCoor + r + 1, mapped_zCoor:mapped_zCoor + r + 1] = electrode_color
+        except IndexError:
+            continue
+        
+    labelmap = nib.Nifti1Image(labels, volume.affine)
+
+    if seizType == 'funMapping':
+        # again, a hacky way to make a default
+        nib.save(labelmap, f'../nyu/ntools_browser/demo/files/{subject}/{subject}_default_labels.nii')
+    else:
+        nib.save(labelmap, f'../nyu/ntools_browser/demo/files/{subject}/{subject}_{seizType}_labels.nii')
