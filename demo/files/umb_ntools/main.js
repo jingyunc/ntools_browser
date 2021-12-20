@@ -4,11 +4,9 @@ function load_volume() {
     var volume = new X.volume()
     if (localStorage.getItem("mode") === "UMB") {
         volume.file = `../${subject}/${subject}_T1.nii`;
-        var labelMap = `../${subject}/${subject}_default_labels.nii`
-        if (labelMap) {
-            volume.labelmap.file = labelMap
-            volume.labelmap.colortable.file = `./colormap_seiztype.txt`
-        }
+        volume.labelmap.file = labelMap = `../${subject}/${subject}_default_labels.nii`
+        volume.labelmap.colortable.file = `./colormap_seiztype.txt`
+        volume.modified()
     } else {
         volume.file = `https://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
     }
@@ -45,7 +43,6 @@ function setup_renderers() {
     var sliceX = new X.renderer2D();
     sliceX.container = 'sliceX';
     sliceX.orientation = 'X';
-
     sliceX.init();
 
     var sliceY = new X.renderer2D();
@@ -87,9 +84,6 @@ window.onload = function () {
         threeD.add(volume);
    
         threeD.render(); // this one triggers the loading of LH and then the onShowtime for the 3d renderer
-        
-
-        //threeD.resetBoundingBox();
     };
 
     // the onShowtime function gets called automatically, just before the first rendering happens
@@ -108,7 +102,6 @@ window.onload = function () {
         volumeGUI.add(volume, 'indexY', 0, volume.dimensions[1] - 1)
         volumeGUI.add(volume, 'indexZ', 0, volume.dimensions[2] - 1)
         volumeGUI.open()
-
 
         var leftHemisphereGUI = gui.addFolder('Left Hemisphere')
         leftHemisphereGUI.add(leftHemisphereMesh, 'visible')
@@ -129,10 +122,28 @@ window.onload = function () {
 
         load_electrodes(threeD, volumeGUI, volume);
 
-   
-        
+        const displayMenu = document.getElementById('seizure-display-menu')
+        const seizTypeList = document.getElementById('seiztype-list')
+        const intPopList = document.getElementById('int-pop-list')
+        displayMenu.addEventListener('change', event => {
+          event.preventDefault()
+          event.stopPropagation()
+          const selectedSeizType = event.target.value
 
-       // threeD.resetBoundingBox()
+          if (selectedSeizType === "intPopulation") {
+            intPopList.style.visibility = 'visible'
+            seizTypeList.style.visibility = 'hidden'
+            volume.labelmap.file = `../${subject}/${subject}_intPopulation_labels.nii`
+            volume.labelmap.colortable.file = './colormap_intpop.txt'
+          } else {
+            seizTypeList.style.visibility = 'visible'
+            intPopList.style.visibility = 'hidden'
+            volume.labelmap.file = `../${subject}/${subject}_${selectedSeizType}_labels.nii`
+            volume.labelmap.colortable.file = './colormap_seiztype.txt'
+          }
 
+          volume.modified()
+          threeD.resetViewAndRender()
+        })
     };
 };

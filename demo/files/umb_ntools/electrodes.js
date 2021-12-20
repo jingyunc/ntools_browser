@@ -186,44 +186,24 @@ function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, spher
   }
 }
 
-function fill_seizure_type_box(data, spheres, fmaps, volume) {
+function fill_seizure_type_box(data, spheres, fmaps, volume, r) {
   const seizureTypes = data.SeizDisplay
   const displayMenu = document.getElementById('seizure-display-menu')
   const seizTypeList = document.getElementById('seiztype-list')
   const intPopList = document.getElementById('int-pop-list')
   var subject = localStorage.getItem("user-search")
 
-  displayMenu.addEventListener('click', event => {
-    // need to add functional map support separetely 
+  displayMenu.addEventListener('change', event => {
+    event.preventDefault()
+    event.stopPropagation()
     if (event.target.value === "funMapping"){
       fmaps.forEach(fmap => fmap.visible = true)
-    } else {
-      if (event.target.value === "intPopulation") {
-        intPopList.style.visibility = 'visible'
-        seizTypeList.style.visibility = 'hidden'
-        volume.labelmap.file = null
-        volume.labelmap.colortable.file = null
-        volume.labelmap.file = `../${subject}/${subject}_intPopulation_labels.nii`
-        volume.labelmap.colortable.file = './colormap_intpop.txt'
-        volume.modified()
-      } else {
-        seizTypeList.style.visibility = 'visible'
-        intPopList.style.visibility = 'hidden'
-        volume.labelmap.file = null
-        volume.labelmap.colortable.file = null
-        volume.labelmap.file = `../${subject}/${subject}_${event.target.value}_labels.nii`
-        volume.labelmap.colortable.file = './colormap_seiztype.txt'
-        volume.modified()
-      }
-
-      console.log(volume.labelmap.file)
-
-      const selectedSeizType = data[event.target.value]
-      spheres.forEach((sphere, index) => {
-        sphere.color = get_seiztype_color(selectedSeizType[index])
-      })
     }
 
+    const selectedSeizType = data[event.target.value]
+    spheres.forEach((sphere, index) => {
+      sphere.color = get_seiztype_color(selectedSeizType[index])
+    })
   })
 
   seizureTypes.forEach(type => {
@@ -427,7 +407,7 @@ function load_electrodes(renderer, volumeGUI, volume) {
     // fmapIDs = fmapConnections.map(fmap => fmap.id)
     // console.log(fmapIDs)
 
-    fill_seizure_type_box(electrodeData, electrodeSpheres, fmapConnections, volume)
+    fill_seizure_type_box(electrodeData, electrodeSpheres, fmapConnections, volume, renderer)
     fill_electrode_ID_box(electrodeObjects, electrodeIDs, selectionSpheres, 
                           electrodeData, electrodeSpheres, volumeGUI)
     jump_slices_on_click(renderer, volumeGUI, electrodeSpheres, electrodeData, selectionSpheres, 
