@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 # coding: utf-8
-get_ipython().run_line_magic('pylab', 'inline')
+# get_ipython().run_line_magic('pylab', 'inline')
+import sys
 import nibabel as nib
+import numpy as np
 import json
 import re
 
-# UPDATE SUBJECT AND PATH BEFORE USE!
-subject = "fsMNI"
+# PROVIDE SUBJECT ID AS FIRST COMMAND LINE ARGUMENT
+subject = sys.argv[1]
 
-with open(f'../nyu/ntools_browser/demo/files/{subject}/{subject}.json') as f:
+# PROVIDE PATH TO .json as SECOND COMMAND LINE ARGUMENT
+with open(sys.argv[2]) as f:
     electrode_data = json.load(f)
 
 number_of_electrodes = len(electrode_data['elecID'])
@@ -42,7 +45,8 @@ def map_interval(input_val, input_range, output_range):
 
 r = 1 # maybe switch to scikit image draw
 for seizType in all_seiztypes:
-    vol = f'../nyu/ntools_browser/demo/files/{subject}/{subject}_T1.nii'
+    # PROVIDE PATH TO .nii as THIRD COMMAND LINE ARGUMENT
+    vol = sys.argv[3]
 
     volume = nib.load(vol)
     labels = np.zeros((volume.shape[0], volume.shape[1], volume.shape[2]), dtype=np.uint8)
@@ -98,6 +102,7 @@ for seizType in all_seiztypes:
 
     if seizType == 'funMapping':
         # again, a hacky way to make a default
-        nib.save(labelmap, f'../nyu/ntools_browser/demo/files/{subject}/{subject}_default_labels.nii')
+        nib.save(labelmap, f'../{subject}/{subject}_default_labels.nii')
+
     else:
-        nib.save(labelmap, f'../nyu/ntools_browser/demo/files/{subject}/{subject}_{seizType}_labels.nii')
+        nib.save(labelmap, f'../{subject}/{subject}_{seizType}_labels.nii')
