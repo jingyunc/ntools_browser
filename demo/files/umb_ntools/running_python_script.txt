@@ -1,0 +1,23 @@
+IMPORTANT NOTES: 
+•	The JavaScript code assumes that all the needed files are located within the same directory, therefore, the .json and .nii files should be in the same directory
+•	The output directory is currently set to  ../{subject}/{subject}_default_labels.nii and ../{subject}/{subject}_{seizType}_labels.nii which means the output will be in a subject folder located in the parent directory of umb_ntools. 
+•	The Python script should be run before using the visualization tools in n-tools
+•	Remember to select NYU mode on n-tools and enter in the subject ID
+
+Running the Script
+1. Navigate to the umb_ntools folder on your local system
+2. Run the script by using the python or python3 command providing the following as arguments on the command line. 
+	1st command-line argument: SubjectID
+	2nd command-line argument: Path to .json
+	3rd command-line argument: Path to .nii
+
+Sample Commands (for Subject ID “fsMNI”): 
+
+Microsoft Windows [Version 10.0.19044.1415]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\jackt>cd C:\Users\jackt\ntools_browser\demo\files\umb_ntools
+
+C:\Users\jackt\ntools_browser\demo\files\umb_ntools>python electrode_slice.py fsMNI C:\Users\jackt\ntools_browser\demo\files\fsMNI\fsMNI.json C:\Users\jackt\ntools_browser\demo\files\fsMNI\fsMNI_T1.nii
+
+
