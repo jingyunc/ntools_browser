@@ -504,7 +504,7 @@ function load_electrodes(renderer, volumeGUI, volume) {
     if (localStorage.getItem("mode") === "UMB") {
       var electrodeData = await (await fetch(`../${subject}/${subject}.json`)).json()
     } else {
-      var electrodeData = await (await fetch (`https://ievappwpdcpvm01.nyumc.org/?file=${subject}.json`)).json()
+      var electrodeData = await (await fetch (`http://ievappwpdcpvm01.nyumc.org/?file=${subject}.json`)).json()
     }
     
     // this is a work-around from a glitch with the "show all tags" button. we have to offset each coordinate
