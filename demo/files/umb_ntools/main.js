@@ -8,12 +8,14 @@ function load_volume() {
     var volume = new X.volume()
     if (localStorage.getItem("mode") === "UMB") {
         volume.file = `../${subject}/${subject}_T1.nii`;
-        volume.labelmap.file = labelMap = `../${subject}/${subject}_default_labels.nii`
-        volume.labelmap.colortable.file = `./colormap_seiztype.txt`
-        volume.modified()
+        volume.labelmap.file = `../${subject}/${subject}_default_labels.nii`
     } else {
         volume.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
+        volume.labelmap.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_default_labels.nii`
     }
+
+    volume.labelmap.colortable.file = `./colormap_seiztype.txt`
+    volume.modified()
 
     return volume;
 };
@@ -149,23 +151,26 @@ window.onload = function () {
           event.preventDefault()
           event.stopPropagation()
           const selectedSeizType = event.target.value
+          const mode = localStorage.getItem("mode")
 
           if (selectedSeizType === "intPopulation") {
             intPopList.style.visibility = 'visible'
             seizTypeList.style.visibility = 'hidden'
-           // volume.file = `../${subject}/${subject}_T1.nii`;
-            volume.labelmap.file = `../${subject}/${subject}_intPopulation_labels.nii`
+
+            volume.labelmap.file = mode === "UMB" ? `../${subject}/${subject}_intPopulation_labels.nii`
+                                                  : `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_intPopulation_labels.nii`
+
             volume.labelmap.colortable.file = './colormap_intpop.txt'
           } else {
             seizTypeList.style.visibility = 'visible'
             intPopList.style.visibility = 'hidden'
-          //  volume.file = `../${subject}/${subject}_T1.nii`;
-            volume.labelmap.file = `../${subject}/${subject}_${selectedSeizType}_labels.nii`
+            volume.labelmap.file = mode === "UMB" ? `../${subject}/${subject}_${selectedSeizType}_labels.nii`
+                                                  : `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_${selectedSeizType}_labels.nii`
             volume.labelmap.colortable.file = './colormap_seiztype.txt'
           }
 
           volume.modified()
-          threeD.resetViewAndRender()
+         // threeD.resetViewAndRender()
         })
     };
 };

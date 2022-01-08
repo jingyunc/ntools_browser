@@ -222,7 +222,7 @@ function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, volum
       const sliderControllers = volume.__controllers
       const { xSlice, ySlice, zSlice } = correspondingData
 
-      console.log(volume)
+     // console.log(volume)
   
       var xSlider = sliderControllers[5]
       var ySlider = sliderControllers[6]
