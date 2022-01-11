@@ -10,7 +10,7 @@
 <body>
     <div id="ntools-search-container">
         <div id="ntools-search">
-            <form id="ntools-form" action="index.html">
+            <form id="ntools-form">
                 <label class="search-text" for="ntools-search">Subject ID:</label>
                 <input id="search-bar" type="text">
                 <div id="radio-button-modes">
@@ -20,14 +20,15 @@
                         <label for="umb-rad-button">UMB</label>
                         <input name="mode" type="radio" id="umb-rad-button" value="UMB" checked>
                         <label for="nyu-rad-button">NYU</label>
-                        <input name="mode" type="radio" id="nyu-rad-button" value="NYU>
+                        <input name="mode" type="radio" id="nyu-rad-button" value="NYU><br>
+                                                                                   <input type="button" id="submitbtn" label="Load Data">
                     </form>
                 </div>
             </form>
             
         </div>
-    </div>
-    <script type="text/javascript" src='transition.js'></script> 
+       </div>
+                                                                                                                                        
     <script>
                                   
         function urlExists(url)
@@ -38,7 +39,7 @@
             return http.status!=404;
         }                          
         window.onload = function() {
-            document.getElementById('ntools-form').onsubmit = function() {
+            document.getElementById('submitbtn').onclick = function() {
                 var subject = document.getElementById('search-bar').value;
                                   
                 var mode = '';     
