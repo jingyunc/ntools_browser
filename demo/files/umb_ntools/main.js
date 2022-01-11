@@ -161,6 +161,8 @@ window.onload = function () {
         var slicesGUI = gui.addFolder('Slices')
         slicesGUI.add(volume, 'visible') 
         slicesGUI.open()
+        volumeGUI.scrollable = false
+      
 
         // fix original camera position
         threeD.camera.position = [0, 300, 0];

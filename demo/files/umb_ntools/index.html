@@ -61,7 +61,7 @@
             <label for="fmaps">Select Functional Map</label>
             <select name="fmaps" id="fmap-menu">
               <option value="none">None</option>
-              <option value="fmapThreshold">Threshold</option>
+              <!-- <option value="fmapThreshold">Threshold</option> -->
               <option value="fmapMotor">Motor</option>
               <option value="fmapSensory">Sensory</option>
               <option value="fmapLanguage">Language</option>
@@ -75,9 +75,12 @@
    
           <div id="color-legend">
             <ul id="seiztype-list" style="position: absolute;">
-              <li style="color: rgb(255, 255,255)">
-                None
+              <li style="color: rgb(255, 0, 0)">
+                Onset
               </li>
+              <!-- <li style="color: rgb(255, 255,255)">
+                None
+              </li> -->
               <li style="color: rgb(255, 91, 32)">
                 Very Early Spread
               </li>
@@ -87,15 +90,12 @@
               <li style="color: rgb(0, 255, 49)">
                 Late Spread
               </li>
-              <li style="color: rgb(255, 0, 0)">
-                Onset
-              </li>
-              <li style="color: rgb(0, 0, 255)">
+              <!-- <li style="color: rgb(0, 0, 255)">
                 Rapid Onset
               </li>
               <li style="color: rgb( 0, 255, 255)">
                 Early Onset
-              </li>
+              </li> -->
             </ul>
             <ul id="int-pop-list" style="visibility: hidden; position: absolute">
               <li style="color: rgb(255, 255, 255)">
