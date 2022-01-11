@@ -10,8 +10,8 @@ function load_volume() {
         volume.file = `../${subject}/${subject}_T1.nii`;
         volume.labelmap.file = `../${subject}/${subject}_default_labels.nii`
     } else {
-        volume.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
-        volume.labelmap.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_default_labels.nii`
+        volume.file = window.location.protocol+`//ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
+        volume.labelmap.file = window.location.protocol+`//ievappwpdcpvm01.nyumc.org/?file=${subject}_default_labels.nii`
     }
 
     volume.labelmap.colortable.file = `./colormap_seiztype.txt`
@@ -32,8 +32,8 @@ function load_surfaces() {
         leftHemisphere.file = `../${subject}/${subject}_lh.pial`
         rightHemisphere.file = `../${subject}/${subject}_rh.pial`
     } else {
-        leftHemisphere.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_lh.pial`
-        rightHemisphere.file = `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_rh.pial`
+        leftHemisphere.file = window.location.protocol+`//ievappwpdcpvm01.nyumc.org/?file=${subject}_lh.pial`
+        rightHemisphere.file = window.location.protocol+`//ievappwpdcpvm01.nyumc.org/?file=${subject}_rh.pial`
     }
 
     leftHemisphere.color = [1, 1, 1]
@@ -158,14 +158,14 @@ window.onload = function () {
             seizTypeList.style.visibility = 'hidden'
 
             volume.labelmap.file = mode === "UMB" ? `../${subject}/${subject}_intPopulation_labels.nii`
-                                                  : `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_intPopulation_labels.nii`
+                                                  : window.location.protocol+`//ievappwpdcpvm01.nyumc.org/?file=${subject}_intPopulation_labels.nii`
 
             volume.labelmap.colortable.file = './colormap_intpop.txt'
           } else {
             seizTypeList.style.visibility = 'visible'
             intPopList.style.visibility = 'hidden'
             volume.labelmap.file = mode === "UMB" ? `../${subject}/${subject}_${selectedSeizType}_labels.nii`
-                                                  : `http://ievappwpdcpvm01.nyumc.org/?file=${subject}_${selectedSeizType}_labels.nii`
+                                                  : window.location.protocol+`//ievappwpdcpvm01.nyumc.org/?file=${subject}_${selectedSeizType}_labels.nii`
             volume.labelmap.colortable.file = './colormap_seiztype.txt'
           }
 
