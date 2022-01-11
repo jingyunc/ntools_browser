@@ -29,16 +29,38 @@
     </div>
     <script type="text/javascript" src='transition.js'></script> 
     <script>
+                                  
+        function urlExists(url)
+        {
+            var http = new XMLHttpRequest();
+            http.open('HEAD', url, false);
+            http.send();
+            return http.status!=404;
+        }                          
         window.onload = function() {
             document.getElementById('ntools-form').onsubmit = function() {
-                var searchText = document.getElementById('search-bar').value
-                localStorage.setItem("user-search", searchText)
-                document.getElementById('umb-rad-button').checked ?
-                    localStorage.setItem("mode", "UMB")
-                  : localStorage.setItem("mode", "NYU")
+                var subject = document.getElementById('search-bar').value;
+                                  
+                var mode = '';     
+                var url = '';                  
+                if (document.getElementById('umb-rad-button').checked) {
+                    mode = 'UMB';
+                     url = '../'+subject+'/'+subject+'.json';             
+                } else {
+                     mode = 'NYU';             
+                     url = window.location.protocol+'//ievappwpdcpvm01.nyumc.org/?file='+subject+'.json';             
+                }
+                                  
+                                                         
+                                                      
+                if (urlExists(url)) {
+                                  
                 
-                window.location.href = `${window.location.href}/umb_ntools/index.html`
-            }
+                    window.location.href = window.location.href+'/umb_ntools/index.html?mode='+mode+'&subject='+subject;
+                 } else {
+                   console.log('Data not found!');                
+                 }
+             }
         }
     </script>
     
