@@ -43,7 +43,7 @@ def map_interval(input_val, input_range, output_range):
     
     return output_start + ((output_end - output_start) / (input_end - input_start)) * (input_val - input_start)
 
-r = 1 # maybe switch to scikit image draw
+radius = 3 # maybe switch to scikit image draw
 for seizType in all_seiztypes:
     # PROVIDE PATH TO .nii as THIRD COMMAND LINE ARGUMENT
     vol = sys.argv[3]
@@ -94,7 +94,8 @@ for seizType in all_seiztypes:
      
         try:
             print(electrode_color)
-            labels[mapped_xCoor:mapped_xCoor + r + 1, mapped_yCoor:mapped_yCoor + r + 1, mapped_zCoor:mapped_zCoor + r + 1] = electrode_color
+            labels[mapped_xCoor:mapped_xCoor + radius + 1, mapped_yCoor:mapped_yCoor + radius + 1,
+            mapped_zCoor:mapped_zCoor + radius + 1] = electrode_color
         except IndexError:
             continue
         
