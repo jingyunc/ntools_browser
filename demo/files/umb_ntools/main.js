@@ -1,4 +1,4 @@
-var subject = localStorage.getItem("user-search") // get the subject name from search page
+//var subject = localStorage.getItem("user-search") // get the subject name from search page
 
 /**
  * loads the .nii data into a X.volume and returns it
@@ -6,7 +6,7 @@ var subject = localStorage.getItem("user-search") // get the subject name from s
  */
 function load_volume() {
     var volume = new X.volume()
-    if (localStorage.getItem("mode") === "UMB") {
+    if (mode === "UMB") {
         volume.file = `../${subject}/${subject}_T1.nii`;
         volume.labelmap.file = `../${subject}/${subject}_default_labels.nii`
     } else {
@@ -28,7 +28,7 @@ function load_surfaces() {
     var leftHemisphere = new X.mesh();
     var rightHemisphere = new X.mesh();
 
-    if (localStorage.getItem("mode") === "UMB") {
+    if (mode === "UMB") {
         leftHemisphere.file = `../${subject}/${subject}_lh.pial`
         rightHemisphere.file = `../${subject}/${subject}_rh.pial`
     } else {
@@ -73,6 +73,33 @@ function setup_renderers() {
 }
 
 window.onload = function () {
+    
+      // from http://stackoverflow.com/a/7826782/1183453
+      var args = document.location.search.substring(1).split('&');
+      argsParsed = {};
+      for (var i=0; i < args.length; i++)
+      {
+          arg = unescape(args[i]);
+
+          if (arg.length == 0) {
+            continue;
+          }
+
+          if (arg.indexOf('=') == -1)
+          {
+              argsParsed[arg.replace(new RegExp('/$'),'').trim()] = true;
+          }
+          else
+          {
+              kvp = arg.split('=');
+              argsParsed[kvp[0].trim()] = kvp[1].replace(new RegExp('/$'),'').trim();
+          }
+      }
+    
+    mode = argsParsed['mode'];
+    subject = argsParsed['subject'];
+    
+    
     // destructure array of renderers
     var [threeD, sliceX, sliceY, sliceZ] = setup_renderers();
 
@@ -151,7 +178,7 @@ window.onload = function () {
           event.preventDefault()
           event.stopPropagation()
           const selectedSeizType = event.target.value
-          const mode = localStorage.getItem("mode")
+          //const mode = localStorage.getItem("mode")
 
           if (selectedSeizType === "intPopulation") {
             intPopList.style.visibility = 'visible'

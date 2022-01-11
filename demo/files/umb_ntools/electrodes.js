@@ -500,8 +500,9 @@ function load_electrodes(renderer, volumeGUI, volume) {
   // for now, the only way I know how to load a JSON in vanilla JS is with async/await. Some of these
   // calls may have to be switched back to jQuery if it doesn't work
   (async () => {
-    var subject = localStorage.getItem("user-search")
-    if (localStorage.getItem("mode") === "UMB") {
+    //var subject = localStorage.getItem("user-search")
+    
+    if (mode === "UMB") {
       var electrodeData = await (await fetch(`../${subject}/${subject}.json`)).json()
     } else {
       var electrodeData = await (await fetch (window.location.protocol+`//ievappwpdcpvm01.nyumc.org/?file=${subject}.json`)).json()
