@@ -11,19 +11,17 @@
     <div id="ntools-search-container">
         <div id="ntools-search">
             <form id="ntools-form">
+                <span id='err' style='color:red'></span><br>
                 <label class="search-text" for="ntools-search">Subject ID:</label>
                 <input id="search-bar" type="text">
                 <div id="radio-button-modes">
-                    <!-- I will fix this to not have non-breaking-spaces -->
-                    <form >
                         <label class="search-text"> Mode:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</label>
                         <label for="umb-rad-button">UMB</label>
                         <input name="mode" type="radio" id="umb-rad-button" value="UMB" checked>
                         <label for="nyu-rad-button">NYU</label>
-                        <input name="mode" type="radio" id="nyu-rad-button" value="NYU><br>
-                                                                                   <input type="button" id="submitbtn" label="Load Data">
-                    </form>
+                        <input name="mode" type="radio" id="nyu-rad-button" value="NYU">
                 </div>
+                <button type='button' id="submitbtn">Load Data!</button>
             </form>
             
         </div>
@@ -57,8 +55,9 @@
                 if (urlExists(url)) {
                                   
                 
-                    window.location.href = window.location.href+'/umb_ntools/index.html?mode='+mode+'&subject='+subject;
+                    window.location.href = 'index.html?mode='+mode+'&subject='+subject;
                  } else {
+                    document.getElementById('err').innerHTML = 'Data not found!';
                    console.log('Data not found!');                
                  }
              }

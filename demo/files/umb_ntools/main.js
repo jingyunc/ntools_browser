@@ -6,7 +6,7 @@
  */
 function load_volume() {
     var volume = new X.volume()
-    if (localStorage.getItem("mode") === "UMB") {
+    if (mode === "UMB") {
         volume.file = `../${subject}/${subject}_T1.nii`;
         volume.labelmap.file = `../${subject}/${subject}_default_labels.nii`
     } else {
@@ -28,7 +28,7 @@ function load_surfaces() {
     var leftHemisphere = new X.mesh();
     var rightHemisphere = new X.mesh();
 
-    if (localStorage.getItem("mode") === "UMB") {
+    if (mode === "UMB") {
         leftHemisphere.file = `../${subject}/${subject}_lh.pial`
         rightHemisphere.file = `../${subject}/${subject}_rh.pial`
     } else {
