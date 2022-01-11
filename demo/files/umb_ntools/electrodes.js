@@ -222,7 +222,7 @@ function fill_electrode_ID_box(elObjects, idArray, selectionSpheres, data, volum
       const sliderControllers = volume.__controllers
       const { xSlice, ySlice, zSlice } = correspondingData
 
-      console.log(volume)
+     // console.log(volume)
   
       var xSlider = sliderControllers[5]
       var ySlider = sliderControllers[6]
@@ -500,11 +500,12 @@ function load_electrodes(renderer, volumeGUI, volume) {
   // for now, the only way I know how to load a JSON in vanilla JS is with async/await. Some of these
   // calls may have to be switched back to jQuery if it doesn't work
   (async () => {
-    var subject = localStorage.getItem("user-search")
-    if (localStorage.getItem("mode") === "UMB") {
+    //var subject = localStorage.getItem("user-search")
+    
+    if (mode === "UMB") {
       var electrodeData = await (await fetch(`../${subject}/${subject}.json`)).json()
     } else {
-      var electrodeData = await (await fetch (`https://ievappwpdcpvm01.nyumc.org/?file=${subject}.json`)).json()
+      var electrodeData = await (await fetch (window.location.protocol+`//ievappwpdcpvm01.nyumc.org/?file=${subject}.json`)).json()
     }
     
     // this is a work-around from a glitch with the "show all tags" button. we have to offset each coordinate

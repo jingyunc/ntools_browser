@@ -10,35 +10,57 @@
 <body>
     <div id="ntools-search-container">
         <div id="ntools-search">
-            <form id="ntools-form" action="index.html">
+            <form id="ntools-form">
+                <span id='err' style='color:red'></span><br>
                 <label class="search-text" for="ntools-search">Subject ID:</label>
                 <input id="search-bar" type="text">
                 <div id="radio-button-modes">
-                    <!-- I will fix this to not have non-breaking-spaces -->
-                    <form >
                         <label class="search-text"> Mode:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</label>
                         <label for="umb-rad-button">UMB</label>
                         <input name="mode" type="radio" id="umb-rad-button" value="UMB" checked>
                         <label for="nyu-rad-button">NYU</label>
-                        <input name="mode" type="radio" id="nyu-rad-button" value="NYU>
-                    </form>
+                        <input name="mode" type="radio" id="nyu-rad-button" value="NYU">
                 </div>
+                <button type='button' id="submitbtn">Load Data!</button>
             </form>
             
         </div>
-    </div>
-    <script type="text/javascript" src='transition.js'></script> 
+       </div>
+                                                                                                                                        
     <script>
+                                  
+        function urlExists(url)
+        {
+            var http = new XMLHttpRequest();
+            http.open('HEAD', url, false);
+            http.send();
+            return http.status!=404;
+        }                          
         window.onload = function() {
-            document.getElementById('ntools-form').onsubmit = function() {
-                var searchText = document.getElementById('search-bar').value
-                localStorage.setItem("user-search", searchText)
-                document.getElementById('umb-rad-button').checked ?
-                    localStorage.setItem("mode", "UMB")
-                  : localStorage.setItem("mode", "NYU")
+            document.getElementById('submitbtn').onclick = function() {
+                var subject = document.getElementById('search-bar').value;
+                                  
+                var mode = '';     
+                var url = '';                  
+                if (document.getElementById('umb-rad-button').checked) {
+                    mode = 'UMB';
+                     url = '../'+subject+'/'+subject+'.json';             
+                } else {
+                     mode = 'NYU';             
+                     url = window.location.protocol+'//ievappwpdcpvm01.nyumc.org/?file='+subject+'.json';             
+                }
+                                  
+                                                         
+                                                      
+                if (urlExists(url)) {
+                                  
                 
-                window.location.href = `${window.location.href}/umb_ntools/index.html`
-            }
+                    window.location.href = 'index.html?mode='+mode+'&subject='+subject;
+                 } else {
+                    document.getElementById('err').innerHTML = 'Data not found!';
+                   console.log('Data not found!');                
+                 }
+             }
         }
     </script>
     
