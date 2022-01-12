@@ -27,9 +27,9 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 - [x] Opacity control of brain surface
 - [x] Color-code fmap bars
 - [x] Display legend for color-code
-- [ ] Color-code elecs on 2D slices
-- [ ] Additional draw-down menu items for different types of fmap findings
+- [x] Color-code elecs on 2D slices
+- [x] Additional draw-down menu items for different types of fmap findings
 - [ ] Adopt BIDS format in json file
-- [ ] 3D tags
+- [x] 3D tags
 - [ ] Show multiple fmap bars for same elec-pairs
 - [ ] Interpolate surface color with electrode attributes (e.g. Garma band strength).
