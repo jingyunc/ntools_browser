@@ -393,11 +393,12 @@ function add_mouse_hover(renderer) {
  */
 
 function update_labels(electrode, data) {
-  var {elecType, intPopulation} = electrode
+  var {elecType, intPopulation, xCoor, yCoor, zCoor} = electrode
 
   var seizTypeMenu = document.getElementById('seizure-display-menu')
   var intPopulationLabel = document.getElementById('int-population-label-inner')
   var seizTypeLabel = document.getElementById('seiz-type-label-inner')
+  var coordinateLabel = document.getElementById('coordinates-label-inner')
 
   var selectedSeizType = seizTypeMenu.options[seizTypeMenu.selectedIndex].value
   var seizureTypeValues = data[selectedSeizType]
@@ -405,6 +406,8 @@ function update_labels(electrode, data) {
 
   document.getElementById('electrode-id-label-inner').innerHTML = electrode.elecID
   document.getElementById('electrode-type-label-inner').innerHTML = elecType
+  coordinateLabel.innerText = `(${xCoor}, ${yCoor}, ${zCoor})`
+  
   if (selectedSeizType === "intPopulation") {
     intPopulationLabel.innerHTML = intPopulation
     seizTypeLabel.innerHTML = ''
@@ -458,7 +461,9 @@ function jump_slices_on_click(
             var target = electrodeObjects[sphereIndex]
             
             // destructure out the needed properties
-            var {elecID, xSlice, ySlice, zSlice} = target
+            var {elecID, xSlice, ySlice, zSlice, xCoor, yCoor, zCoor} = target
+            document.getElementById('coordinates-label-inner').innerText = `(${xCoor}, ${yCoor}, ${zCoor})`
+
          
             // highlight and show the needed captions on the menu
             highlight_selected_electrode(elecID, IDs, selections)
