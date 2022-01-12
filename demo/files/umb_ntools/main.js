@@ -153,20 +153,20 @@ window.onload = function () {
         var leftHemisphereGUI = gui.addFolder('Left Hemisphere')
         leftHemisphereGUI.add(leftHemisphereMesh, 'visible')
         leftHemisphereGUI.add(leftHemisphereMesh, 'opacity', 0, 1)
+        leftHemisphereGUI.addColor(leftHemisphereMesh, 'color')
         leftHemisphereGUI.open()
 
         var rightHemisphereGUI = gui.addFolder('Right Hemisphere')
         rightHemisphereGUI.add(rightHemisphereMesh, 'visible')
         rightHemisphereGUI.add(rightHemisphereMesh, 'opacity', 0, 1)
+        rightHemisphereGUI.addColor(rightHemisphereMesh, 'color')
         rightHemisphereGUI.open()
 
         // making slices invisible
         var slicesGUI = gui.addFolder('Slices')
-        slicesGUI.add(volume, 'visible') 
+        slicesGUI.add(volume, 'visible')
         slicesGUI.open()
-        volumeGUI.scrollable = false
-      
-
+    
         // fix original camera position
         threeD.camera.position = [0, 300, 0];
 
