@@ -7,8 +7,10 @@
 function load_volume() {
     var volume = new X.volume()
     if (mode === "UMB") {
+   
         volume.file = `../${subject}/${subject}_T1.nii`;
         volume.labelmap.file = `../${subject}/${subject}_default_labels.nii`
+
     } else {
         volume.file = window.location.protocol+`//ievappwpdcpvm01.nyumc.org/?file=${subject}_T1.nii`
         volume.labelmap.file = window.location.protocol+`//ievappwpdcpvm01.nyumc.org/?file=${subject}_default_labels.nii`
@@ -73,7 +75,7 @@ function setup_renderers() {
 }
 
 window.onload = function () {
-    
+
       // from http://stackoverflow.com/a/7826782/1183453
       var args = document.location.search.substring(1).split('&');
       argsParsed = {};
@@ -98,8 +100,7 @@ window.onload = function () {
     
     mode = argsParsed['mode'];
     subject = argsParsed['subject'];
-    
-    
+
     // destructure array of renderers
     var [threeD, sliceX, sliceY, sliceZ] = setup_renderers();
 
@@ -107,16 +108,18 @@ window.onload = function () {
 
     var [leftHemisphereMesh, rightHemisphereMesh] = load_surfaces();
 
+
     threeD.add(leftHemisphereMesh)
     threeD.add(rightHemisphereMesh)
    
     sliceX.add(volume);
+
     sliceX.render();
 
     sliceX.onShowtime = function () {
+
         // this is triggered manually by sliceX.render() just 2 lines above
         // execution happens after volume is loaded
-
         sliceY.add(volume);
         sliceY.render();
         sliceZ.add(volume);

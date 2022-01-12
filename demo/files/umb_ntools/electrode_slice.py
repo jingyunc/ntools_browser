@@ -70,30 +70,32 @@ for seizType in all_seiztypes:
             # since 0 is the background on the colormap, offset by 1
             electrode_color = current_seiztype + 1
         else:
-            current_seiztype = re.sub(' +', ' ', current_seiztype)
-            current_seiztype = current_seiztype.lower()
-            
-            if current_seiztype == 'onset':
-                electrode_color = 2
-            elif current_seiztype == 'early spread':
-                electrode_color = 3
-            elif current_seiztype == 'late spread':
-                electrode_color = 4
-            elif current_seiztype == 'very early spread':
-                electrode_color = 5
-            elif current_seiztype == 'rapid spread':
-                electrode_color = 6
-            elif current_seiztype == 'early onset':
-                electrode_color = 7
-            else:
+            if current_seiztype == None:
                 electrode_color = 1
+            else:
+                current_seiztype = re.sub(' +', ' ', current_seiztype)
+                current_seiztype = current_seiztype.lower()
+                
+                if current_seiztype == 'onset':
+                    electrode_color = 2
+                elif current_seiztype == 'early spread':
+                    electrode_color = 3
+                elif current_seiztype == 'late spread':
+                    electrode_color = 4
+                elif current_seiztype == 'very early spread':
+                    electrode_color = 5
+                elif current_seiztype == 'rapid spread':
+                    electrode_color = 6
+                elif current_seiztype == 'early onset':
+                    electrode_color = 7
+                else:
+                    electrode_color = 1
         
         mapped_xCoor = int(round(map_interval(electrode.xCoor, first_interval, second_interval), 5))
         mapped_yCoor = int(round(map_interval(electrode.yCoor, first_interval, second_interval), 5))
         mapped_zCoor = int(round(map_interval(electrode.zCoor, first_interval, second_interval), 5))
      
         try:
-            print(electrode_color)
             labels[mapped_xCoor:mapped_xCoor + radius + 1, mapped_yCoor:mapped_yCoor + radius + 1,
             mapped_zCoor:mapped_zCoor + radius + 1] = electrode_color
         except IndexError:
@@ -103,7 +105,13 @@ for seizType in all_seiztypes:
 
     if seizType == 'funMapping':
         # again, a hacky way to make a default
+        print("Saving Default Labels...")
         nib.save(labelmap, f'../{subject}/{subject}_default_labels.nii')
+        print("Done")
 
     else:
+        print(f'Generating Labels for {seizType}...')
         nib.save(labelmap, f'../{subject}/{subject}_{seizType}_labels.nii')
+        print("Done")
+
+print("Label Maps Generated")
