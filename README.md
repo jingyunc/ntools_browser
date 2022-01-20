@@ -13,8 +13,13 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 ## Demo (Beta)
 - Visit [search page](https://jingyunc.github.io/ntools_browser/demo/files/umb_ntools/search.html). 
 - Type "fsMNI" for SubjectID, select UMB mode, and click "Load Data!" button (as showed below).
-
-![Start Demo](Docs/demo3.png)
+![Search Page](Docs/demo3.png)
+- In 3D view: mouse-left = rotate, mouse-wheel = zoom, shift+mouse-left = move, left-click sphere or bar = select & display elec or fmap properties. 
+- The orthogonal 2D slices in 3D view can be turned off by GUI (mark #1 in screenshot).
+- The elec ID menu (#2) and 3D spheres (#3) are synchronized, selecting one will update the other.
+- Some elec spheres and fmap bars may be beneath brain surface un-selectable, you can turn off brain surface (#4) to select them.
+- Moving mouse cursor to an elec in 3D view will show its ID tags. Clicking #5 shows all ID tags.
+![Main Page](Docs/demo4.png)
  
 ## Stage 1: Visualize brain surfaces and electrodes in browser from existing ntools_elec outputs
 - [x] Find toolbox for web-based visualization of Freesurfer files.
