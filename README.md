@@ -10,7 +10,12 @@ An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XT
 
 ![Stage 2 Design](Docs/roadmapstage2.png)
 
+## Demo (Beta)
+- Visit [search page](https://jingyunc.github.io/ntools_browser/demo/files/umb_ntools/search.html). 
+- Type "fsMNI" for SubjectID, select UMB mode, and click "Load Data!" button (as showed below).
 
+![Start Demo](Docs/demo3.png)
+ 
 ## Stage 1: Visualize brain surfaces and electrodes in browser from existing ntools_elec outputs
 - [x] Find toolbox for web-based visualization of Freesurfer files.
 - [x] Create database of existing MRI scans and electrode coordinates for web visualization.
