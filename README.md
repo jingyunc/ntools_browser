@@ -2,7 +2,7 @@
 
 **Web-based Electrode Visualization**
 
-An add-on to [N-Tools-Elec](https://github.com/HughWXY/ntools_elec), based on [X Toolkit (XTK)](https://github.com/xtk/X).
+An extention of [N-Tools-Elec](https://github.com/HughWXY/ntools_elec), based on [X Toolkit (XTK)](https://github.com/xtk/X).
 
 ![Demo](Docs/demo2.png)
 
