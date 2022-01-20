@@ -1,8 +1,8 @@
-# ntools_browser
+# N-Tools-Browser
 
 **Web-based Electrode Visualization**
 
-An add-on to [ntools_elec](https://github.com/HughWXY/ntools_elec), based on [XTK](https://github.com/xtk/X).
+An add-on to [N-Tools-Elec](https://github.com/HughWXY/ntools_elec), based on [X Toolkit (XTK)](https://github.com/xtk/X).
 
 ![Demo](Docs/demo2.png)
 
